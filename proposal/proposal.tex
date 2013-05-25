@@ -1,0 +1,87 @@
+\documentclass[oneside,twocolumn,8pt,a4paper]{article}
+
+\title{The practicality of Software Defined Networks\\in large scale environments\\[0.3cm]
+\Large{Research Proposal}}
+\author{Michiel Appelman}
+
+\usepackage{url}
+\usepackage{fullpage}
+\usepackage{paralist}
+\usepackage{color,graphicx}
+\usepackage[colorlinks,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+
+\begin{document}
+	\maketitle
+	
+	% SDN architecture compared to one or more of the leading solutions in current networks.
+	 % The networking community considers OpenFlow and SDN in general as a possible solution against the ossification of networks. Despite the attention for SDN in the networking community, it is unclear if the SDN architecture is open enough to avoid ossification in itself. So, OpenFlow should be capable of providing current network functions with at least the same level of efficiency. For example, using an OpenFlow network to provide a pseudo-wire to customers, or being able to do use an OpenFlow router as a border router. In this RP, we will analyze the practical implications of SDN architecture compared to one or more of the leading solutions in current networks: (1) carrier ethernet services, (2) mobility, (3) network partitioning. An argumentation, and possibly a proof of concept, will be made for the question if SDN will replace rigid and inflexible network technologies or if SDN will merely add new possibilities to the toolset of network engineers.
+	
+	\section{Introduction} % (fold)
+	\label{sec:introduction}
+	In 2008 a white paper was published about a proposed technology promising network administrators to get back the flexibility in their campus networks by using their own software to `program' their switches and routers.\cite{openflow} OpenFlow, as it's called, would allow experimental network technologies to be run on production traffic without having to wait for the vendor to implement it. This proposed idea for Software Defined Networking (SDN) was not new but was the first to actually be implemented in a real campus environment at Stanford University. The potential implications that this technology could have on the industry sparked a growing interest in this area. Scientists started researching the benefits, presentations on possible implementations were given and vendors hastily implemented the required functionalities next to their core feature set.
+	
+	Curr
+							
+		\subsection*{Research Questions} % (fold)
+		\label{sub:research_questions}
+		
+			
+		To summarize the goal of this research, the following question will be answered:
+		\begin{quote}
+			\textsl{``How, if at all, can the SDN architecture solve the ossification in current leading technologies in use today by large scale networks?''}
+		\end{quote}
+			
+		% subsection research_questions (end)
+		\subsection*{Related Work} % (fold)
+		\label{sub:related_work}
+		Since the introduction of OpenFlow and the 
+		% subsection related_work (end)
+		
+		\subsection*{Approach} % (fold)
+		\label{sub:approach}
+		% Charateristics
+		% Requirements
+		% Feasibility
+		
+		% subsection approach (end)
+
+		\subsection*{Scope} % (fold)
+		\label{sub:scope}
+			
+		% subsection scope (end)
+	% section introduction (end)
+
+	
+	\section{Planning} % (fold)
+	\label{sec:planning}
+		This project will be carried out over a period of four weeks at the SNE Research Group at the University of Amsterdam. A rough timeline of the research is given in the table below: \\
+		
+		\begin{tabular}{l p{5.8cm}}
+			Week & Task \\ \hline
+				0 & Write proposal\\
+					& Formulate research questions\\
+					& Get approval for proposal \\ \hline
+				1 \& 2 & Start research\\ 
+					& Find documentation of other research/experiences within community \\ \hline
+				3 & Produce proof of concept\\  \hline
+				4 & Write report\\ 
+					& Prepare presentation\\
+					& Filter report to a scientific paper \\
+		\end{tabular}
+		
+		\subsection*{Products} % (fold)
+		\label{sub:products}
+			The research will result in the following products: 
+			\begin{inparaenum}[\itshape a\upshape)]
+				\item a report written for the System and Network Engineering master education describing the research, the process and results;
+				\item a paper written for the scientific community to be published together with other scientist in the SNE research group; and
+				\item a 20 minute presentation about the research to be held on July 3rd at the University of Amsterdam.
+			\end{inparaenum}
+			Also, if preliminary results and available time allow for it, a proof of concept will be produced to provide the community with a sample implementation to test and adapt.
+		% subsection products (end)
+	% section planning (end)
+	
+	\bibliographystyle{ieeetr}
+	\bibliography{./bibliography}
+	
+\end{document}
