@@ -1,12 +1,14 @@
-\documentclass[oneside,twocolumn,8pt,a4paper]{article}
+\documentclass[oneside,twocolumn,7pt,a4paper]{article}
 
-\title{The practicality of Software Defined Networks\\in large scale environments\\[0.3cm]
-\Large{Research Proposal}}
+\title{The practicality of Software Defined Networking\\
+in Large Scale Networks\\[0.3cm]
+\large{Research Proposal}}
 \author{Michiel Appelman}
 
 \usepackage{url}
 \usepackage{fullpage}
 \usepackage{paralist}
+%\usepackage{natbib}
 \usepackage{color,graphicx}
 \usepackage[colorlinks,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
 
@@ -15,40 +17,62 @@
 	
 	% SDN architecture compared to one or more of the leading solutions in current networks.
 	 % The networking community considers OpenFlow and SDN in general as a possible solution against the ossification of networks. Despite the attention for SDN in the networking community, it is unclear if the SDN architecture is open enough to avoid ossification in itself. So, OpenFlow should be capable of providing current network functions with at least the same level of efficiency. For example, using an OpenFlow network to provide a pseudo-wire to customers, or being able to do use an OpenFlow router as a border router. In this RP, we will analyze the practical implications of SDN architecture compared to one or more of the leading solutions in current networks: (1) carrier ethernet services, (2) mobility, (3) network partitioning. An argumentation, and possibly a proof of concept, will be made for the question if SDN will replace rigid and inflexible network technologies or if SDN will merely add new possibilities to the toolset of network engineers.
+
+% 	Ik zou gewoon eens beginnen met dingen op papier te zetten. Wat is openflow, waarom bestaat het, wat kun je ermee, wat kun je er niet mee, waarom hebben ze die suffe api calls bijgevoegd voor mpls / pbb / vlans (er zijn ook simpele redenen, bv dat mpls tags in hardware al snel gaan) en konden ze dat niet academischer oplossen? Denk daar eens over na en probeer het te verwoorden in twee pagina's.
+
+% Verder lijkt me een onderzoeksvraag: What will the Openflow 1.4 specification look like? ;)
+
+% Met een eerste slag over het bovenstaande hebben we genoeg input om bij elkaar te zitten en een stap verder te komen. Tijd vliegt in RPs.
 	
 	\section{Introduction} % (fold)
 	\label{sec:introduction}
-	In 2008 a white paper was published about a proposed technology promising network administrators to get back the flexibility in their campus networks by using their own software to `program' their switches and routers.\cite{openflow} OpenFlow, as it's called, would allow experimental network technologies to be run on production traffic without having to wait for the vendor to implement it. This proposed idea for Software Defined Networking (SDN) was not new but was the first to actually be implemented in a real campus environment at Stanford University. The potential implications that this technology could have on the industry sparked a growing interest in this area. Scientists started researching the benefits, presentations on possible implementations were given and vendors hastily implemented the required functionalities next to their core feature set.
+	In 2008 the white paper on OpenFlow was published \cite{openflow} promising network administrators to get back the flexibility in their campus networks by using their own software to `program' their switches and routers.
+	The publication was a next step in the move towards flexible and programmable networks which should solve the ossification that is the status quo in networking. After a diversified Internet was defined in \cite{diversifiedinternet}, and \cite{overcomingimpasse} called for action to actually fix the current impasse, OpenFlow was one of the first practical steps towards moving networks to a more flexible form.
+	It does this by defining a protocol to program the data plane of network devices using API calls from a piece of software on a centralized server. This piece of software is what is called an OpenFlow controller and is analogous to the local control plane in a contemporary setup, with the added advantage that multiple network devices can get their information from a single (set of) controller.
 	
-	Curr
-							
+	By matching on certain header fields in the frames different actions can be performed on each frame passing through the device. The actions are governed by the applications running on the controller and can range from contemporary implementations to future protocols not yet implemented by network equipment vendors.
+	
+	The potential implications that this technology could have on the industry sparked a growing interest in this area. Scientists started researching the benefits, presentations on possible implementations were given and vendors hastily implemented the required functionalities next to their core feature set.
+	
+	All this activity has lead to the formation of the Open Networking Foundation (ONF) which has taken control of the development of the OpenFlow protocol since version 1.2. It has been extending the original specification with additional header fields to match on, including IPv6 and SCTP but also MPLS fields. Version 1.3.1 \cite{onf} of the specification has been ratified in September of 2012 and has even added PBB support. These constant additions to the specification of course add a lot of flexibility to the specification to implement it in current network topologies but one could wonder about the usefulness and scalability of this approach.
+	
+	By having to add these fields for every protocol, the ONF will need to keep expanding the specification which will require vendors to implement these changes to be again OpenFlow compliant. This undeniably goes against one of the goals of SDN to program network devices independently from the vendors. 
+	
+	Next to these observations, it is also apparent that the actual implementations of OpenFlow in large network environments demanding features like MPLS and PBB have been fairly limited. Except for one large scale internal network \cite{googleonf} there aren't a lot of succes stories for Carrier Ethernet Service Providers (SPs), networks with mobility requirements or SPs that would otherwise need strict network separation. A void which would could be filled perfectly using the promised features of the OpenFlow specification.
+			
 		\subsection*{Research Questions} % (fold)
 		\label{sub:research_questions}
-		
-			
-		To summarize the goal of this research, the following question will be answered:
-		\begin{quote}
-			\textsl{``How, if at all, can the SDN architecture solve the ossification in current leading technologies in use today by large scale networks?''}
-		\end{quote}
-			
+		This research will focus on the reason why there haven't been any of these large scale implementations and where the OpenFlow specification might lack functionalities to actually accomplish the desired situation. After all, SDN has been widely endorsed for being capable of running all the current network environments and in addition provide the administrators with added flexibility to improve there networks. But will it actually solve the ossification or will it be just another tool in the toolset of network administrators? In other words:	\textsl{``How, if at all, can OpenFlow solve the ossification in large scale networks using leading contemporary technologies?''} And if not, what does the next iteration of the OpenFlow specification will need to look like to solve this?
+
 		% subsection research_questions (end)
 		\subsection*{Related Work} % (fold)
 		\label{sub:related_work}
-		Since the introduction of OpenFlow and the 
+		...
 		% subsection related_work (end)
+		
+		\subsection*{Scope} % (fold)
+		\label{sub:scope}
+		This research project will limit its focus to three specific network environments:
+			\begin{inparaenum}[ 1)]
+				\item Carrier Ethernet Service Providers;
+				\item networks requiring highly mobile end stations; and
+				\item networks in need of strict network separation.
+			\end{inparaenum}
+		% subsection scope (end)
 		
 		\subsection*{Approach} % (fold)
 		\label{sub:approach}
 		% Charateristics
-		% Requirements
-		% Feasibility
+		First, the characteristics of the three different environments will be compiled. This will give an image of the topology, the scale and other specifics that might be of interest.
 		
+		% Requirements
+		Next, the requirements of each of these networks will be listed. Key features like load sharing and fail-over procedures will be documented to provide a clear definition of the environment and the features required for its users.
+		
+		% Feasibility
+		Finally, we will look at how these networks are implemented by engineers today and if and how they can be set up using an SDN/OpenFlow architecture. Any obstacles will be documented and if none are found, a possible proof of concept will be constructed.
 		% subsection approach (end)
 
-		\subsection*{Scope} % (fold)
-		\label{sub:scope}
-			
-		% subsection scope (end)
+
 	% section introduction (end)
 
 	
@@ -58,7 +82,7 @@
 		
 		\begin{tabular}{l p{5.8cm}}
 			Week & Task \\ \hline
-				0 & Write proposal\\
+				1 & Write proposal\\
 					& Formulate research questions\\
 					& Get approval for proposal \\ \hline
 				1 \& 2 & Start research\\ 
