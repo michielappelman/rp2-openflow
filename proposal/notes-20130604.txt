@@ -1,0 +1,48 @@
+Research Publications
+ - ETSI NFV
+ - ONF
+ - IETF
+ - SIGCONN
+ - CONEXT
+ - USENIX
+ - INM
+ - IEEE Communications
+
+Virtualization
+ - to get flexible hardware
+ - resources
+ - separation
+
+Control over:
+ - changes
+ - resources
+ - failures
+ - maintenance
+
+Virtualization/separation of resources, control over those resources.
+
+Use-case: making dynamic VPNs between users (over multiple domains) for example using MPLS tags in OpenFlow
+
+what are the architectural components? tables, databases?
+
+North-bound API, what does it look like? What abstractions do you need?
+
+What interface do you need?
+
+Taxonomy:
+ - what is available? state of the art
+ - features?
+ - what does it (allow you to) accomplish?
+ - why is it there?
+
+NFV = separate from OpenFlow -> complementary even
+ - >NFV allows OpenFlow instances, OpenFlow can control NFV instances
+
+Virtual Routing -> NFV instance
+Virtual Routing Table -> programmable by OpenFlow
+
+Feature requirements in
+1/ CENs
+2/ Mobility networks
+3/ Network Separation
+

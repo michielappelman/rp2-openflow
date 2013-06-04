@@ -10,3 +10,10 @@ RP2 Log
  - got feedback from Rudolf
  - changed problem description, proposed solutions, approach, planning, almost everything in the proposal
 
+4 june 2013
+-----------
+ - prepare for meeting with Rudolf
+ - combining MPLS and OpenFlow? compare feature sets
+  - research MPLS PWE3: 3985, Eth: 4448, Types: 4446
+ - notes on research after meeting with Rudolf (notes-20130604.txt)
+ - collected research papers on NFV, Fast Recovery in OpenFlow, Carrier Grade Networks in OpenFlow
