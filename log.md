@@ -17,3 +17,4 @@ RP2 Log
   - research MPLS PWE3: 3985, Eth: 4448, Types: 4446
  - notes on research after meeting with Rudolf (notes-20130604.txt)
  - collected research papers on NFV, Fast Recovery in OpenFlow, Carrier Grade Networks in OpenFlow
+ - added Rudolf to a shared Dropbox folder
