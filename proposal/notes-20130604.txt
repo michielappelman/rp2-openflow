@@ -46,3 +46,69 @@ Feature requirements in
 2/ Mobility networks
 3/ Network Separation
 
+--------------
+
+Questions:
+
+What kind of problems are we facing in networking?
+ - Impasse in Internet with no changes, need innovation
+  - Needed to cope with growing scale, supporting new applications
+  - Network virtualization to get flexible hardware, separation of networks, sharing of resources
+ - Programmability to get control over resources, changes, failures, application requirements, etc.
+   - QoS, Fast Failover, OAM, 
+
+What kind of solutions are there available/being worked on?
+What are the limitations of these technologies?
+ - MPLS
+   - not programmable
+   - highly virtualized
+   - MPLS-TP
+     - more deterministic, no ECMP, no LSP merge, no PHP
+     - control over resources
+     - bi-directional LSPs
+     - OAM, CC and PM
+     - fast failover
+   - MPLS-TE
+     - CSPF extensive control over resources and traffic flows
+     - FRR allows fast failover
+   - network separation
+     - PWE3
+     - L3VPN
+     - L2VPN (VPLS)
+   - GMPLS
+     - L1VPN
+ - SDN
+   - central overview over resources, application can tell requirements
+   - OpenFlow
+     - network programmability
+   - OpenDaylight
+     - northbound API to control controller
+ - NFV
+   - network separation
+   - limited programmability
+ - PBB
+   - no programmability
+   - separation through S-TAGs put in to (H-)VPLS
+ - TRILL
+   - 
+ - NetCONF
+   - limited network programmability
+ - SDH/SONET
+   - network separation
+   - not programmable (not needed?)
+
+What does OpenFlow/SDN promise?
+ - a solution to any and all networking problems by opening up the control plane of the devices to developers
+
+Can these promises solve the limitations that are present?
+ - 
+
+Does it do so in a significantly new way, or is it merely a different solution?
+ - 
+
+What are the limitations of OpenFlow in these implementations?
+ - virtualization
+ - speed (controller dependent)
+
+What is the best solution?
+ - ...
