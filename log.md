@@ -18,3 +18,11 @@ RP2 Log
  - notes on research after meeting with Rudolf (notes-20130604.txt)
  - collected research papers on NFV, Fast Recovery in OpenFlow, Carrier Grade Networks in OpenFlow
  - added Rudolf to a shared Dropbox folder
+
+5 june 2013
+-----------
+ - worked on the proposal, hopefully for a final version
+ - answered some questions, came up with some hypotheses (see Research Question)
+ - analyzed other contemporary protocols and new papers, got pretty lost in that...
+ - sent the new version to Rudolf and asked for an appointment on the 6th.
+

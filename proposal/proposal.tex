@@ -1,11 +1,12 @@
-\documentclass[oneside,twocolumn,7pt,a4paper]{article}
+\documentclass[oneside,twocolumn,8pt,a4paper]{article}
 
-\title{Efficiency of OpenFlow in Carrier Ethernet networks \\[0.3cm]
+\title{Perceptible advantages of OpenFlow \\
+\Large{in a multi-domain VPN deployment} \\[0.3cm]
 \large{Research Proposal}}
 \author{Michiel Appelman}
 
 \usepackage{url}
-\usepackage{fullpage}
+\usepackage[cm]{fullpage}
 \usepackage{paralist}
 %\usepackage{natbib}
 \usepackage{color,graphicx}
@@ -16,28 +17,24 @@
 	
 	\section{Introduction} % (fold)
 	\label{sec:introduction}
-	The current state of large scale networks is defined by a stack of networking protocols which were extensively amended to over the course of years to get control over the increasing scales and fix issues with previous protocols. This has resulted in rigid network architectures which can not be innovated upon without drastic changes and high risks of breaking existing services \cite{diversifiedinternet,overcomingimpasse}. A solution to this impasse has been proposed in the form of Software Defined Networking (SDN) and network virtualization. This fundamentally different way of creating and managing network architectures yields two highly desirable features to potentially solve the ossification. 
+	The current state of large scale networks is defined by a stack of networking protocols which were extensively amended to over the course of years to get control over the increasing scales and fix issues with previous protocols. Examples of this are the limited capability of the network to listen to the needs of applications with QoS and the recent additions in Ethernet to finally provide OAM functionalities. This inertia has resulted in rigid network architectures which can not be innovated upon without drastic changes and high risks of breaking existing services \cite{diversifiedinternet,overcomingimpasse}.
 
-	SDN, or `network programmability,' allows for network administrators to get a programmable interface to their network devices. This would make it possible for them to develop and deploy new and custom protocols and architectures on their networks without having to rely on vendors. Thereby again being able to innovate on their own network. Architectural challenges like getting rid of middleboxes or adding Operations, Administration and Management (OAM) features might thus be solved by operators themselves. 
-	Network programmability has been implemented by the OpenFlow specification \cite{openflow}, which provides an open Application Programming Interface (API) towards the forwarding plane of networking devices. By matching on certain header fields in the frames different actions can be performed on each frame passing through the device. The actions are governed by the applications running on an OpenFlow controller (an external piece of software analogous to the control plane in a traditional environment) and can range from contemporary implementations to future protocols not yet implemented by the network equipment vendors.
+	The solution to the ossification is generally regarded as two-fold. First, a certain degree of network virtualization will need to be implemented. This will separate the networks from each other, lets them share lower-level resources and make hardware more flexible in how and where it is deployed. On a higher level, this will enable the growth of the networks in scale but also in numbers, adding new separate networks to the existing physical topologies \cite{diversifying}. Second, networks and specifically networking devices will need to be become programmable. Using an open API operators can rapidly deploy new service features in their network, while also gaining control over behavior of the network with regards to resource sharing, flow routing and fail-over procedures. \cite{programmability-answer}
 
-	Network virtualization has been the topic of research since the idea of a diversified Internet was first talked about \cite{diversifiedinternet}. In the mean time a multitude of different implementations have been developed and are running on some sort of testbed. None of these have however led to adoption in the Internet backbone mostly because the Internet backbone already has some solutions for network virtualization and separation (\textsl{eg.} L2 and L3VPNs) \cite{net-virt10}. 
-	
-	Although OpenFlow does not promise network virtualization in itself, it can still be implemented using the protocol. This has already been done through FlowVisor \cite{flowvisor} and in a more scalable way using FlowN \cite{drutskoy2012scalable} but it is unclear how these implementations would perform and hold up in a production environment dealing with a multitude of VPNs. These networks are labelled as Carrier Ethernet Service Providers and can provide VPN or pseudo-wire services on layer-2 and 3 of the OSI model. They are accountable for a huge amount of data flowing over the Internet and due to their strict network flow separation, would be a perfect user of network virtualization.
-	
-	NFV White paper: \cite{nfv-wp}
+	Network separation itself is not a new technology and is already being used in a multitude of networks \cite{net-virt10}. One of the earliest examples is of course the use of Virtual LANs (VLANs) specified by 802.1Q \cite{dot1q}. And presently, one of the most used protocols for network separation within service provider networks is MPLS. It can provide VPNs on layers 2 and 3 \cite{rfc4664,rfc4364}. Other technologies in use today that can provide some sort of separation on different levels are for example SDH/SONET, PBT and VRF. All these protocols are provided by the router vendors and as such are not adaptable. Their functionalities can of course be adjusted by using SNMP or to a lesser extent using NetCONF, but real programmability of the control plane has up until now only been provided by OpenFlow \cite{openflow} and the Software Defined Networking (SDN) architecture as a whole. OpenFlow has been presented as a solution to all the problems that exist in networking today and additionally provide operators with the flexibility to once again innovate on their networks.
 			
 		\subsection*{Research Question} % (fold)
 		\label{sub:research_question}
-		Network programmability and thus OpenFlow promises a completely open and flexible implementation of any networking architecture, including the contemporary technologies used in the aforementioned Carrier Ethernet Service Providers. It is however uncertain if and how OpenFlow will provide the same services and with what relative performance. Also it remains to be seen if SDN will indeed replace the ossified network architecture or that it will be just another technique in the toolset of the network engineer.
+		It is unclear however if a real-world OpenFlow implementation will actually provide any additional flexibility or features when compared to contemporary technologies \cite{programmability-answer}. Indeed, the technologies in use today have served operators very well up until this point and their practicality has been proven over the past years. Given the use-case of implementing a multi-domain VPN over various campuses similar to gTBN \cite{gtbn}, this research will show the advantages and limitations of implementing an environment using both COTS technologies and an SDN solution.
 		
-		 This research will focus on clearing up these uncertainties and give answer to the question: \textsl{``How will OpenFlow be able to provide network virtualization and thereby relieving the current network architectures of their ossified status quo?''}		
+		Doing so will provide researchers and operators with insight into the real world practicality of OpenFlow and SDN. It will help answer the question: \textsl{``What are the potential advantages and limitations of using OpenFlow when implementing a multi-domain service?''}
+		This research offers that -- with regards to the given use case -- OpenFlow can provide network operators with the same functionalities as contemporary technologies can. At the same time we hypothesize that OpenFlow will give additional advantages in application-control of the network, thereby reducing the amount of overhead in configuring the network.
 
 		% subsection research_question (end)
 		
 		\subsection*{Scope} % (fold)
 		\label{sub:scope}
-		Initially this research will focus on a single use-case, namely the implementation of multi-domain VPNs on the Internet. A possible implementation of this would touch on a wide variety of SDN and network virtualization techniques and would thus give a broad fairly complete image of the possibilities of this architecture.
+		Initially this research will focus on a single use-case, namely the implementation of multi-domain VPNs. A possible implementation of this would touch on a wide variety of SDN and network virtualization techniques and would thus give a broad fairly complete image of the possibilities of this architecture.
 		
 		Should there be any time left, other use-cases will be composed together with the supervisor to fill in this void.
 		% subsection scope (end)

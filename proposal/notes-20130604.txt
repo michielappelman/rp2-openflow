@@ -96,6 +96,9 @@ What are the limitations of these technologies?
  - SDH/SONET
    - network separation
    - not programmable (not needed?)
+ - Virtual Routing
+   - network separation
+   - not programmable
 
 What does OpenFlow/SDN promise?
  - a solution to any and all networking problems by opening up the control plane of the devices to developers
