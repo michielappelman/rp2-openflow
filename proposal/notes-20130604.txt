@@ -1,11 +1,11 @@
 Research Publications
  - ETSI NFV
  - ONF
- - IETF
- - SIGCONN
+ - IETF -> network virtualization, motivatie, waarom willen ze dat? wat zien ze als oplossingsdomeinen?
+ - SIGCOMM
  - CONEXT
  - USENIX
- - INM
+ - IM
  - IEEE Communications
 
 Virtualization
@@ -61,9 +61,10 @@ What kind of solutions are there available/being worked on?
 What are the limitations of these technologies?
  - MPLS
    - not programmable
-   - highly virtualized
+   - highly virtualized - ???
    - MPLS-TP
      - more deterministic, no ECMP, no LSP merge, no PHP
+       - wat is dat?
      - control over resources
      - bi-directional LSPs
      - OAM, CC and PM
@@ -99,6 +100,8 @@ What are the limitations of these technologies?
  - Virtual Routing
    - network separation
    - not programmable
+
+control plane wordt onderdeel van je management system, maar wat voor voordelen heeft dat?
 
 What does OpenFlow/SDN promise?
  - a solution to any and all networking problems by opening up the control plane of the devices to developers
