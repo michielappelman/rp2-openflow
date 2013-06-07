@@ -1,0 +1,44 @@
+proposal:
+- focus op dynamic DNS
+- concreet zeggen wat ik ga doen
+- recentere papers
+- nieuw paragraaf:
+ - openflow, wat belooft het:
+  - OPEX/CAPEX savings
+  - simplificaties in OF
+  - meerwaarde???
+- wat is de noodzaak om iets nieuws te kunnen? wat is er nodig?
+- nut van het programmeren? aan welke behoeftes voldoet het?
+ - flexibiliteit
+- research question kwantificeerbaar (????)
+- toch weer minder over ossification: het gaat om control. bieden huidige technologien dat wel? of niet genoeg? wat mist?
+
+
+- network virtualization: nieuwe concepten? 
+
+services:
+- VPLS
+- L3VPN
+- herrouteren
+-> elke keer moet NMS aangepast worden
+nieuwe API per protocol
+
+in antwoord:
+multi-domain zal pas echt benefit hebben van OF over contemporary techs
+
+
+
+- taxonomy, fundamenteel:
+ - features van L3 OSI layer:
+  - routing, addressing, fragmentation, reassembly, 
+ - features of other layers
+
+dynamic DNS:
+- hoe zou je dat nu doen?
+- wat is er nodig?
+- hoe zou je het willen?
+- helpt OF daarbij?
+
+random stuff:
+- project ofelia
+- 

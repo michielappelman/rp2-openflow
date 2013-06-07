@@ -26,3 +26,8 @@ RP2 Log
  - analyzed other contemporary protocols and new papers, got pretty lost in that...
  - sent the new version to Rudolf and asked for an appointment on the 6th.
 
+6 june 2013
+-----------
+ - primarily worked on the taxonomy in the morning and fine-tuning the proposal
+ - met with Rudolf, who again had a lot of different ideas, work out notes in 'notes-20130607.txt'
+ - again have to rewrite most of the proposal so asked Cees for an extension

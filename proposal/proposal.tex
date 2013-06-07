@@ -1,7 +1,7 @@
 \documentclass[oneside,twocolumn,8pt,a4paper]{article}
 
 \title{Perceptible advantages of OpenFlow \\
-\Large{in a multi-domain VPN deployment} \\[0.3cm]
+\Large{when deploying dynamic VPNs} \\[0.3cm]
 \large{Research Proposal}}
 \author{Michiel Appelman}
 
@@ -17,18 +17,24 @@
 	
 	\section{Introduction} % (fold)
 	\label{sec:introduction}
-	The current state of large scale networks is defined by a stack of networking protocols which were extensively amended to over the course of years to get control over the increasing scales and fix issues with previous protocols. Examples of this are the limited capability of the network to listen to the needs of applications with QoS and the recent additions in Ethernet to finally provide OAM functionalities. This inertia has resulted in rigid network architectures which can not be innovated upon without drastic changes and high risks of breaking existing services \cite{diversifiedinternet,overcomingimpasse}.
+	The current state of large scale networks is defined by a stack of networking protocols which were extensively amended to over the course of years to get control over the increasing scales and fix issues with previous protocols. 
+	Examples of this are the limited capability of the network to listen to the needs of applications with QoS and the recent additions in Ethernet to finally provide OAM functionalities. 
+	This inertia has resulted in rigid network architectures which can not be innovated upon without drastic changes and high risks of breaking existing services \cite{diversifiedinternet,overcomingimpasse}.
 
-	The solution to the ossification is generally regarded as two-fold. First, a certain degree of network virtualization will need to be implemented. This will separate the networks from each other, lets them share lower-level resources and make hardware more flexible in how and where it is deployed. On a higher level, this will enable the growth of the networks in scale but also in numbers, adding new separate networks to the existing physical topologies \cite{diversifying}. Second, networks and specifically networking devices will need to be become programmable. Using an open API operators can rapidly deploy new service features in their network, while also gaining control over behavior of the network with regards to resource sharing, flow routing and fail-over procedures. \cite{programmability-answer}
+	The solution to the ossification is generally regarded as two-fold. First, a certain degree of network virtualization will need to be implemented. 
+	This will separate the networks from each other, lets them share lower-level resources and make hardware more flexible in how and where it is deployed. 
+	On a higher level, this will enable the growth of the networks in scale but also in numbers, adding new separate networks to the existing physical topologies \cite{diversifying}. 
+	Second, networks and specifically networking devices will need to be become programmable. 
+	Using an open API operators can rapidly deploy new service features in their network, while also gaining control over behavior of the network with regards to resource sharing, flow routing and fail-over procedures. \cite{programmability-answer}
 
 	Network separation itself is not a new technology and is already being used in a multitude of networks \cite{net-virt10}. One of the earliest examples is of course the use of Virtual LANs (VLANs) specified by 802.1Q \cite{dot1q}. And presently, one of the most used protocols for network separation within service provider networks is MPLS. It can provide VPNs on layers 2 and 3 \cite{rfc4664,rfc4364}. Other technologies in use today that can provide some sort of separation on different levels are for example SDH/SONET, PBT and VRF. All these protocols are provided by the router vendors and as such are not adaptable. Their functionalities can of course be adjusted by using SNMP or to a lesser extent using NetCONF, but real programmability of the control plane has up until now only been provided by OpenFlow \cite{openflow} and the Software Defined Networking (SDN) architecture as a whole. OpenFlow has been presented as a solution to all the problems that exist in networking today and additionally provide operators with the flexibility to once again innovate on their networks.
 			
+	It is unclear however if a real-world OpenFlow implementation will actually provide any simplicity, additional flexibility or features when compared to contemporary technologies. Indeed, the technologies in use today have served operators very well up until this point and their practicality has been proven over the past years. Given the use-case of implementing dynamic VPNs similar to gTBN \cite{gtbn}, this research will show the advantages of implementing such an environment using both COTS technologies and an SDN solution. We will do this by first giving a taxonomy of the state of the art in the networking industry with regards to different functionalities and features of the technologies. Using that picture we will 
+			
 		\subsection*{Research Question} % (fold)
 		\label{sub:research_question}
-		It is unclear however if a real-world OpenFlow implementation will actually provide any additional flexibility or features when compared to contemporary technologies \cite{programmability-answer}. Indeed, the technologies in use today have served operators very well up until this point and their practicality has been proven over the past years. Given the use-case of implementing a multi-domain VPN over various campuses similar to gTBN \cite{gtbn}, this research will show the advantages and limitations of implementing an environment using both COTS technologies and an SDN solution.
-		
-		Doing so will provide researchers and operators with insight into the real world practicality of OpenFlow and SDN. It will help answer the question: \textsl{``What are the potential advantages and limitations of using OpenFlow when implementing a multi-domain service?''}
-		This research offers that -- with regards to the given use case -- OpenFlow can provide network operators with the same functionalities as contemporary technologies can. At the same time we hypothesize that OpenFlow will give additional advantages in application-control of the network, thereby reducing the amount of overhead in configuring the network.
+		Doing so will provide researchers and operators with insight into the actual benefits of OpenFlow and SDN. It will help answer the question: \textsl{``How much will operators benefit from using OpenFlow when implementing dynamic VPNs?''}
+		This research offers that -- with regards to the given use case -- OpenFlow can provide network operators with the same functionalities as contemporary technologies can and at the same time we hypothesize that OpenFlow will give reduce the complexity in complete interface of the .
 
 		% subsection research_question (end)
 		
