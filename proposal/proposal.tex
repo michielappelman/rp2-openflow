@@ -17,37 +17,44 @@
 	
 	\section{Introduction} % (fold)
 	\label{sec:introduction}
-	The current state of large scale networks is defined by a stack of networking protocols which were extensively amended to over the course of years to get control over the increasing scales and fix issues with previous protocols. 
-	Examples of this are the limited capability of the network to listen to the needs of applications with QoS and the recent additions in Ethernet to finally provide OAM functionalities. 
-	This inertia has resulted in rigid network architectures which can not be innovated upon without drastic changes and high risks of breaking existing services \cite{diversifiedinternet,overcomingimpasse}.
+	Network operators today use Network Management Systems (NMSs) to get control over their devices and services that they deploy. These systems have been customized to their needs and in general perform their functionalities adequately. However, operators run into obstacles when trying to expand their business portfolio by adding new services. This will require 
+	\begin{inparaenum}[\itshape a\upshape)]
+		\item new API calls to be implemented between their B/OSS and NMS, 
+		\item their NMS to be able to cope with potentially new protocols, and
+		\item added expertise by engineers to define the requirements and restrictions of these protocols. 
+	\end{inparaenum}
+	When these obstacles are eventually overcome the setup that will result from this implementation will be relatively static, since any change to it will require the whole process to be repeated.
 
-	The solution to the ossification is generally regarded as two-fold. First, a certain degree of network virtualization will need to be implemented. 
-	This will separate the networks from each other, lets them share lower-level resources and make hardware more flexible in how and where it is deployed. 
-	On a higher level, this will enable the growth of the networks in scale but also in numbers, adding new separate networks to the existing physical topologies \cite{diversifying}. 
-	Second, networks and specifically networking devices will need to be become programmable. 
-	Using an open API operators can rapidly deploy new service features in their network, while also gaining control over behavior of the network with regards to resource sharing, flow routing and fail-over procedures. \cite{programmability-answer}
-
-	Network separation itself is not a new technology and is already being used in a multitude of networks \cite{net-virt10}. One of the earliest examples is of course the use of Virtual LANs (VLANs) specified by 802.1Q \cite{dot1q}. And presently, one of the most used protocols for network separation within service provider networks is MPLS. It can provide VPNs on layers 2 and 3 \cite{rfc4664,rfc4364}. Other technologies in use today that can provide some sort of separation on different levels are for example SDH/SONET, PBT and VRF. All these protocols are provided by the router vendors and as such are not adaptable. Their functionalities can of course be adjusted by using SNMP or to a lesser extent using NetCONF, but real programmability of the control plane has up until now only been provided by OpenFlow \cite{openflow} and the Software Defined Networking (SDN) architecture as a whole. OpenFlow has been presented as a solution to all the problems that exist in networking today and additionally provide operators with the flexibility to once again innovate on their networks.
-			
-	It is unclear however if a real-world OpenFlow implementation will actually provide any simplicity, additional flexibility or features when compared to contemporary technologies. Indeed, the technologies in use today have served operators very well up until this point and their practicality has been proven over the past years. Given the use-case of implementing dynamic VPNs similar to gTBN \cite{gtbn}, this research will show the advantages of implementing such an environment using both COTS technologies and an SDN solution. We will do this by first giving a taxonomy of the state of the art in the networking industry with regards to different functionalities and features of the technologies. Using that picture we will 
+	Until recently this limitation didn't distress operators as their networks were in facy primarily static. But with increasing demand for services requiring for example mobility and short-term virtual networks, these limitations start to become a tangible problem for operators. By solving the complexity of implementing new services or features for them, they will be able shorten their time to market, save on networking expertise and be more adaptive to changes in these services.
+	
+	A potential candidate to solve this complexity is OpenFlow \cite{openflow} and Software Defined Networking (SDN). SDN is a relatively new architecture to allow for the programmability of networks. The architecture has recently been standardized in the OpenDaylight project \cite{opendaylight} which also includes OpenFlow, a lower level and increasingly supported Application Programming Interface (API) towards networking devices. Implementing the SDN architecture promises
+	\begin{inparaenum}[\itshape a\upshape)]
+		\item CAPEX savings due to hardware being more generic and flexible,
+		\item OPEX savings because of the integration of NMSs and the control interface of the devices, thereby increasing automation, and
+		\item increased network agility by using the open interfaces to program network devices directly \cite{packet-circuit}.
+\end{inparaenum} 
 			
 		\subsection*{Research Question} % (fold)
 		\label{sub:research_question}
-		Doing so will provide researchers and operators with insight into the actual benefits of OpenFlow and SDN. It will help answer the question: \textsl{``How much will operators benefit from using OpenFlow when implementing dynamic VPNs?''}
-		This research offers that -- with regards to the given use case -- OpenFlow can provide network operators with the same functionalities as contemporary technologies can and at the same time we hypothesize that OpenFlow will give reduce the complexity in complete interface of the .
+		It is unclear however if a real-world OpenFlow and SDN implementation will actually provide any simplicity, additional flexibility or cost savings when compared to contemporary technologies \cite{programmability-answer}. Indeed, the technologies in use today have served operators well up until this point and their practicality has been proven over the past years. This research will seek to identify where exactly operators can benefit from implementing SDN compared to the architecture in use today.
+		
+		Doing so will help researchers and operators answer the question: \textsl{``How much can operators benefit from using OpenFlow when implementing dynamic VPNs?''}
+		This research offers that -- with regard to the given use case -- OpenFlow will reduce the complexity in the complete architecture of the management systems and network as a whole.
 
 		% subsection research_question (end)
 		
 		\subsection*{Scope} % (fold)
 		\label{sub:scope}
-		Initially this research will focus on a single use-case, namely the implementation of multi-domain VPNs. A possible implementation of this would touch on a wide variety of SDN and network virtualization techniques and would thus give a broad fairly complete image of the possibilities of this architecture.
+		Given the use-case of implementing dynamic VPNs similar to gTBN \cite{gtbn}, this research will show the advantages of implementing such an environment using both COTS technologies and an SDN solution. 
 		
-		Should there be any time left, other use-cases will be composed together with the supervisor to fill in this void.
+		Should there be any time left, other use-cases will be composed together with the supervisor to fill in this void. These can include for example mobility within networks, multi-domain VPNs or smart metering of network usage.
 		% subsection scope (end)
 		
 		\subsection*{Approach} % (fold)
 		\label{sub:approach}
-		This research will focus on the use case of multi-domain VPNs in the Internet backbone. First we will focus on how these can be implemented using contemporary protocols, then how this can translated to a SDN specific environment and finally how much these two implementations differ form each other with regards to flexibility and manageability.
+		We will start by giving a taxonomy of the state of the art in the networking industry with regards to different functionalities and features of the technologies. This overview will give an indication of where OpenFlow and SDN will be able to differentiate from contemporary protocols, be it in positive or negative. Using this data we will make an architectural design of the given use-case using both contemporary technologies and the SDN architecture and compare the effort in implementing such a design.
+		
+		To quantify the efforts of both designs an overview will be made of the custom APIs and management systems will be made. The procedure to extend on the designs will also be defined, listing the required amount of changes to each architectural component and the expertise needed to implement these changes. Finally this will give an overview of the initial work and required work to adapt for both designs, and result in a recommendation for either one of the deployments.
 		% subsection approach (end)
 
 	% section introduction (end)
@@ -61,9 +68,9 @@
 			Week & Task \\ \hline
 				1 & Write proposal;\\
 					& Formulate research questions; \\
+					& Find documentation of other research/experiences within community; \\
 					& Get approval for proposal; \\ \hline
 				2 \& 3 & Start research; \\ 
-					& Find documentation of other research/experiences within community; \\
 					& Work out use-case, hypotheses and experiment; \\
 				 	& Produce proof of concept; \\  \hline
 				4 & Write report; \\ 
@@ -75,7 +82,7 @@
 		\label{sub:products}
 			The research will result in the following products: 
 			\begin{inparaenum}[\itshape a\upshape)]
-				\item a report written for the System and Network Engineering master education describing the research, the process and results;
+				\item a report written for the System and Network Engineering master education describing the research, the process and results, and
 				%\item a paper written for the scientific community to be published together with other scientist in the SNE research group; and
 				\item a 20 minute presentation about the research to be held on July 3rd at the University of Amsterdam.
 			\end{inparaenum}

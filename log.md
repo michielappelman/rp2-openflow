@@ -31,3 +31,8 @@ RP2 Log
  - primarily worked on the taxonomy in the morning and fine-tuning the proposal
  - met with Rudolf, who again had a lot of different ideas, work out notes in 'notes-20130607.txt'
  - again have to rewrite most of the proposal so asked Cees for an extension
+
+7 june 2013
+-----------
+ - rewrote proposal, sent draft to Rudolf (v0.4)
+
