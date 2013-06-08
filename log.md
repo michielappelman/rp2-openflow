@@ -35,4 +35,9 @@ RP2 Log
 7 june 2013
 -----------
  - rewrote proposal, sent draft to Rudolf (v0.4)
+ - got some preliminary notes, integrated them
+ - drew out some of the taxonomy (on old-school paper), relations between protocols/techniques, features. will need to figure out a way to digitalize this
+ - unfortunately have been delaying plans the whole day and need to send the draft version (0.5) to Cees
+ - other changes will need to wait untill tomorrow
+
 

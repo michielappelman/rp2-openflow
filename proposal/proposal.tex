@@ -1,7 +1,6 @@
 \documentclass[oneside,twocolumn,8pt,a4paper]{article}
 
-\title{Perceptible advantages of OpenFlow \\
-\Large{when deploying dynamic VPNs} \\[0.3cm]
+\title{Architecture of a dynamic VPN in OpenFlow \\[0.3cm]
 \large{Research Proposal}}
 \author{Michiel Appelman}
 
@@ -25,7 +24,7 @@
 	\end{inparaenum}
 	When these obstacles are eventually overcome the setup that will result from this implementation will be relatively static, since any change to it will require the whole process to be repeated.
 
-	Until recently this limitation didn't distress operators as their networks were in facy primarily static. But with increasing demand for services requiring for example mobility and short-term virtual networks, these limitations start to become a tangible problem for operators. By solving the complexity of implementing new services or features for them, they will be able shorten their time to market, save on networking expertise and be more adaptive to changes in these services.
+	Until recently this limitation didn't distress operators as their networks were in facy primarily static. But with increasing demand for services requiring for example mobility and short-term virtual networks, these limitations start to become a tangible problem for operators. By solving the complexity of implementing new services or features for them, they will be able shorten their time to market, save on networking expertise and be more adaptive to changes in these services. 
 	
 	A potential candidate to solve this complexity is OpenFlow \cite{openflow} and Software Defined Networking (SDN). SDN is a relatively new architecture to allow for the programmability of networks. The architecture has recently been standardized in the OpenDaylight project \cite{opendaylight} which also includes OpenFlow, a lower level and increasingly supported Application Programming Interface (API) towards networking devices. Implementing the SDN architecture promises
 	\begin{inparaenum}[\itshape a\upshape)]
@@ -36,7 +35,8 @@
 			
 		\subsection*{Research Question} % (fold)
 		\label{sub:research_question}
-		It is unclear however if a real-world OpenFlow and SDN implementation will actually provide any simplicity, additional flexibility or cost savings when compared to contemporary technologies \cite{programmability-answer}. Indeed, the technologies in use today have served operators well up until this point and their practicality has been proven over the past years. This research will seek to identify where exactly operators can benefit from implementing SDN compared to the architecture in use today.
+		It is unclear however if a real-world OpenFlow and SDN implementation will actually provide any simplicity, additional flexibility or cost savings when compared to contemporary technologies \cite{programmability-answer}. Indeed, the technologies in use today have served operators well up until this point and their practicality has been proven over the past years. 
+		This research will seek to identify where exactly operators can benefit from implementing this use-case using SDN compared to the architecture in use today. 
 		
 		Doing so will help researchers and operators answer the question: \textsl{``How much can operators benefit from using OpenFlow when implementing dynamic VPNs?''}
 		This research offers that -- with regard to the given use case -- OpenFlow will reduce the complexity in the complete architecture of the management systems and network as a whole.
@@ -45,7 +45,7 @@
 		
 		\subsection*{Scope} % (fold)
 		\label{sub:scope}
-		Given the use-case of implementing dynamic VPNs similar to gTBN \cite{gtbn}, this research will show the advantages of implementing such an environment using both COTS technologies and an SDN solution. 
+		Given the use-case of implementing dynamic VPNs similar to gTBN \cite{gtbn}, this research will show the advantages of implementing such an environment using both COTS technologies and an SDN solution. This will include research to determine if the proposed SDN and OpenFlow architecture will actually be able to support the creation of dynamic VPNs.
 		
 		Should there be any time left, other use-cases will be composed together with the supervisor to fill in this void. These can include for example mobility within networks, multi-domain VPNs or smart metering of network usage.
 		% subsection scope (end)
