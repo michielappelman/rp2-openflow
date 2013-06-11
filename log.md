@@ -21,23 +21,36 @@ RP2 Log
 
 5 june 2013
 -----------
+ - collected data on 
+
+6 june 2013
+-----------
  - worked on the proposal, hopefully for a final version
  - answered some questions, came up with some hypotheses (see Research Question)
  - analyzed other contemporary protocols and new papers, got pretty lost in that...
- - sent the new version to Rudolf and asked for an appointment on the 6th.
+ - sent the new version to Rudolf and asked for an appointment on the 7th.
 
-6 june 2013
+7 june 2013
 -----------
  - primarily worked on the taxonomy in the morning and fine-tuning the proposal
  - met with Rudolf, who again had a lot of different ideas, work out notes in 'notes-20130607.txt'
  - again have to rewrite most of the proposal so asked Cees for an extension
 
-7 june 2013
+8 june 2013
 -----------
  - rewrote proposal, sent draft to Rudolf (v0.4)
  - got some preliminary notes, integrated them
  - drew out some of the taxonomy (on old-school paper), relations between protocols/techniques, features. will need to figure out a way to digitalize this
- - unfortunately have been delaying plans the whole day and need to send the draft version (0.5) to Cees
+ - unfortunately have been delaying plans the whole day and need to send the draft version (0.5) to Cees at 17:00
  - other changes will need to wait untill tomorrow
 
+10 june 2013
+------------
+ - changed the research question to reflect Rudolfs suggestion
+ - drew out some thoughts on how to implement dynamic VPNs
+ - tried to find some other papers with focus on dynamic VPNs, wasn't really succesful: mostly based on research by Rudolf et al.
 
+11 june 2013
+------------
+ - made a spread sheet with an overview of technlogies fuctions (comparison.numbers)
+ - looked up A LOT of details
