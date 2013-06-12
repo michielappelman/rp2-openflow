@@ -54,3 +54,8 @@ RP2 Log
 ------------
  - made a spread sheet with an overview of technlogies fuctions (comparison.numbers)
  - looked up A LOT of details
+
+12 june	2013
+------------
+ - finished the overview of different technlogies, added a view features/specs
+ - added a table with an overview of protocol stack
