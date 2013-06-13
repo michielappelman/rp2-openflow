@@ -59,3 +59,9 @@ RP2 Log
 ------------
  - finished the overview of different technlogies, added a view features/specs
  - added a table with an overview of protocol stack
+
+13 june 2013
+------------
+ - made a comparison between using MPLS/SPB/TRILL for step-by-step VPN setup and OpenFlow
+ - extended the list of the protocol stack and where changes should be made when adding VPNs
+ - added simple VLANs as a technology to show the limitations, evolution into PBB and SPB
