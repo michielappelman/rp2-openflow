@@ -1,0 +1,47 @@
+% (c) 2014 Michiel Appelman
+\section{Introduction} % (fold)
+\label{sec:introduction}
+Network operators today use \acp{nms} to get control over their devices and services that they deploy. These systems have been customized to their needs and in general perform their functionalities adequately. However, operators run into obstacles when trying to expand their business portfolio by adding new services. This will require 
+\begin{inparaenum}[\itshape a\upshape)]
+	\item new \ac{api} calls to be implemented between their B/OSS and \ac{nms}, 
+	\item their \ac{nms} to be able to cope with potentially new protocols, and
+	\item added expertise by engineers to define the requirements and restrictions of these protocols. 
+\end{inparaenum}
+When these obstacles are eventually overcome the setup that will result from this implementation will be relatively static, since any change to it will require the whole process to be repeated.
+
+Until recently this limitation didn't distress operators as their networks were in fact primarily static. But with increasing demand for services requiring for example mobility and short-term virtual networks, these limitations start to become a tangible problem for operators. By solving the complexity of implementing new services or features for them, they will be able shorten their time to market, save on networking expertise and be more adaptive to changes in these services. 
+
+A potential candidate to solve this complexity is OpenFlow \cite{openflow} and \ac{sdn}. \ac{sdn} is a relatively new architecture to allow for the programmability of networks. The architecture has recently been standardized in the OpenDaylight project \cite{opendaylight} which also includes OpenFlow, a lower level and increasingly supported \ac{api} towards networking devices. Implementing the \ac{sdn} architecture promises
+\begin{inparaenum}[\itshape a\upshape)]
+	\item CAPEX savings due to hardware being more generic and flexible,
+	\item OPEX savings because of the integration of \acp{nms} and the control interface of the devices, thereby increasing automation, and
+	\item increased network agility by using the open interfaces to program network devices directly \cite{packet-circuit}.
+	\end{inparaenum} 
+
+	\subsection*{Research Question} % (fold)
+	\label{sub:research_question}
+	It is unclear however if a real-world OpenFlow and \ac{sdn} implementation will actually provide any simplicity, additional flexibility or cost savings when compared to contemporary technologies \cite{programmability-answer}. Indeed, the technologies in use today have served operators well up until this point and their practicality has been proven over the past years. 
+	This research will seek to identify where exactly operators can benefit from implementing this use-case using \ac{sdn} compared to the architecture in use today. 
+
+	Doing so will help researchers and operators answer the question: \textsl{``How much can operators benefit from using OpenFlow when implementing dynamic VPNs?''}
+	This research offers that -- with regard to the given use case -- OpenFlow will reduce the complexity in the complete architecture of the management systems and network as a whole.
+
+	% subsection research_question (end)
+
+	\subsection*{Scope} % (fold)
+	\label{sub:scope}
+	Given the use-case of implementing dynamic \acp{vpn} similar to gTBN \cite{gtbn}, this research will show the advantages of implementing such an environment using both \ac{cots} technologies and an \ac{sdn} solution. This will include research to determine if the proposed \ac{sdn} and OpenFlow architecture will actually be able to support the creation of dynamic VPNs. The focus will primarily be on deploying \acp{ppvpn} at Layer 2 of the \acs{osi}-model between end-users. It's one of the more commonly used virtualization models, which is also plagued by its mostly manual and static setup procedure. When configured, users will be immediately connected to each other with minimal setup.
+	
+	Previous research in \cite{net-prog-vpn} has proposed a very specific implementation for programmable networks to deploy on-demand \acp{vpn} but it predates the OpenFlow specification, and also omits a comparison with how this would look using contemporary technologies.
+
+	Should there be any time left, other use-cases to fill in this void will be composed in collaboration with the supervisor. These can include for example mobility within networks, multi-domain \acp{vpn} or smart metering of network usage.
+	% subsection scope (end)
+
+	\subsection*{Approach} % (fold)
+	\label{sub:approach}
+	We will start by giving a taxonomy of the state of the art in the networking industry with regards to different functionalities and features of the technologies. This overview will give an indication of where OpenFlow and \ac{sdn} will be able to differentiate from contemporary protocols, be it in positive or negative. Using this data we will make an architectural design of the given use-case using both contemporary technologies and the \ac{sdn} architecture and compare the effort in implementing such a design.
+
+	To quantify the efforts of both designs an overview will be made of the custom \acp{api}  and management systems will be made. The procedure to extend on the designs will also be defined, listing the required amount of changes to each architectural component and the expertise needed to implement these changes. Finally this will give an overview of the initial work and required work to adapt for both designs, and result in a recommendation for either one of the deployments.
+	% subsection approach (end)
+
+% section introduction (end)

@@ -1,0 +1,93 @@
+\documentclass[oneside,10pt,a4paper]{article}
+
+\title{Performance Analysis of OpenFlow Hardware\\[0.3cm]
+\Large{}}
+\author{Michiel Appelman \and Maikel de Boer}
+
+\input{style/preamble}
+
+\begin{document}
+	\pagenumbering{roman}
+	\input{style/title}
+	
+	\input{content/abstract}
+	\clearpage
+
+	% Reset acronyms.
+	\acresetall
+	\setlength{\parskip}{0ex plus 0.5ex minus 0.2ex}
+	
+	\tableofcontents
+	\clearpage
+
+	\listoffigures
+	\listoftables
+	\clearpage
+	
+	% Reset acronyms.
+	\acresetall
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\pagenumbering{arabic}
+		% Dutch style of paragraph formatting, i.e. no indents.
+		\setlength{\parskip}{1.3ex plus 0.2ex minus 0.2ex}
+		\pagestyle{fancy}
+		\renewcommand{\sectionmark}[1]{% 
+		\markboth{#1}{}}
+		\fancyhead[L]{\small{\nouppercase{\leftmark}}}
+		\fancyhead[R]{\nouppercase{\emph{\chaptername\ \LARGE{\thesection}}}}
+		\renewcommand{\headrulewidth}{0.5pt}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%     Begin Content     %%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+
+		\input{content/introduction}
+		\clearpage
+		
+		\input{content/state-of-the-art}		
+		\clearpage
+		
+		\input{content/design}				
+		\clearpage
+		
+		\input{content/results}				
+		\clearpage
+		
+		\input{content/conclusion}				
+		\clearpage
+		
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%      Appendices       %%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\appendix
+		\noappendicestocpagenum
+		\addappheadtotoc
+		\pagestyle{fancy}
+		\renewcommand{\sectionmark}[1]{% 
+		\markboth{#1}{}}
+		\fancyhead[L]{\small{\nouppercase{\leftmark}}}
+		\fancyhead[R]{\nouppercase{\emph{\appendixname\ \LARGE{\thesection}}}}
+		\renewcommand{\headrulewidth}{0.5pt}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% Acronyms
+		\input{data/acronyms}
+		\clearpage
+
+		% Bibliography
+		\renewcommand*{\refname}{} % This will define heading of bibliography to be empty, so you can...
+		\section{Bibliography}
+		\bibliographystyle{ieeetr}
+		\bibliography{data/bibliography}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% Acknowledgements
+		\clearpage
+		\pagestyle{empty}
+		\hfill \\[6cm]
+		\section*{Acknowledgements}
+		\textsl{Thanks to Rudolf Strijkers for his supervision during this project.}
+\end{document}

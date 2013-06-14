@@ -1,0 +1,66 @@
+% (c) 2014 Michiel Appelman
+\section{State of the Art} % (fold)
+\label{sec:state_of_the_art}
+
+The issue of creating dynamic \acp{vpn} within \ac{sp} networks apparently comes from the inability to do so using technologies available to operators today. To get an understanding of where the limitations or obstacles lie, an overview of the state of the art is required.
+
+Mention requirements for dynamic VPNs to meet for each technology?
+
+\begin{enumerate}
+	\item scalable up to thousands of \acp{vpn}
+	\item fast failover times (<50ms)
+	\item control forwarding paths
+	\item apply \ac{qos} values
+\end{enumerate}
+
+\subsection{\acs{mpls}} % (fold)
+\label{sub:mpls}
+\ac{mpls} is known for its scalability and extensibility. Over the past decade addition have been made to the original specification to overcome a plethora of issues within carrier networks. This initially started with trying to implement fast forwarding in legacy switches using labels (or tags) at the start of the frame \cite{tag-switching}. When this issue became surmountable using new hardware, \ac{mpls} had already proven to be capable of transporting a wide arrange of protocols on the carrier backbone network, all the while also providing scalability, \ac{te} and \ac{qos} features to the operators.
+
+... deep dive
+
+Does it meet criteria? Why (not)?
+
+% subsection mpls (end)
+
+\subsection{\acs{spb}} % (fold)
+\label{sub:spb}
+\ac{spb} is an evolution of the original \acs{ieee} 802.1Q \ac{vlan} standard. \ac{vlan} tags have been in use in the networking world for a long time and provide decent separation in campus networks. However, when \ac{vlan}-tagging was done at the customer network, the carrier couldn't tag its traffic anymore. This resulted in 802.1Qad or Q-in-Q and added an S-\ac{vlan} tag to separate the client \acp{vlan} from the \ac{sp} \acp{vlan} in the backbone. This was usable for the Metro Ethernet networks for awhile but when \acp{sp} started providing this services to more and more customers, their backbone switches could not keep up with the clients \ac{mac} addresses.
+
+To solve this scalability problem \ac{pbb} (802.1Qay or \ac{mac}-in-\ac{mac}) was introduced. It encapsulates the whole Ethernet frame on the edge of the carrier network and forwards the frame based on the Backbone-\ac{mac}, Backbone-\ac{vlan} and the I-SID. The I-SID is a Service Instance Identifier, which with 24 bits is able to supply the carrier with 16 million separate networks. The downside of \ac{pbb} remained one that is common to all Layer 2 forwarding protocols: the possibility of loops. Preventing them requires some sort of \ac{stp} which in turn will disable links to get a loop-free network. Disadvantages of these protocols include the relatively long convergence time and inefficient use of resources due to the disabled links. This final problem was solved by using \acs{isis} as a routing protocol to distributed the topology and creating \ac{spt} originating from each edge device. This is called \ac{spb} or 802.1aq.
+
+... deep dive
+
+Does it meet criteria? Why (not)?
+
+% subsection spb (end)
+
+\subsection{\acs{trill}} % (fold)
+\label{sub:trill}
+There has been discussion going on between \ac{spb} and \ac{trill} supporters as to which is the `better' protocol. Indeed, both try to solve the same problem to make Ethernet networks scalable to the desired scale of today, but they definitely differ in their implementation. \ac{trill} adds a completely new header on top of  the Ethernet frame with a source and destination RBridge, this allows the RBridges to actually route the frame to its destination over the \ac{trill} backbone network.
+
+... deep dive
+
+Does it meet criteria? Why (not)?
+
+% subsection trill (end)
+
+\subsection{\acs{sdh}/\acs{sonet}} % (fold)
+\label{sub:sdh_sonet}
+What is it?
+
+Does it meet criteria? Why (not)?
+
+% subsection sdh_sonet (end)
+
+\subsection{OpenFlow} % (fold)
+\label{sub:openflow}
+What is it? Relation to \ac{sdn}.
+
+The momentum comes from a general problem with control over the network (Zimmerman OSI)
+
+
+
+% subsection openflow (end)
+
+% section state_of_the_art (end)

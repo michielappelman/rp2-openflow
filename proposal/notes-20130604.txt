@@ -59,47 +59,7 @@ What kind of problems are we facing in networking?
 
 What kind of solutions are there available/being worked on?
 What are the limitations of these technologies?
- - MPLS
-   - not programmable
-   - highly virtualized - ???
-   - MPLS-TP
-     - more deterministic, no ECMP, no LSP merge, no PHP
-       - wat is dat?
-     - control over resources
-     - bi-directional LSPs
-     - OAM, CC and PM
-     - fast failover
-   - MPLS-TE
-     - CSPF extensive control over resources and traffic flows
-     - FRR allows fast failover
-   - network separation
-     - PWE3
-     - L3VPN
-     - L2VPN (VPLS)
-   - GMPLS
-     - L1VPN
- - SDN
-   - central overview over resources, application can tell requirements
-   - OpenFlow
-     - network programmability
-   - OpenDaylight
-     - northbound API to control controller
- - NFV
-   - network separation
-   - limited programmability
- - PBB
-   - no programmability
-   - separation through S-TAGs put in to (H-)VPLS
- - TRILL
-   - 
- - NetCONF
-   - limited network programmability
- - SDH/SONET
-   - network separation
-   - not programmable (not needed?)
- - Virtual Routing
-   - network separation
-   - not programmable
+
 
 control plane wordt onderdeel van je management system, maar wat voor voordelen heeft dat?
 

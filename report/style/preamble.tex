@@ -1,0 +1,117 @@
+% (c) 2014 Michiel Appelman
+%Packages
+\usepackage[english]{babel}
+\usepackage{verbatim} 
+\usepackage{longtable}        %tables over meerdere pagina's
+\usepackage{fancyhdr}         %Fancy headers
+\usepackage{pdfpages}         %Includen van pdf's
+\usepackage[toc,page]{appendix}         %Bijlagen
+\usepackage{url}        %Mooie url's
+\usepackage{xspace}         %Spatie na commando
+\usepackage{color}        %text kleuren
+\usepackage{graphicx}         %plaatjes includen
+\usepackage{fancyvrb}     %extra verbatime (size) mogelijkheden
+\usepackage{multicol}     %multicolumn
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{subfig}
+\usepackage{setspace}
+\usepackage{palatino}
+\usepackage{geometry}
+\usepackage{eurosym}
+\usepackage{bytefield}
+\usepackage{hyperref}
+\usepackage{fixltx2e}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{float}
+\usepackage{paralist}
+\usepackage[printonlyused]{acronym}
+\usepackage[T1]{fontenc}
+%%
+
+%% You want it in Sans Serif Helvetica?
+%\usepackage[scaled]{helvet}
+%\renewcommand*\familydefault{\sfdefault}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\acrstyle}[1]{\uppercase{#1}}
+\newcommand{\expstyle}[1]{#1}
+
+%highlighting in listings 
+\definecolor{light-gray}{gray}{0.60}
+\definecolor{light}{gray}{0.80}
+
+
+\addtolength{\oddsidemargin}{-10mm}
+\addtolength{\evensidemargin}{-10mm}
+\addtolength{\textwidth}{20mm}
+\textheight = 53\baselineskip
+\advance\textheight by \topskip
+
+% Table of Contents Depth
+\setcounter{tocdepth}{2}
+
+% Dutch style of paragraph formatting, i.e. no indents. 
+\setlength{\parskip}{1.3ex plus 0.2ex minus 0.2ex}
+\setlength{\parindent}{0pt}
+
+%%Hyperref
+\hypersetup{
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={Performance Analysis of OpenFlow Hardware},    % title
+    pdfauthor={Michiel Appelman and Maikel de Boer},     % author
+    pdfsubject={OpenFlow},   % subject of the document
+    pdfkeywords={openflows,hardware,performance,sdn,onf,flowvisor}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links
+    citecolor=black,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=blue           % color of external links
+%    linkcolor=black,          % color of internal links
+%    citecolor=black,        % color of links to bibliography
+%    filecolor=black,      % color of file links
+%    urlcolor=black           % color of external links
+}
+
+% Line break after paragraph title
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {-2.25ex\@plus -1ex \@minus -.2ex}%
+  {.2ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\makeatother
+
+% Less hspacing at subsubsection
+\makeatletter
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-2.25ex\@plus -1ex \@minus -.2ex}%
+  {.2ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\makeatother
+
+\makeatletter
+\def\console{%
+  \color{white}\ttfamily\footnotesize
+  \def\verbatim@processline{%
+    {\setbox0=\hbox{\the\verbatim@line}%
+    \hsize=\wd0 \the\verbatim@line\par}}%
+  \@minipagetrue
+  \@tempswatrue
+  \@totalleftmargin\z@
+  \setbox0=\vbox\bgroup \verbatim
+}
+\def\endconsole{%
+  \endverbatim
+  \unskip\setbox0=\lastbox
+  \egroup
+  \colorbox{black}{\box0}%
+}
+\makeatother
+
+\hyphenation{Net-FPGA}

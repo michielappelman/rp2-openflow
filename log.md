@@ -65,3 +65,9 @@ RP2 Log
  - made a comparison between using MPLS/SPB/TRILL for step-by-step VPN setup and OpenFlow
  - extended the list of the protocol stack and where changes should be made when adding VPNs
  - added simple VLANs as a technology to show the limitations, evolution into PBB and SPB
+
+14 juni 2013
+------------
+ - to get a grip on the direction I'm moving in, I set up the first report document in LaTeX
+ - essentially just pasted the proposal in there, but did make some additions wrt Scope
+ - made a start with the State of the Art part, giving an overview of the technologies available
