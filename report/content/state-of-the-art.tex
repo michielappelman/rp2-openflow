@@ -2,62 +2,75 @@
 \section{State of the Art} % (fold)
 \label{sec:state_of_the_art}
 
-The issue of creating dynamic \acp{vpn} within \ac{sp} networks apparently comes from the inability to do so using technologies available to operators today. To get an understanding of where the limitations or obstacles lie, an overview of the state of the art is required.
+The issue of creating dynamic \acp{vpn} within \ac{sp} networks apparently comes from the inability to do so using technologies available to operators today. To get an understanding of how we got to this point and where the limitations or obstacles lie, an overview of the state of the art is required.
 
-Mention requirements for dynamic VPNs to meet for each technology?
+To be qualified to provide network operators with dynamic \acp{vpn} each technology will need to be able to provide the following features:
 
 \begin{enumerate}
-	\item scalable up to thousands of \acp{vpn}
-	\item fast failover times (<50ms)
-	\item control forwarding paths
-	\item apply \ac{qos} values
+	\item scalable up to thousands of (dynamic) Layer 2 \acp{vpn} and client \acsp{mac},
+	\item fast failover times (<50ms) to provide continuity to critical applications,
+	\item efficient use of, and control over all network resources, and
+	\item provide \acl{qos} features to differentiate between classes of applications. 
 \end{enumerate}
+
+\subsection{\acs{sdh}/\acs{sonet}} % (fold)
+\label{sub:sdh_sonet}
+The foundation of \acp{wan} today is still \ac{sdh} and its North-American counterpart \ac{sonet}. It operates at Layer 1 and is concerned with putting various data streams on fiber links. \ac{sdh} networks find their origin in the telecommunications world where it was developed to transfer real-time cell switched voice data. It quickly evolved to include \ac{atm} and later also Ethernet. Due to its maturity the protocol is considered stable but is also very static in its manageability. Developments are ongoing in the \ac{gmpls} field to bring dynamic configuration to \ac{sdh} devices, but they are in their infancy.
+
+% subsection sdh_sonet (end)
+
+\section{\acs{atm}} % (fold)
+\label{sec:atm}
+\ac{atm} is a legacy protocol that has been used by operators to carry traffic over the internet backbone since the 1990s. Where as Ethernet and \ac{ip} are developed as packet-routing connection-less protocols, \ac{atm} is a cell-switched connection-oriented protocol. This poses a number of problems when trying to transport \ac{ip} over \ac{atm}. First, the variable length of the packets don't map efficiently to the fixed size cells of \ac{atm}. Drops of a single cell would cause the entire frame to become unusable. Then there is the added overhead of encapsulating \ac{ip} over \ac{atm}, which causes inefficient use of the network resources when compared to running an all \ac{ip} network. Finally, the \ac{qos} features of \ac{atm} are left unused. These problems are some of the reasons that operators have moved away from \ac{atm} based backbones, to all \ac{ip} ones. 
+
+As mentioned, \ac{atm} does provide \ac{qos} to the network operators which they used extensively. The protocol also allows for the granular control of network paths -- called circuits -- but at a price; management over an \ac{atm} network has to be tightly controlled for it to function properly. This limits its dynamism and scalability, which (also considering the aforementioned objections) does not make it a viable candidate to implement dynamic \acp{vpn}.
+
+% section atm (end)
 
 \subsection{\acs{mpls}} % (fold)
 \label{sub:mpls}
-\ac{mpls} is known for its scalability and extensibility. Over the past decade addition have been made to the original specification to overcome a plethora of issues within carrier networks. This initially started with trying to implement fast forwarding in legacy switches using labels (or tags) at the start of the frame \cite{tag-switching}. When this issue became surmountable using new hardware, \ac{mpls} had already proven to be capable of transporting a wide arrange of protocols on the carrier backbone network, all the while also providing scalability, \ac{te} and \ac{qos} features to the operators.
+\ac{mpls} is known for its scalability and extensibility. Over the past decade additions have been made to the original specification to overcome a plethora of issues within carrier networks. This initially started with trying to implement fast forwarding in legacy switches using labels (or tags) at the start of the frame \cite{tag-switching}. When this issue became surmountable using new hardware, \ac{mpls} had already proven to be capable of transporting a wide arrange of protocols on the carrier backbone network, all the while also providing scalability, \ac{te} and \ac{qos} features to the operators.
 
-... deep dive
+\ac{mpls} itself is more a way of forwarding frames through the network, without facilitating any topology discovery, route determination, resource management, etc. These functions are left to a stack of other protocols. To discover the topology, \ac{mpls} relies on an \ac{igp}. The distribution of labels is done using \ac{ldp} and/or \ac{rsvp}, of which the latter also provides granular \ac{te} and \ac{qos} functionalities.
 
-Does it meet criteria? Why (not)?
+\acp{vpn} are also provided by additional protocols. Layer 3 \acp{vpn} make use of \ac{bgp} to distribute client prefixes to the edges of the carrier network. The core is only concerned with the forwarding of labels and has now knowledge of these \acs{ip} prefixes. Layer 2 \acp{vpn} make use of \ac{ldp} and \ac{vpls}, a service which encapsulates the entire Ethernet frame and pushes a label to it to map it to a certain separated network. Again, the core is only concerned with the labels and only the edges need to know the clients \acs{mac} addresses. 
+
+Because of its extensibility the \ac{mpls} technology and the added protocols and tools, it is commonly used in \acp{cen} as an alternative to legacy \acs{atm} and \acs{sdh} networks. With added features such as \ac{ecmp}, \ac{frr} and explicit routing it has proven to be a technology fit for carriers to transport critical applicition traffic over large networks. \ac{mpls} thus meets the requirements set forth, which might be the reason for its widespread use presently. However, given the scale and criticality of the networks and the stack of various protocols to implement it, management of \ac{mpls} networks has remained fairly static and mostly a manual task.
 
 % subsection mpls (end)
 
 \subsection{\acs{spb}} % (fold)
 \label{sub:spb}
-\ac{spb} is an evolution of the original \acs{ieee} 802.1Q \ac{vlan} standard. \ac{vlan} tags have been in use in the networking world for a long time and provide decent separation in campus networks. However, when \ac{vlan}-tagging was done at the customer network, the carrier couldn't tag its traffic anymore. This resulted in 802.1Qad or Q-in-Q and added an S-\ac{vlan} tag to separate the client \acp{vlan} from the \ac{sp} \acp{vlan} in the backbone. This was usable for the Metro Ethernet networks for awhile but when \acp{sp} started providing this services to more and more customers, their backbone switches could not keep up with the clients \ac{mac} addresses.
+\ac{spb} is an evolution of the original \acs{ieee} 802.1Q \ac{vlan} standard. \ac{vlan} tags have been in use in the networking world for a long time and provide decent separation in campus networks. However, when \ac{vlan}-tagging was done at the customer network, the carrier couldn't separate the traffic from different customers anymore. This resulted in 802.1Qad or Q-in-Q which added an S-\ac{vlan} tag to separate the client \acp{vlan} from the \ac{sp} \acp{vlan} in the backbone. This was usable for the Metro Ethernet networks for awhile but when \acp{sp} started providing this services to more and more customers, their backbone switches could not keep up with the clients \ac{mac} addresses.
 
-To solve this scalability problem \ac{pbb} (802.1Qay or \ac{mac}-in-\ac{mac}) was introduced. It encapsulates the whole Ethernet frame on the edge of the carrier network and forwards the frame based on the Backbone-\ac{mac}, Backbone-\ac{vlan} and the I-SID. The I-SID is a Service Instance Identifier, which with 24 bits is able to supply the carrier with 16 million separate networks. The downside of \ac{pbb} remained one that is common to all Layer 2 forwarding protocols: the possibility of loops. Preventing them requires some sort of \ac{stp} which in turn will disable links to get a loop-free network. Disadvantages of these protocols include the relatively long convergence time and inefficient use of resources due to the disabled links. This final problem was solved by using \acs{isis} as a routing protocol to distributed the topology and creating \ac{spt} originating from each edge device. This is called \ac{spb} or 802.1aq.
+To solve this scalability problem \ac{pbb} (802.1Qay or \ac{mac}-in-\ac{mac}) was introduced. It encapsulates the whole Ethernet frame on the edge of the carrier network and forwards the frame based on the Backbone-\ac{mac}, Backbone-\ac{vlan} and the I-SID. The I-SID is a Service Instance Identifier, which with 24 bits is able to supply the carrier with 16 million separate networks. The downside of \ac{pbb} remained one that is common to all Layer 2 forwarding protocols: the possibility of loops. Preventing them requires \ac{stp} which will disable links to get a loop-free network. Disadvantages of \ac{stp} include the relatively long convergence time and inefficient use of resources due to the disabled links. This final problem was solved by using \acs{isis} as a routing protocol to distributed the topology and creating \acp{spt} originating from each edge device. This is called \ac{spb} or 802.1aq.
 
-... deep dive
+\ac{spb} benefits from the maturity of the Ethernet protocol by reusing protocols for \ac{oam} and \ac{pm} and the fact that only the edges of the network need to be \ac{spb} capable -- the core switches just need to be able to forward 802.1Qad frames. Manageability of \ac{spb} \acp{vpn} is simplified to mapping a certain customer port or \ac{vlan} to an I-SID. Limitations of \ac{spb} include a very coarse way to apply \ac{te} policies or \ac{ecmp} load sharing. Although drafts are in the works to resolve this limitation, this has yet to be standardized and implemented. Finally, the protocol at this point lacks fast failovers, and as such will not be a viable option to implement dynamic \acp{vpn}.
 
-Does it meet criteria? Why (not)?
 
 % subsection spb (end)
 
 \subsection{\acs{trill}} % (fold)
 \label{sub:trill}
-There has been discussion going on between \ac{spb} and \ac{trill} supporters as to which is the `better' protocol. Indeed, both try to solve the same problem to make Ethernet networks scalable to the desired scale of today, but they definitely differ in their implementation. \ac{trill} adds a completely new header on top of  the Ethernet frame with a source and destination RBridge, this allows the RBridges to actually route the frame to its destination over the \ac{trill} backbone network.
+There has been discussion going on between \ac{spb} and \ac{trill} supporters as to which is the `better' protocol. Indeed, both use \ac{isis} as an \ac{igp} and both try to solve the same problem to make Ethernet networks scalable to the desired scale of networks in use today, but they differ in their premise and implementation. \ac{trill} adds a completely new header on top of  the Ethernet frame with a source and destination RBridge allowing the so-called RBridges to route -- Layer 3 -- the frame to its destination over the \ac{trill} backbone network.
 
-... deep dive
+Without this paper turning into another \ac{trill} versus \ac{spb} comparison, it is important to point out various differences in the two technologies with regards to our proposed use-case. First, the hop-by-hop decision making by \ac{trill} has the benefit of being able to distribute traffic in more efficient way over a dense network. \ac{spb} on the other hand makes its forwarding decision at the head-end, similar to \ac{mpls} forwarding. This means that careful consideration needs to take place to choose either more efficient \ac{ecmp} forwarding or granular control over forwarding paths. 
 
-Does it meet criteria? Why (not)?
+Additionally, because \ac{trill} is a completely new protocol, the \ac{ietf} is also still working on adding some essential features that are still in draft. These include \ac{qos}, \ac{oam}, \ac{pm} and \ac{te}. And finally there is another limitation for \acp{cen}, which is the lack of network separation. \ac{trill} only supports the 4096 \ac{vlan} tags present in the 802.1Q frame to separate customer networks. At this point, it will fail to meet the requirements to provide dynamic \acp{vpn}.
 
 % subsection trill (end)
 
-\subsection{\acs{sdh}/\acs{sonet}} % (fold)
-\label{sub:sdh_sonet}
-What is it?
 
-Does it meet criteria? Why (not)?
 
-% subsection sdh_sonet (end)
+
 
 \subsection{OpenFlow} % (fold)
 \label{sub:openflow}
 What is it? Relation to \ac{sdn}.
 
 The momentum comes from a general problem with control over the network (Zimmerman OSI)
+
+Also, ATM style controls.
 
 
 

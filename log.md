@@ -71,3 +71,7 @@ RP2 Log
  - to get a grip on the direction I'm moving in, I set up the first report document in LaTeX
  - essentially just pasted the proposal in there, but did make some additions wrt Scope
  - made a start with the State of the Art part, giving an overview of the technologies available
+
+17 june 2013
+------------
+ - finished the state of the art section, safe for the OpenFlow piece
