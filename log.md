@@ -75,3 +75,8 @@ RP2 Log
 17 june 2013
 ------------
  - finished the state of the art section, safe for the OpenFlow piece
+
+18 june 2013
+------------
+ - OpenFlow bit finished, was a bit hard to get into a certain direction without rehashing too much of the introduction. might need more work
+ - worked on some designs and flows of information in both MPLS and OpenFlow setup
