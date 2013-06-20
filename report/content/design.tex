@@ -2,8 +2,8 @@
 \section{Design} % (fold)
 \label{sec:design}
 
-\subsection{Requirememts} % (fold)
-\label{sub:requirememts}
+\subsection{Requirements} % (fold)
+\label{sub:requirements}
 \begin{enumerate}
 	\item What will the system need to look like?
 	\item What are its functional requirements?
@@ -12,8 +12,19 @@
 	\item How can it be extended in a later stage?
 \end{enumerate}
 
+To further shape the actual design of the system, we will specify what this \ac{dvpn} service will need to look like. 
 
-% subsection requirememts (end)
+First, we will need to define a certain input. Our design accepts a set of physical ports with an optional C-\ac{vlan} corresponding to it. This set represents the group of users which will be placed in a single \ac{vpn} and thereby connected to each other. It also requires the values for minimum and maximum bandwidth used by \ac{dvpn} over the network. High bandwidth \acp{dvpn} may need load-sharing over multiple physical 1GbE links for example.
+
+Second, the output will be defined as the \ac{vpn} created throughout the network and Layer 2 connectivity between the chosen endpoints from the input.
+
+Third, the usage of the network resources should be monitored during the lifetime of the \ac{dvpn}. If certain paths are nearing their capacity, \acp{dvpn} should be able to be moved to paths where more resources are available.
+
+Finally, the tearing down of the \ac{dvpn} will also need to be arranged so as to free up resources for new \acp{dvpn}.
+
+A design for the complete process will be given in the following sections, first in a situation where traditional network management and \ac{mpls} are used. And after that using the \ac{sdn} approach and its way of managing network devices.
+
+% subsection requirements (end)
 
 \subsection{\acs{mpls}} % (fold)
 \label{sub:contemporary}
@@ -24,7 +35,15 @@ To start:
 	\item Amount and type of output.
 \end{enumerate}
 
+As has been discussed in Section~\ref{sub:mpls} a typical \ac{mpls} network consists of a stack of routing protocols. This means that to provision the \ac{dvpn} several protocols will be affected. 
 
+First, determine best path and configure \ac{rsvp} to make paths between \acp{pe}. Needs \ac{te} input. 
+
+Second, \ac{vpls} to add the ports to the \ac{vpls} instance and define the paths to use.
+
+LDP monitored for adjacency between \acp{pe}.
+
+In the access layer, \ac{mpls} has to be supported. Otherwise no mapping to customer \ac{vlan}, only per port. Other option: Q-in-Q but mapping of C AND S-TAG to VPLS instance needs to be supported by \ac{pe}.
 
 % subsection contemporary (end)
 
@@ -36,6 +55,10 @@ To start:
 	\item Flow of information.
 	\item Amount and type of output.
 \end{enumerate}
+
+
+
+Need OpenFlow support on access-layer, or Q-in-Q to map to VPLS instance at \ac{pe}, OR match on \ac{mac}.
 
 
 

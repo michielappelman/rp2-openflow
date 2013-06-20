@@ -80,3 +80,13 @@ RP2 Log
 ------------
  - OpenFlow bit finished, was a bit hard to get into a certain direction without rehashing too much of the introduction. might need more work
  - worked on some designs and flows of information in both MPLS and OpenFlow setup
+
+19 june 2013
+------------
+ - was feeling a bit under the weather (and the forecast for the actual weather was terrible) so I worked from home
+ - got some ideas on paper, but not much...
+
+20 june 2013
+------------
+ - expanded on the workflow of the two types of provisioning
+ - looked at the Access-layer problem: limited switches there mostly (no MPLS) -- Q-in-Q tagging?
