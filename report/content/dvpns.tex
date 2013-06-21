@@ -1,0 +1,66 @@
+\section{Dynamic VPNs} % (fold)
+\label{sec:dvpns}
+
+The 
+
+
+To further shape the actual design of the system, we will specify what this \ac{dvpn} service will need to look like. 
+
+First, we will need to define a certain input. Our design accepts a set of physical ports with an optional C-\ac{vlan} corresponding to it. This set represents the group of users which will be placed in a single \ac{vpn} and thereby connected to each other. It also requires the values for minimum and maximum bandwidth used by \ac{dvpn} over the network. High bandwidth \acp{dvpn} may need load-sharing over multiple physical 1GbE links for example.
+
+Second, the output will be defined as the \ac{vpn} created throughout the network and Layer 2 connectivity between the chosen endpoints from the input.
+
+Third, the usage of the network resources should be monitored during the lifetime of the \ac{dvpn}. If certain links are nearing their capacity, \acp{dvpn} should be able to move paths to links where more resources are available.
+
+Finally, the tearing down of the \ac{dvpn} will also need to be arranged so as to free up resources for new \acp{dvpn}.
+
+
+wat zijn het? waarom?
+
+wat moet je weten uit het netwerk?
+
+wat voor input heb je nodig?
+
+
+requirements:
+tagging - why?
+ecmp - why?
+oam - why?
+te - why? 
+rate limiting - why? (also on BUM traffic)
+arp proxy - why?
+
+hoe doe je routing?
+
+what information from the network?
+links
+link utilization
+
+
+nms information bases:
+mac/ip address management?
+dvpns and ports and paths
+paths and links
+
+
+paden:
+hoe bepaal je ze?
+
+qos:
+hoe doe je rate limiting?
+
+
+
+The issue of creating \acp{dvpn} within \ac{sp} networks apparently comes from the inability to do so using technologies available to operators today. 
+
+To be qualified to provide network operators with \acp{dvpn} each technology will need to be able to provide the following features:
+
+\begin{enumerate}
+	\item scalable up to thousands of (dynamic) Layer 2 \acp{vpn} and client \acsp{mac},
+	\item fast failover times (<50ms) to provide continuity to critical applications,
+	\item efficient use of, and control over all network resources,
+	\item provide \acl{qos} features to differentiate between classes of applications, and
+	\item an automated way to install \acp{vpn} in the network.
+\end{enumerate}
+
+% section dynamic_vpns (end)

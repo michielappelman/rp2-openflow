@@ -18,7 +18,7 @@ First, we will need to define a certain input. Our design accepts a set of physi
 
 Second, the output will be defined as the \ac{vpn} created throughout the network and Layer 2 connectivity between the chosen endpoints from the input.
 
-Third, the usage of the network resources should be monitored during the lifetime of the \ac{dvpn}. If certain paths are nearing their capacity, \acp{dvpn} should be able to be moved to paths where more resources are available.
+Third, the usage of the network resources should be monitored during the lifetime of the \ac{dvpn}. If certain links are nearing their capacity, \acp{dvpn} should be able to move paths to links where more resources are available.
 
 Finally, the tearing down of the \ac{dvpn} will also need to be arranged so as to free up resources for new \acp{dvpn}.
 
@@ -41,7 +41,13 @@ First, determine best path and configure \ac{rsvp} to make paths between \acp{pe
 
 Second, \ac{vpls} to add the ports to the \ac{vpls} instance and define the paths to use.
 
-LDP monitored for adjacency between \acp{pe}.
+Check before enabling: 
+\ac{rsvp} for state of tunnel between \acp{pe} and
+\ac{ldp} for adjacency between \ac{vpls} instances on \acp{pe}
+
+Monitor utilization of links and when links become full, move paths over them to different paths. This can be done by periodically getting interface statistics from the network devices through \ac{snmp} or sFlow. The \ac{nms} will need to store the links that a path is taking when the \ac{dvpn} is set up, so the correct paths may be adjusted to move traffic away. The decision on when to do so depends on the service level of the carrier, who for example may allow for a certain amount of oversubscription. To prevent the algorithm from constantly moving paths between different links it is also recommended to apply some kind of timing mechanism.
+
+To minimize traffic impact when moving a path in use by a \ac{dvpn} to another set of links the \ac{rsvp} \ac{frr} option can be used to add a backup path to the \ac{vpls} instance. If a backup path already exists, it will be replaced. As soon as the new path is installed, the traffic of the \ac{dvpn} can be migrated to the backup path. This path will then be set as the primary path and the previous backup path can be reinstalled. This process will require additions in the \ac{rsvp} paths and addition to the \ac{vpls} instance. The path should be checked for 
 
 In the access layer, \ac{mpls} has to be supported. Otherwise no mapping to customer \ac{vlan}, only per port. Other option: Q-in-Q but mapping of C AND S-TAG to VPLS instance needs to be supported by \ac{pe}.
 
@@ -56,9 +62,9 @@ To start:
 	\item Amount and type of output.
 \end{enumerate}
 
+Use \ac{mpls} labels to tag traffic for separate \acp{dvpn}. If running a label distribution protocol on controller, \ac{p}-routers might even be \ac{mpls}-only.
 
-
-Need OpenFlow support on access-layer, or Q-in-Q to map to VPLS instance at \ac{pe}, OR match on \ac{mac}.
+Need OpenFlow support on access-layer, or Q-in-Q to map to MPLS tag at \ac{pe}, OR match on \ac{mac}.
 
 
 
