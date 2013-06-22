@@ -90,3 +90,15 @@ RP2 Log
 ------------
  - expanded on the workflow of the two types of provisioning
  - looked at the Access-layer problem: limited switches there mostly (no MPLS) -- Q-in-Q tagging?
+
+21 june 2013
+------------
+ - worked on the design a bit more, taking into account link utilization monitoring
+ - met with Rudolf, came up with a new structure
+ - adapted the introduction and moved some content around to the new structure
+ - added some notes and a blueprint, will expand tomorrow
+
+22 june 2013
+------------
+ - got a lot of definitions on the DVPN stuff
+ - finished the Service description, most of the Transport info, blueprint for Provision section

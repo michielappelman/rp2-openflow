@@ -1,10 +1,47 @@
 \section{Dynamic VPNs} % (fold)
 \label{sec:dvpns}
 
-The 
+In Section~\ref{sub:scope} we already gave a short description of \acp{dvpn}. In this section, we will further look at the actual concept. Starting with defining what it actually provides, how it's carried over the core, the information needed to implement a \ac{vpn}, from where that information is available and finally working towards a list of technical requirements that the network will need to provide.
+
+\subsection{Service} % (fold)
+\label{sub:service}
+
+To define the \ac{dvpn} service, we first take a look at the concepts of non-dynamic, or static \acp{vpn}. They can be classified depending on the \acs{osi} layer which it virtualizes, the protocol that is being used and the visibility to the customer. In an IPSec \ac{vpn} for example, the customer needs to setup his \acp{ce} at each site to actually establish the Layer 3 \acs{ip} \ac{vpn}. As we have already established in Section~\ref{sub:scope}, we limit the use-case to an multi-point Ethernet Layer 2 \ac{vpn} which is provisioned by the provider (\acs{ppvpn}) and thus requires no action on the \ac{ce}.
+
+What a Layer 2 \ac{ppvpn} provides to the \ac{ce} is a transparent connection to one or more other \acp{ce} using a single Ethernet broadcast domain. Another term to describe such a \ac{vpn} service is a \ac{vpls} and is described in RFC 4026  \cite{vpn-terms}. It enables the interconnect of several \acs{lan} segments over a seemingly invisible carrier network. To do so, the \ac{pe} needs to keep the \acp{cmac} ahead of the frame intact and also support the forwarding of broadcast and multicast traffic. All \acp{pe} (and of course \acp{p}) will not be visible to the \ac{ce}, who will regard the other \acp{ce} as part of the \ac{vpls} as direct neighbors on the network.
+
+All these functionalities apply to \acp{vpn} as well as \acp{dvpn}. \acp{dvpn} however, also are flexible in nature. They can be configured, adapted and deconfigured within relatively short timespans. Current Layer 2 \acp{vpn} are mostly configured statically and changes in their configurations will require manual labor from the engineers. To convert them to \acp{dvpn} new tools are needed to automate this provisioning process which will get back to in Section~\ref{sub:provisioning}.
+
+% subsection service (end)
+
+\subsection{Transport} % (fold)
+\label{sub:transport}
+
+Transporting a Layer 2 frame between two \acp{ce} starts at the \ac{pe}. The ingress \ac{pe} learns the \ac{sa} of the frame behind the port connected to the \ac{ce}, then it needs to forward the frame to the \ac{pe} where the \ac{da} is present. It will need to do so while separating the traffic from other \acp{dvpn}, it has to make the traffic unique and identifiable from the rest of the \acp{vpn} transported over the network. This is done by giving the frame some sort of `color' or `tag' specific to the customer \ac{vpn}. Additionally it should presume the that \ac{p} devices are not aware of the \ac{dvpn} and do not learn the \ac{cmac} addresses. This is because the network will have to scale to thousands of \acp{dvpn} and possibly millions of \acp{cmac} divided over those \acp{dvpn}. To provide this so called \acs{mac} Scalability, only \acp{pe} should learn the \acp{cmac}.
+
+Forwarding from ingress \ac{pe} to egress \ac{pe} happens over a path of several \acp{p}. Every \ac{pe} connected to a \ac{ce} member of a particular \ac{dvpn}, should have one or more paths available to each and every other \ac{pe} with members of that \ac{dvpn}. The determination of the routes of these paths takes place through a form topology discovery. This mechanism should dynamically find all available \acp{pe} and \acp{p} with all the connections between them and allow for the creation of paths which are not susceptible to infinite loops.
+
+The links comprising the paths have a certain capacity which will need to be used as efficiently as possible. This means that the links comprising a path will need to have enough resources available, but that other links need not be left vacant. Also, if the required bandwidth for a \ac{dvpn} exceeds the maximum capacity of one or more of the links in a single path, a second path should be installed to share the load towards the egress \ac{pe}. 
+
+Continuing with the processing of the ingress customer frame, when it arrives at the ingress \ac{pe} with a \ac{da} unknown to the \ac{pe}, the frame will be flooded to all participating \acp{pe}. Upon arrival there, the egress \ac{pe} stores the mapping of the frames \ac{sa} to the ingress \ac{pe} and if it knows the \ac{da} will forward out the appropriate port. Because this is a virtual broadcast domain, all \ac{bum} traffic will need to be flooded to the participating \acp{pe}. To limit the amount of \ac{bum} traffic in a single \ac{dvpn} rate limits or filters will need to be in place to prevent the \ac{dvpn} from being flooded with it.
+
+ARP PROXY?
+
+With multiple \acp{dvpn} present on the network it can happen that one \ac{dvpn} affects the available bandwidth of others. Therefor rate limits will need to be in place for the overall traffic coming in to the \ac{ce}-connected ports. Policing rates of different \acp{dvpn} in the core is nearly impossible hardware-wise. And, because it burdens the core with an access layer responsibility while it should only be concerned with fast forwarding, is also undesirable. However, by assigning a minimum and maximum bandwidth rate to each \ac{dvpn} instance, it is possible to preprovision the paths of the \ac{p}-network according to the required bandwidth. By also monitoring the utilization of individual links, \ac{dvpn} paths can be moved away from over-provisioned links while they are in use. However, the impact on traffic when performing such a switch must be minimized and should ideally last no longer than 50 ms.
+
+Related to 
+
+OAM
+
+% subsection transport (end)
 
 
-To further shape the actual design of the system, we will specify what this \ac{dvpn} service will need to look like. 
+\subsection{Provisioning} % (fold)
+\label{sub:provisioning}
+
+wat moet je weten uit het netwerk?
+
+wat voor input heb je nodig?
 
 First, we will need to define a certain input. Our design accepts a set of physical ports with an optional C-\ac{vlan} corresponding to it. This set represents the group of users which will be placed in a single \ac{vpn} and thereby connected to each other. It also requires the values for minimum and maximum bandwidth used by \ac{dvpn} over the network. High bandwidth \acp{dvpn} may need load-sharing over multiple physical 1GbE links for example.
 
@@ -14,13 +51,21 @@ Third, the usage of the network resources should be monitored during the lifetim
 
 Finally, the tearing down of the \ac{dvpn} will also need to be arranged so as to free up resources for new \acp{dvpn}.
 
+what information from the network?
+links
+link utilization
 
-wat zijn het? waarom?
 
-wat moet je weten uit het netwerk?
+nms information bases:
+mac/ip address management?
+dvpns and ports and paths
+paths and links
 
-wat voor input heb je nodig?
+% subsection provisioning (end)
 
+
+
+AUTOMATION
 
 requirements:
 tagging - why?
@@ -45,10 +90,6 @@ paths and links
 
 paden:
 hoe bepaal je ze?
-
-qos:
-hoe doe je rate limiting?
-
 
 
 The issue of creating \acp{dvpn} within \ac{sp} networks apparently comes from the inability to do so using technologies available to operators today. 
