@@ -102,3 +102,7 @@ RP2 Log
 ------------
  - got a lot of definitions on the DVPN stuff
  - finished the Service description, most of the Transport info, blueprint for Provision section
+
+23 june 2013
+------------
+ - finished first version of DVPN description

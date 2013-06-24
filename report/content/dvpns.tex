@@ -25,13 +25,11 @@ The links comprising the paths have a certain capacity which will need to be use
 
 Continuing with the processing of the ingress customer frame, when it arrives at the ingress \ac{pe} with a \ac{da} unknown to the \ac{pe}, the frame will be flooded to all participating \acp{pe}. Upon arrival there, the egress \ac{pe} stores the mapping of the frames \ac{sa} to the ingress \ac{pe} and if it knows the \ac{da} will forward out the appropriate port. Because this is a virtual broadcast domain, all \ac{bum} traffic will need to be flooded to the participating \acp{pe}. To limit the amount of \ac{bum} traffic in a single \ac{dvpn} rate limits or filters will need to be in place to prevent the \ac{dvpn} from being flooded with it.
 
-ARP PROXY?
+Another addition to rate limiting unknown unicast traffic is by pre-populating the \acs{mac} tables of the \acp{pe}. This requires that, besides the ingress \ac{pe} only learning the \ac{sa} from the \ac{ce}, it will also actively distribute the \ac{sa} to all other \acp{pe} with members of the same \ac{dvpn}. Then, instead of flooding unknown unicast frames to the \acp{pe}, the ingress \ac{pe} drops the frame, knowing that the other \acp{pe} will not recognize it either. This can also be extended to limit broadcast \ac{arp} traffic if the \acp{pe} also exchange the \ac{ip} address belonging to each \ac{cmac}. When the ingress \ac{pe} receives an \acs{arp} request for a certain \ac{ip} address, it can look it up in its table and without flooding the frame, reply to the \ac{ce} with the correct \ac{mac}.
 
-With multiple \acp{dvpn} present on the network it can happen that one \ac{dvpn} affects the available bandwidth of others. Therefor rate limits will need to be in place for the overall traffic coming in to the \ac{ce}-connected ports. Policing rates of different \acp{dvpn} in the core is nearly impossible hardware-wise. And, because it burdens the core with an access layer responsibility while it should only be concerned with fast forwarding, is also undesirable. However, by assigning a minimum and maximum bandwidth rate to each \ac{dvpn} instance, it is possible to preprovision the paths of the \ac{p}-network according to the required bandwidth. By also monitoring the utilization of individual links, \ac{dvpn} paths can be moved away from over-provisioned links while they are in use. However, the impact on traffic when performing such a switch must be minimized and should ideally last no longer than 50 ms.
+With multiple \acp{dvpn} present on the network it can happen that one \ac{dvpn} affects the available bandwidth of others. Therefor rate limits will need to be in place for the overall traffic coming in to the \ac{ce}-connected ports. Policing rates of different \acp{dvpn} in the core is nearly impossible, the hardware cannot police traffic of separate \acp{dvpn}. And, because it burdens the core with another responsibility while it should only be concerned with fast forwarding, is also undesirable. However, by assigning a minimum and maximum bandwidth rate to each \ac{dvpn} instance, it is possible to preprovision the paths over the network according to the required bandwidth. By also monitoring the utilization of individual links, \ac{dvpn} paths can be moved away from over-provisioned links while they are in use. However, the impact on traffic when performing such a switch must be minimized and should ideally last no longer than 50 ms.
 
-Related to 
-
-OAM
+To monitor and troubleshoot large carrier networks \ac{oam} functionalities need to be supported by the network. Monitoring end-to-end activity needs to available through automatic continuity check messages, but also by supporting `traceroutes' through the network manually. This enables the network react proactively to network failures by using a similar method as presented above when switching \acp{dvpn} to a different path, also known as `fast failover.'
 
 % subsection transport (end)
 
@@ -39,69 +37,57 @@ OAM
 \subsection{Provisioning} % (fold)
 \label{sub:provisioning}
 
-wat moet je weten uit het netwerk?
+Before implementing a \ac{dvpn} in the network, the network first has to become converged. Meaning that the topology of the complete network is known and that paths can be created over this topology. 
 
-wat voor input heb je nodig?
+A \ac{dvpn} instance consists of multiple member ports, which are identified by their \ac{pe} device and the port on that \ac{pe}. The instance also contains values for its minimum and maximum available bandwidth which can be used to determine the paths that the \ac{dvpn} will get assigned. When member ports reside on different \acp{pe}, a bidirectional path will need to be created through the network. The route of the path will depend on 
+\begin{inparaenum}[\itshape a\upshape)]
+	\item the liveness and administative availability of the links, 
+	\item the administrative costs of the links, and 
+	\item the resources available on the links towards the \ac{pe}.
+\end{inparaenum}
+The exact algorithm used to choose the paths lies outside of the scope of this document. Paths are defined by the physical ports that they traverse through the network, with the \acp{pe} as the first or last in the list.
 
-First, we will need to define a certain input. Our design accepts a set of physical ports with an optional C-\ac{vlan} corresponding to it. This set represents the group of users which will be placed in a single \ac{vpn} and thereby connected to each other. It also requires the values for minimum and maximum bandwidth used by \ac{dvpn} over the network. High bandwidth \acp{dvpn} may need load-sharing over multiple physical 1GbE links for example.
+When the path between two \acp{pe} has been setup for the \ac{dvpn}, it can be put in the \ac{dvpn} description. More paths may be added over different routes and paths may be adjusted during the lifetime of the \ac{dvpn}. This may for example be necessary when a certain link in the path fails, or when it nears its peak capacity and has to be rerouted. A simplified but complete information base diagram has been given in Figure~\ref{fig:infobase}. Individual port utilization will be monitored and when a certain link shows high utilization, the corresponding paths and \acp{dvpn} using those paths can be looked up using the information base. Also other monitoring and troubleshooting processes will profit from this information.
 
-Second, the output will be defined as the \ac{vpn} created throughout the network and Layer 2 connectivity between the chosen endpoints from the input.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=10cm]{./includes/infobase.pdf}
+	\caption{Information base of a \ac{dvpn}.}
+	\label{fig:infobase}
+\end{figure}
 
-Third, the usage of the network resources should be monitored during the lifetime of the \ac{dvpn}. If certain links are nearing their capacity, \acp{dvpn} should be able to move paths to links where more resources are available.
+After the complete paths between \acp{pe} with \ac{dvpn} members have been setup the traffic can start flowing. However, as has been mentioned before, the rate limiting feature will need to be applied to the ingress ports to prevent the \ac{dvpn} from using up all the networks resources. 
 
-Finally, the tearing down of the \ac{dvpn} will also need to be arranged so as to free up resources for new \acp{dvpn}.
-
-what information from the network?
-links
-link utilization
-
-
-nms information bases:
-mac/ip address management?
-dvpns and ports and paths
-paths and links
 
 % subsection provisioning (end)
 
+\section{Requirements} % (fold)
+\label{sec:requirements}
 
-
-AUTOMATION
-
-requirements:
-tagging - why?
-ecmp - why?
-oam - why?
-te - why? 
-rate limiting - why? (also on BUM traffic)
-arp proxy - why?
-
-hoe doe je routing?
-
-what information from the network?
-links
-link utilization
-
-
-nms information bases:
-mac/ip address management?
-dvpns and ports and paths
-paths and links
-
-
-paden:
-hoe bepaal je ze?
-
-
-The issue of creating \acp{dvpn} within \ac{sp} networks apparently comes from the inability to do so using technologies available to operators today. 
-
-To be qualified to provide network operators with \acp{dvpn} each technology will need to be able to provide the following features:
+To summarize, to be qualified to deploy \acp{dvpn}, networking technologies will need to be able to provide the following features:
 
 \begin{enumerate}
-	\item scalable up to thousands of (dynamic) Layer 2 \acp{vpn} and client \acsp{mac},
+	\item identify traffic from separate \acp{dvpn} by tagging, 
+	\item scalable up to thousands of \acp{dvpn} and \acsp{cmac},
+	\item topology discovery, 
+	\item efficient use of, and control over all network resources (\ac{te}),
+	\item share the load of traffic over multiple paths,
+	\item rate limiting or filtering of \ac{bum} traffic,
+	\item rate limiting of total \ac{dvpn} traffic per port,
 	\item fast failover times (<50ms) to provide continuity to critical applications,
-	\item efficient use of, and control over all network resources,
-	\item provide \acl{qos} features to differentiate between classes of applications, and
-	\item an automated way to install \acp{vpn} in the network.
+	\item provide \acl{oam} features to monitor and troubleshoot the network.
 \end{enumerate}
+
+Besides the forwarding specific requirements the provisioning system will also need to be able to:
+
+\begin{enumerate}
+	\item take input as certain ports to be placed in a \ac{dvpn},
+	\item determine routes that can be used for the paths,
+	\item monitor links and reroute paths on failure or peak capacity,
+	\item set the rate limits on ingress \ac{pe} ports.
+\end{enumerate}
+
+% section requirements (end)
+
 
 % section dynamic_vpns (end)
