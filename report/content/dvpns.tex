@@ -61,8 +61,9 @@ After the complete paths between \acp{pe} with \ac{dvpn} members have been setup
 
 % subsection provisioning (end)
 
-\section{Requirements} % (fold)
-\label{sec:requirements}
+\subsection{Requirements} % (fold)
+\label{sub:requirements}
+
 
 To summarize, to be qualified to deploy \acp{dvpn}, networking technologies will need to be able to provide the following features:
 
@@ -70,6 +71,7 @@ To summarize, to be qualified to deploy \acp{dvpn}, networking technologies will
 	\item identify traffic from separate \acp{dvpn} by tagging, 
 	\item scalable up to thousands of \acp{dvpn} and \acsp{cmac},
 	\item topology discovery, 
+	\item provision paths over the network,
 	\item efficient use of, and control over all network resources (\ac{te}),
 	\item share the load of traffic over multiple paths,
 	\item rate limiting or filtering of \ac{bum} traffic,
@@ -87,7 +89,6 @@ Besides the forwarding specific requirements the provisioning system will also n
 	\item set the rate limits on ingress \ac{pe} ports.
 \end{enumerate}
 
-% section requirements (end)
-
+% subsection requirements (end)
 
 % section dynamic_vpns (end)
