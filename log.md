@@ -106,3 +106,12 @@ RP2 Log
 23 june 2013
 ------------
  - finished first version of DVPN description
+
+24 june 2013
+------------
+ - worked on graphics and table
+ - start on implementation and results
+
+25 june 2013
+------------
+ - got some feedback from Rudolf, incorporated that
