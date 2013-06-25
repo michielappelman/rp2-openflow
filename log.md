@@ -115,3 +115,7 @@ RP2 Log
 25 june 2013
 ------------
  - got some feedback from Rudolf, incorporated that
+ - added some graphics and content to OpenFlow section
+ - installed a VM with [OpenFlow 1.3 implementation from git](https://github.com/CPqD/ofsoftswitch13/wiki/OpenFlow-1.3-Tutorial)
+ - tried to get the topology app working in 1.3... so far no luck
+
