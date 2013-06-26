@@ -119,3 +119,10 @@ RP2 Log
  - installed a VM with [OpenFlow 1.3 implementation from git](https://github.com/CPqD/ofsoftswitch13/wiki/OpenFlow-1.3-Tutorial)
  - tried to get the topology app working in 1.3... so far no luck
 
+26 june 2013
+------------
+ - wasted more time on the C++ environment
+ - improved the intro a little bit
+ - met with Rudolf to talk about progress and content
+ - made some notes on the comparison
+
