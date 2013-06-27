@@ -5,17 +5,23 @@
 \subsection{Contemporary Implementations} % (fold)
 \label{sub:contemporary_implementations}
 
+%%% ATM %%
+%
+%As mentioned, \ac{atm} provides \ac{qos} to the network operators and it also allows for the granular control of network paths -- called circuits -- but at a price. The \acp{vc} in an \ac{atm} network have to be tightly managed for the network to function properly, which limits its dynamism and scalability. Together with the Ethernet/\acs{ip} interoperability issues (causing it to move into increasing disuse), \ac{atm} does not make it a viable candidate to implement \acp{dvpn}.
+
 %% SPB %%
 
-\ac{spb} benefits from the maturity of the Ethernet protocol by reusing protocols for \ac{oam} and \ac{pm} and the fact that only the edges of the network need to be \ac{spb} capable -- the core switches just need to be able to forward 802.1Qad frames. However, due to its Ethernet-based nature it lacks \ac{te} functionalities. The paths that the \ac{vpn} traffic takes are not easily manageable or customizable and provide limited scalability due to limited amounts of available paths (or trees in this case) that can be configured at this time. This also applies to the \ac{ecmp} functionalities that are limited by the available paths. However, using extensible \ac{ect} algorithms future, additional algorithms with multiple paths maybe introduced \cite{rfc6329}. 
 
-The failover of paths that have failures present is not optimized for speed. Although the use of hardware multicast floods allows for claimed convergence of below 100ms, reconvergence times are below par \cite{spb-nanog}.
+Simplicity of setup comes at a cost:
+\begin{itemize}
+	\item no \ac{te}
+	\item limited \ac{ecmp}
+	\item no fast failover
+\end{itemize}
 
 %% MPLS %%
 
-\ac{mpls} itself is more a way of forwarding frames through the network, without facilitating any topology discovery, route determination, resource management, etc. These functions are left to a stack of other protocols. To discover the topology, \ac{mpls} relies on an \ac{igp}. The distribution of labels is done using \ac{ldp} and/or \ac{rsvp}, of which the latter also provides granular \ac{te} and \ac{qos} functionalities.
 
-\acp{vpn} are also provided by additional protocols. Layer 3 \acp{vpn} make use of \ac{bgp} to distribute client prefixes to the edges of the carrier network. The core is only concerned with the forwarding of labels and has now knowledge of these \acs{ip} prefixes. Layer 2 \acp{vpn} make use of \ac{ldp} and \ac{vpls}, a service which encapsulates the entire Ethernet frame and pushes a label to it to map it to a certain separated network. Again, the core is only concerned with the labels and only the edges need to know the clients \acs{mac} addresses. 
 
 Because of its extensibility the \ac{mpls} technology and the added protocols and tools, it is commonly used in \acp{cen} as an alternative to legacy \acs{atm} and \acs{sdh} networks. With added features such as \ac{ecmp}, \ac{frr} and explicit routing it has proven to be a technology fit for carriers to transport critical application traffic over large networks
 
@@ -27,6 +33,20 @@ Because of its extensibility the \ac{mpls} technology and the added protocols an
 How did it do?
 
 What are the differences?
+
+
+
+These features are essential for implementing \acp{vpn} because the traffic flows will need to be separated upon entering the carrier network for MAC scalability.
+
+MAC Scalability only from 1.0 onwards.
+
+
+\ac{mpls} \acp{vpn} in OpenFlow: \cite{mpls-vpn-openflow}
+
+\ac{mpls} control plane in OpenFlow: \cite{mpls-open}
+
+
+PROS/CONS
 
 % subsection openflow (end)
 

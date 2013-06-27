@@ -29,6 +29,14 @@ What a Layer 2 \ac{ppvpn} provides to the \ac{ce} is a transparent connection to
 
 All these functionalities apply to \acp{vpn} as well as \acp{dvpn}. \acp{dvpn} however, also are flexible in nature. They can be configured, adapted and deconfigured within relatively short timespans. Current Layer 2 \acp{vpn} are mostly configured statically and changes in their configurations will require manual labor from the engineers. To convert them to \acp{dvpn} new tools are needed to automate this provisioning process which we will get back to in Section~\ref{sub:provisioning}.
 
+To summarize, from a service level perspective a \ac{dvpn} needs to provide a network to the customer which:
+
+\begin{enumerate}
+	\item provides a Layer 2 broadcast domain,
+	\item does not require configuration on the \ac{ce},
+	\item is transparent to \acp{ce}.
+\end{enumerate}
+
 % subsection service (end)
 
 \subsection{Transport} % (fold)
@@ -65,6 +73,21 @@ With multiple \acp{dvpn} present on the network it can happen that one \ac{dvpn}
 
 To monitor and troubleshoot large carrier networks \ac{oam} functionalities need to be supported by the network. Monitoring end-to-end activity needs to available through automatic continuity check messages, but also by supporting `traceroutes' through the network manually. This enables the network react proactively to network failures by using a similar method as presented above when switching \acp{dvpn} to a different path, also known as `fast failover.'
 
+To sum up the requirements discussed in this section, the network needs to provide the following functionalities:
+
+\begin{enumerate}
+	\item identify traffic from separate \acp{dvpn} by tagging, 
+	\item scalable up to thousands of \acp{dvpn} and \acsp{cmac},
+	\item topology discovery, 
+	\item provision paths over the network,
+	\item efficient use of, and control over all network resources (\ac{te}),
+	\item share the load of traffic over multiple paths,
+	\item rate limiting or filtering of \ac{bum} traffic,
+	\item rate limiting of total \ac{dvpn} traffic per port,
+	\item fast failover times (<50ms) to provide continuity to critical applications,
+	\item provide \acl{oam} features to monitor and troubleshoot the network.
+\end{enumerate}
+
 % subsection transport (end)
 
 
@@ -92,29 +115,7 @@ When the path between two \acp{pe} has been setup for the \ac{dvpn}, it can be p
 
 After the complete paths between \acp{pe} with \ac{dvpn} members have been setup the traffic can start flowing. However, as has been mentioned before, the rate limiting feature will need to be applied to the ingress ports to prevent the \ac{dvpn} from using up all the networks resources. 
 
-
-% subsection provisioning (end)
-
-\subsection{Requirements} % (fold)
-\label{sub:requirements}
-
-
-To summarize, to be qualified to deploy \acp{dvpn}, networking technologies will need to be able to provide the following features:
-
-\begin{enumerate}
-	\item identify traffic from separate \acp{dvpn} by tagging, 
-	\item scalable up to thousands of \acp{dvpn} and \acsp{cmac},
-	\item topology discovery, 
-	\item provision paths over the network,
-	\item efficient use of, and control over all network resources (\ac{te}),
-	\item share the load of traffic over multiple paths,
-	\item rate limiting or filtering of \ac{bum} traffic,
-	\item rate limiting of total \ac{dvpn} traffic per port,
-	\item fast failover times (<50ms) to provide continuity to critical applications,
-	\item provide \acl{oam} features to monitor and troubleshoot the network.
-\end{enumerate}
-
-Besides the forwarding specific requirements the provisioning system will also need to be able to:
+To provision \acp{dvpn} in the network, the \ac{nms} in short should be able to:
 
 \begin{enumerate}
 	\item take input as certain ports to be placed in a \ac{dvpn},
@@ -123,6 +124,6 @@ Besides the forwarding specific requirements the provisioning system will also n
 	\item set the rate limits on ingress \ac{pe} ports.
 \end{enumerate}
 
-% subsection requirements (end)
+% subsection provisioning (end)
 
 % section dynamic_vpns (end)

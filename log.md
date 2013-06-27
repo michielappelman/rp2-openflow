@@ -126,3 +126,7 @@ RP2 Log
  - met with Rudolf to talk about progress and content
  - made some notes on the comparison
 
+27 june 2013
+------------
+ - finished the report up until the implementation of OpenFlow
+
