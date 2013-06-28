@@ -9,17 +9,17 @@ The features and limitations of the three discussed technologies in Section~\ref
 	\begin{tabular}{r|lll}
 	 & \acs{spb} & \acs{mpls} & OpenFlow / \acs{sdn}\\
 	\hline
-	Tagging of VPN Traffic & \acs{pbb} & \acs{vpls} & \acs{pbb} / \acs{mpls}\\
+	Tagging of VPN Traffic & \acs{pbb} & \acs{vpls} (\acs{mpls}) & \acs{pbb} / \acs{mpls}\\
 	MAC Scalability & yes & yes & yes\\
 	Topology Discovery & \acs{isis} & \acs{ospf} & application\\
 	Path Provisioning & \acs{spt} & \acs{rsvp} / \acs{ldp} & application\\
-	Traffic Engineering & no & \acs{rsvp} & application\\
+	Traffic Engineering & limited & \acs{rsvp} & application\\
 	\ac{ecmp} & limited & yes & yes, using Groups\\
 	\ac{bum} limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
 	Exchange \acsp{cmac} & no & \ac{evpn} (draft) & application\\
-	Traffic Rate Limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
+	Ingress Rate Limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Queues or Metering\\
 	Fast Failover & no & \acs{frr} & yes, using Groups\\
-	\acs{oam} & 802.1ag & \acs{lsp} Ping / \acs{bfd} & application\\
+	\acs{oam} & 802.1ag / Y.1731 & \acs{lsp} Ping / \acs{bfd} & application\\
 	\hline
 	Forwarding Decision & \acs{pbb} tags & \acs{mpls} labels & flow entry \\
 	\ac{bum} traffic handling & flood & flood & sent to controller\\
@@ -32,19 +32,22 @@ The features and limitations of the three discussed technologies in Section~\ref
 \subsection{\acs{spb}} % (fold)
 \label{sub:spb}
 
-Simplicity of setup comes at a cost:
+The \ac{spb} architecture allows for a scalable carrier network supporting thousands, even millions of \acp{dvpn} using the I-SID in the \ac{pbb} frame. From our theoretical implementation, it becomes evident that setting up a \acp{dvpn} requires little configuration. The I-SID only needs to be configured on the head-end \ac{pe} and the \ac{isis} routing protocol distributes this binding to the other corresponding \acp{pe}. Another benefit is the use of Ethernet \ac{oam} standards that are mature and extensive to allow for precise monitoring and troubleshooting.
+
+Unfortunately, the simplicity of the setup comes at a cost. The protocols has:
 \begin{itemize}
-	\item no \ac{te}
-	\item limited \ac{ecmp}
-	\item no fast failover
+	\item limited explicit or constraints-based routing, meaning few \ac{te} features,
+	\item limited \ac{ecmp} functionality due to the infancy of the standard to support it, and
+	\item because, failure recovery depends on \ac{isis} reconvergence, no fast failover.
 \end{itemize}
+
+These shortcomings are being worked on by the community, e.g.\ IEEE 802.1Qbp which provides extensive \ac{ecmp} functions. Progress is slow however, and the overall standard will need to mature before it will be suitable for carrier implementations.  
 
 % subsection spb (end)
 
 \subsection{\acs{mpls}} % (fold)
 \label{sub:mpls}
 
-Because of its extensibility the \ac{mpls} technology and the added protocols and tools, it is commonly used in \acp{cen} as an alternative to legacy \acs{atm} and \acs{sdh} networks. With added features such as \ac{ecmp}, \ac{frr} and explicit routing it has proven to be a technology fit for carriers to transport critical application traffic over large networks
 
 
 
@@ -72,6 +75,7 @@ The strength of these applications however, is the fact that operators can integ
 
 \ac{mpls} control plane in OpenFlow: \cite{mpls-open}
 
+Lacks liveness monitoring
 
 PROS/CONS
 

@@ -8,12 +8,6 @@ Using the requirements set forth in Section~\ref{sec:dvpns} we can compile a lis
 	\label{lst:num}
 \end{inparaenum}
 
-
-
-
-
-what can provide what function for DVPNs?
-
 \subsection{Contemporary Technologies} % (fold)
 \label{sub:contemporary_technologies}
 
@@ -34,14 +28,14 @@ To provide the required scalability with regard to \acp{mac} in the backbone, \a
 
 However, due to its Ethernet \acs{stp} forwarding-based nature it lacks \ac{te} features. The paths that the \ac{vpn} traffic takes are not explicitly configureable and provide limited scalability due to limited amounts of available paths (or trees in this case). As such, operators can not define constraints or explicit paths to take over the network to distribute traffic in an efficient manner. The lack of available paths also negatively affects its \ac{ecmp} functionalities. However, future, additional algorithms with multiple paths maybe introduced using extensible \ac{ect} algorithms \cite{rfc6329}.
 
-Provided that \ac{isis} has been configured on all provider devices, Figure~\ref{fig:spb-stack} illustrates the interfaces needed to provision a \ac{dvpn} in \ac{spb}. First, the I-SID has to be defined on all \acp{pe}, which in turn will setup \acp{spt} towards the other participating \acp{pe}. The member \ac{ce} ports then need to be added to the I-SID after which the \ac{vpn} is established. The rate limiting of the \ac{ce} ports is a vendor-specific feature however, and may vary per hardware platform.
-
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=10cm]{./includes/spb-stack.pdf}
 	\caption{Provisioning a \ac{dvpn} using \ac{spb}.}
 	\label{fig:spb-stack}
 \end{figure}
+
+Provided that \ac{isis} has been configured on all provider devices, Figure~\ref{fig:spb-stack} illustrates the interfaces needed to provision a \ac{dvpn} in \ac{spb}. It excels in its simplicity by providing `single-point provisioning'. This means that the \ac{nms} only needs to add the member \ac{ce} port to a certain \ac{dvpn} I-SID, after which the \ac{pe} floods this binding through the \ac{isis} network and other \acp{pe} sharing this I-SID will install the path towards the ingress \ac{pe}. The rate limiting of the \ac{ce} ports is a vendor-specific feature however, and may vary per hardware platform.
 
 
 % subsubsection spb (end)
