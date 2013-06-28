@@ -88,36 +88,16 @@ The procedure above implies that the backbone network has been setup with the fo
 \subsection{OpenFlow} % (fold)
 \label{sub:openflow}
 
-Section~\ref{sec:introduction} gave a short introduction into what \ac{sdn} and OpenFlow entail and what it promises in terms of cost savings and agility. \acl{sdn} is the general principle of designing flexible networks using open interfaces towards the hardware. OpenFlow is a subcomponent of this new principle which provides a protocol between the forwarding plane of the networking devices and a centralized controller. Essentially, taking over the role of the distributed control planes of the network devices. OpenFlow provides the controller with an \ac{api} that can be used to install flow entries directly in the forwarding plane of the devices (also called the `southbound interface'). Flow entries consist of six fields:
+Section~\ref{sec:introduction} gave a short introduction into what \ac{sdn} and OpenFlow entail and what it promises in terms of cost savings and agility. \acl{sdn} is the general principle of designing flexible networks using open interfaces towards the hardware. OpenFlow is a subcomponent of this new principle which provides a protocol between the forwarding plane of the networking devices and a centralized controller. Essentially, taking over the role of the distributed control planes of the network devices. A general overview of the \ac{sdn} architecture and OpenFlow is given in Figure~\ref{fig:of-arch}. OpenFlow provides the controller with an \ac{api} that can be used to install flow entries directly in the forwarding plane of the devices. Flow entries consist of six fields:
 
 \begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries Instructions}]
 	\item[Match] This field contains a list of frame/packet characteristics that will need to be present to match to this entry, e.g.\ \ac{da}, \ac{ip} source address or \ac{mpls} tags.
-	\item[Priority] The precedence of this flow entry.
+	\item[Priority] The precedence of this flow entry over other flow entries to which a certain frame matches.
 	\item[Counters] Frames matching to this entry are counted for monitoring purposes.
 	\item[Instructions] When a frame is matched using the match field, it is processed according to a list of instructions, which may include forwarding out of a port, rewriting headers and/or applying meters.
 	\item[Timeouts] The time that a flow entry can be live until it is discarded.
 	\item[Cookie] Value assigned by controller to identify the flow (not used to forward frames).
 \end{description}
-
-Flow entries have been understandably compared to \acs{acl} entries, however it is also apparent that there are many more possibilities with regards to matching and performing actions. The frame fields that can be matched upon has changed over the lifetime of the OpenFlow specification. For example, version 1.0 could only match or act upon tagged traffic using a single outer-\acs{vlan} tag. Version 1.1 added matches actions for Q-in-Q tags and \ac{mpls} labels, and version 1.3 could also match \ac{pbb} tags. See Table~\ref{tb:of-versions} for a comparison of key features in different versions of OpenFlow spec. 
-
-\begin{table}[h]
-	\centering
-	\begin{tabular}{r|cccc}
-	 			& 1.0 & 1.1 & 1.2 & 1.3\\
-	\hline
-	VLAN Tags 	& \checkmark & \checkmark & \checkmark & \checkmark \\
-	Q-in-Q Tags &   & \checkmark & \checkmark & \checkmark \\
-	MPLS Tags 	&   & \checkmark & \checkmark & \checkmark \\
-	PBB Tags 	&   &   &   & \checkmark \\
-	Groups 		&   & \checkmark & \checkmark & \checkmark \\
-	Metering 	&   &   &   & \checkmark \\
-	\end{tabular}
-	\caption{Comparison of OpenFlow versions regarding key features for \acp{dvpn}.}
-	\label{tb:of-versions}	
-\end{table}
-
-Installation of flow entries is done by the controller, governed by the applications running on it. Applications can be written to provide functions like topology discovery, routing, etc. Moreover, without these installed applications, the network will be unable to forward any traffic. The interface between the applications and the controller is also being referred to as the `northbound interface'. This interface, in contrast to the southbound OpenFlow interface, has not been specified and varies between different controller implementations, limiting the portability of the network applications. A general overview of the \ac{sdn} architecture and OpenFlow is given in Figure~\ref{fig:of-arch}.
 
 \begin{figure}[!h]
 	\centering
@@ -126,28 +106,68 @@ Installation of flow entries is done by the controller, governed by the applicat
 	\label{fig:of-arch}
 \end{figure}
 
-To implement \acp{dvpn}, a combination of applications need to be installed on the controller that contemporary technologies solve using distributed protocols:
+Flow entries have been understandably compared to \acs{acl} entries, however it is also apparent that there are many more possibilities with regards to matching and performing actions. The frame fields that can be matched upon have changed over the lifetime of the OpenFlow specification. For example, version 1.0 could only match and/or act upon tagged traffic using a single outer-\acs{vlan} tag. Version 1.1 added matches and actions for Q-in-Q tags and \ac{mpls} labels, and version 1.3 could also match \ac{pbb} tags. See Table~\ref{tb:of-versions} for a comparison of key features in different versions of OpenFlow spec. 
 
-\begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries Topology Discovery}]
-	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network.
-	\item[\ac{dvpn} Provisioning] When a \ac{dvpn} is configured with member ports on different \acp{pe}, the \acp{pe} are configured to separate the \ac{dvpn} traffic using tags. The controller learns the \ac{mac} address of each \ac{ce} and configures flows on all \acp{pe} with the corresponding peer \acp{pe}.
-	\item[Path Provisioning] Using the discovered topology, paths are then setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. To provide \ac{mac} scalability over the backbone network, the traffic will need to be tagged not using \ac{pbb} or \ac{mpls} labels. In contrast with the contemporary technologies the \ac{p} routers also need to be updated using the forwarding information. After all, there are no distribution protocols running between the devices.
-	\item[Traffic Engineering] The path setup procedure can use data from the \ac{dvpn} and the discovered network resources to provide the most optimal path between the two \acp{pe}. Constraints for the paths taken by each \ac{dvpn} can be configured by the operator and influence the route selection directly over the whole platform.
-	\item[\acs{oam}] The controller and applications provide a complete overview of the network but troubleshooting and monitoring still has to be done at the network level as well. Different approaches can be taken to do so, one of which could be sending out periodic keep-alive messages in the same path from the controller down to the ingress \ac{pe} that the egress \ac{pe} should forward back up to the controller. Another example is implementing an already defined \ac{oam} protocol in OpenFlow, as has been done in \cite{of-oam} which implemented Ethernet 802.1ag \ac{oam}.
-	\item[\acs{cmac} Exchange] The \ac{vpn} provisioning applications already has taken care of learning the \acp{cmac} in the control plane. The \acp{pe} can be configured to either still flood the Unknown Unicast traffic that they receive, or drop it at ingress. A flow can also be installed matching on the \ac{arp} EtherType that sends the \ac{arp} request towards the controller. If the application also keeps track of the \ac{ip} addresses of the \acp{ce} it can then act as an \ac{arp} proxy and reply to the requesting \ac{ce} with the correct \ac{ip} address.
-\end{description}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{r|cccc}
+	 			& 1.0 & 1.1 & 1.2 & 1.3 \\
+	\hline
+	VLAN Tags 	& \checkmark & \checkmark & \checkmark & \checkmark \\
+	Q-in-Q Tags &   & \checkmark & \checkmark & \checkmark \\
+	MPLS Tags 	&   & \checkmark & \checkmark & \checkmark \\
+	PBB Tags 	&   &   &   & \checkmark \\
+	Groups 		&   & \checkmark & \checkmark & \checkmark \\
+	Rate limiting & \checkmark & \checkmark & \checkmark & \checkmark  \\
+	\end{tabular}
+	\caption{Comparison of OpenFlow versions regarding key features for \acp{dvpn}.}
+	\label{tb:of-versions}	
+\end{table}
+
+Note that rate limiting on a per port basis has been available in OpenFlow since version 1.0. Additionally, version 1.3 added support for per flow rate limiting using so called `meters' which can be assigned to specific flows. By doing so it becomes possible to also rate limit flows on certain aggregation ports rather than just at the ingress port of the \ac{ce}.
+
+The installation of flow entries is done by the controller, governed by the applications running on it. Applications can be written to provide functions like topology discovery, routing, etc. Moreover, without these installed applications, the network will be unable to forward any traffic. The interface between the applications and the controller is also being referred to as the `northbound interface'. This interface, in contrast to the southbound OpenFlow interface, has not been specified and varies between different controller implementations, limiting the portability of the network applications.
 
 Fast failover and \ac{ecmp} can be accomplished using the aforementioned port `groups', which are available since version 1.1. Groups can be defined as a destination in a flow entry and contains a list of ports. The type of group defines the action of the group: `\textbf{all}' sends the frame out the frame out of all ports in the group (broadcast/multicasting); `\textbf{select}' outputs it to one of the ports (providing \ac{ecmp}); `\textbf{indirect}' is a single port group which can be used by multiple flow entries (aggregation); and `\textbf{fast failover}' which choses the first \textsl{live} port out of which it will forward the frame. To support `fast failover' a \textsl{liveness monitoring} technique needs to be implemented supported by the switch. This could simply be the physical link state or more intricate tools, e.g.\ \ac{bfd}.
 
-Rate limiting of traffic was introduced in version 1.3 of the OpenFlow specification and it does so on a per flow basis. 
+Implementing \acp{dvpn} using OpenFlow relies mostly on the applications running on the controller. When they are written and configured as desired, provisioning a \ac{dvpn} would only require the input of the data. After which the applications and controller install flow entries into all the network devices in the \ac{dvpn} path, as can be seen in Figure~\ref{fig:nms-stack-of}.
 
-
-\begin{figure}[!h]
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=10cm]{./includes/nms-stack-of.pdf}
 	\caption{Provisioning a \ac{dvpn} using OpenFlow.}
 	\label{fig:nms-stack-of}
 \end{figure}
+
+\subsubsection{\acs{dvpn} Applications} % (fold)
+\label{ssub:dvpn_application}
+
+
+To implement \acp{dvpn}, a combination of applications need to be installed on the controller that contemporary technologies solve using distributed protocols:
+
+\begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries Topology Discovery}]
+	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network.
+	\item[\ac{dvpn} Provisioning] The \ac{dvpn} input will provide the application with at least the \ac{ce} port and preferably the corresponding \ac{mac} and/or \ac{ip} address. It can then instruct the path provisioning component to setup a path between the \acp{pe} participating in the \ac{dvpn}. The application is also concerned with keep the provided or dynamically learned \ac{mac} addresses up-to-date. Additionally, a flow can be installed matching on the \ac{arp} EtherType that sends the \ac{arp} request towards the controller. If the application also keeps track of the \ac{ip} addresses of the \acp{ce} it can then act as an \ac{arp} proxy and reply to the requesting \ac{ce} with the correct \ac{ip} address.
+	\item[Path Provisioning] Using the discovered topology, paths are then setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. To provide \ac{mac} scalability over the backbone network, the traffic will need to be tagged using \ac{pbb} or \ac{mpls} labels. In contrast with the contemporary technologies the \ac{p} devices also need to be updated using the forwarding information. After all, there are no distribution protocols running between the devices.
+	\item[Traffic Engineering] The path setup procedure uses data from the \ac{dvpn} input and the discovered network resources to provide the most optimal path between two \acp{pe}. Constraints for the paths taken by each \ac{dvpn} can be configured by the operator and influence the route selection directly over the whole platform. Also, using input from the \ac{oam} monitoring applications paths may be preferred or deprecated based on their performance.
+	\item[\acs{oam}] The controller and applications provide a complete overview of the network but troubleshooting and monitoring still has to be done at the network level as well. Different approaches can be taken to do so, one of which could be sending out periodic keep-alive messages in the same path from the controller down to the ingress \ac{pe} that the egress \ac{pe} should forward back up to the controller. Another example is implementing an already defined \ac{oam} protocol in OpenFlow, as has been done in \cite{of-oam} which implemented Ethernet 802.1ag \ac{oam}.
+\end{description}
+
+Regarding the tagging of traffic, the path provisioning application can choose either \ac{mpls} or \ac{pbb} tags. Using only 
+
+The interaction between the different applications has been illustrated in Figure~\ref{fig:dvpn-apps}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=10cm]{./includes/dvpn-apps.pdf}
+	\caption{Interactions between applications to implement \acp{dvpn}.}
+	\label{fig:dvpn-apps}
+\end{figure}
+
+Unlike contemporary technologies that require inter-device communication before any paths can be set up, the forwarding tables of OpenFlow devices are empty. The only prerequisite is that the devices all have a management connection to the controller from which they can receive their forwarding information.
+
+% subsubsection dvpn_applications (end)
+
 
 % subsection openflow (end)
 

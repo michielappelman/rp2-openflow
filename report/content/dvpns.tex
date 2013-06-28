@@ -104,14 +104,16 @@ A \ac{dvpn} instance consists of multiple member ports, which are identified by 
 \end{inparaenum}
 The exact algorithm used to choose the paths lies outside of the scope of this document. Paths are defined by the physical ports that they traverse through the network, with the \acp{pe} as the first or last in the list.
 
-When the path between two \acp{pe} has been setup for the \ac{dvpn}, it can be put in the \ac{dvpn} description. More paths may be added over different routes and paths may be adjusted during the lifetime of the \ac{dvpn}. This may for example be necessary when a certain link in the path fails, or when it nears its peak capacity and has to be rerouted. A simplified but complete information base diagram has been given in Figure~\ref{fig:infobase}. Individual port utilization will be monitored and when a certain link shows high utilization, the corresponding paths and \acp{dvpn} using those paths can be looked up using the information base. Also other monitoring and troubleshooting processes will profit from this information.
+When the path between two \acp{pe} has been setup for the \ac{dvpn}, it can be put in the \ac{dvpn} description. More paths may be added over different routes and paths may be adjusted during the lifetime of the \ac{dvpn}. This may for example be necessary when a certain link in the path fails, or when it nears its peak capacity and has to be rerouted. 
+%A simplified but complete information base diagram has been given in Figure~\ref{fig:infobase}. 
+Individual port utilization will be monitored and when a certain link shows high utilization, the corresponding paths and \acp{dvpn} using those paths can be looked up using the information base. Also other monitoring and troubleshooting processes will profit from this information.
 
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=10cm]{./includes/infobase.pdf}
-	\caption{Information base of a \ac{dvpn}.}
-	\label{fig:infobase}
-\end{figure}
+%\begin{figure}[!h]
+%	\centering
+%	\includegraphics[width=10cm]{./includes/infobase.pdf}
+%	\caption{Information base of a \ac{dvpn}.}
+%	\label{fig:infobase}
+%\end{figure}
 
 After the complete paths between \acp{pe} with \ac{dvpn} members have been setup the traffic can start flowing. However, as has been mentioned before, the rate limiting feature will need to be applied to the ingress ports to prevent the \ac{dvpn} from using up all the networks resources. 
 
