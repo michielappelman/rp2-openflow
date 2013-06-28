@@ -148,12 +148,10 @@ To implement \acp{dvpn}, a combination of applications need to be installed on t
 \begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries Topology Discovery}]
 	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network.
 	\item[\ac{dvpn} Provisioning] The \ac{dvpn} input will provide the application with at least the \ac{ce} port and preferably the corresponding \ac{mac} and/or \ac{ip} address. It can then instruct the path provisioning component to setup a path between the \acp{pe} participating in the \ac{dvpn}. The application is also concerned with keep the provided or dynamically learned \ac{mac} addresses up-to-date. Additionally, a flow can be installed matching on the \ac{arp} EtherType that sends the \ac{arp} request towards the controller. If the application also keeps track of the \ac{ip} addresses of the \acp{ce} it can then act as an \ac{arp} proxy and reply to the requesting \ac{ce} with the correct \ac{ip} address.
-	\item[Path Provisioning] Using the discovered topology, paths are then setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. To provide \ac{mac} scalability over the backbone network, the traffic will need to be tagged using \ac{pbb} or \ac{mpls} labels. In contrast with the contemporary technologies the \ac{p} devices also need to be updated using the forwarding information. After all, there are no distribution protocols running between the devices.
+	\item[Path Provisioning] Using the discovered topology, paths are then setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. To provide \ac{mac} scalability over the backbone network, the traffic will need to be tagged using either \ac{pbb} or \ac{mpls} labels. In contrast with the contemporary technologies the \ac{p} devices also need to be updated using the forwarding information. After all, there are no distribution protocols running between the devices.
 	\item[Traffic Engineering] The path setup procedure uses data from the \ac{dvpn} input and the discovered network resources to provide the most optimal path between two \acp{pe}. Constraints for the paths taken by each \ac{dvpn} can be configured by the operator and influence the route selection directly over the whole platform. Also, using input from the \ac{oam} monitoring applications paths may be preferred or deprecated based on their performance.
 	\item[\acs{oam}] The controller and applications provide a complete overview of the network but troubleshooting and monitoring still has to be done at the network level as well. Different approaches can be taken to do so, one of which could be sending out periodic keep-alive messages in the same path from the controller down to the ingress \ac{pe} that the egress \ac{pe} should forward back up to the controller. Another example is implementing an already defined \ac{oam} protocol in OpenFlow, as has been done in \cite{of-oam} which implemented Ethernet 802.1ag \ac{oam}.
 \end{description}
-
-Regarding the tagging of traffic, the path provisioning application can choose either \ac{mpls} or \ac{pbb} tags. Using only 
 
 The interaction between the different applications has been illustrated in Figure~\ref{fig:dvpn-apps}.
 
@@ -170,33 +168,5 @@ Unlike contemporary technologies that require inter-device communication before 
 
 
 % subsection openflow (end)
-
-\HRule
-
-The features and limitations of the three discussed technologies are given in Table~\ref{tb:reqs}. They are compared to the list of requirements as discussed in Section~\ref{sec:dvpns}. Section~\ref{sec:results} will continue with an evaluation of the three architectures.
-
-\begin{table}[h]
-	\centering
-	\begin{tabular}{r|lll}
-	 & \acs{spb} & \acs{mpls} & OpenFlow / \acs{sdn}\\
-	\hline
-	Tagging of VPN Traffic & \acs{pbb} & \acs{vpls} & \acs{pbb} / \acs{mpls}\\
-	MAC Scalability & yes & yes & yes\\
-	Topology Discovery & \acs{isis} & \acs{ospf} & application\\
-	Path Provisioning & \acs{spt} & \acs{rsvp} / \acs{ldp} & application\\
-	Traffic Engineering & no & \acs{rsvp} & application\\
-	\ac{ecmp} & limited & yes & yes, using Groups\\
-	\ac{bum} limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
-	Exchange \acsp{cmac} & no & \ac{evpn} (draft) & application\\
-	Traffic Rate Limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
-	Fast Failover & no & \acs{frr} & yes, using Groups\\
-	\acs{oam} & 802.1ag & \acs{lsp} Ping / \acs{bfd} & application\\
-	\hline
-	Forwarding Decision & \acs{pbb} tags & \acs{mpls} labels & flow entry \\
-	\ac{bum} traffic handling & flood & flood & sent to controller\\
-	\end{tabular}
-	\caption{Feature requirements available in discussed technologies.}
-	\label{tb:reqs}
-\end{table}
 
 % section implementation (end)

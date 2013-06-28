@@ -2,15 +2,35 @@
 \section{Results} % (fold)
 \label{sec:results}
 
-\subsection{Contemporary Implementations} % (fold)
-\label{sub:contemporary_implementations}
+The features and limitations of the three discussed technologies in Section~\ref{sec:implementation} are given in Table~\ref{tb:reqs}. In this section we will evaluate them against the requirements set forth in Section~\ref{sec:dvpns}.
 
-%%% ATM %%
-%
-%As mentioned, \ac{atm} provides \ac{qos} to the network operators and it also allows for the granular control of network paths -- called circuits -- but at a price. The \acp{vc} in an \ac{atm} network have to be tightly managed for the network to function properly, which limits its dynamism and scalability. Together with the Ethernet/\acs{ip} interoperability issues (causing it to move into increasing disuse), \ac{atm} does not make it a viable candidate to implement \acp{dvpn}.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{r|lll}
+	 & \acs{spb} & \acs{mpls} & OpenFlow / \acs{sdn}\\
+	\hline
+	Tagging of VPN Traffic & \acs{pbb} & \acs{vpls} & \acs{pbb} / \acs{mpls}\\
+	MAC Scalability & yes & yes & yes\\
+	Topology Discovery & \acs{isis} & \acs{ospf} & application\\
+	Path Provisioning & \acs{spt} & \acs{rsvp} / \acs{ldp} & application\\
+	Traffic Engineering & no & \acs{rsvp} & application\\
+	\ac{ecmp} & limited & yes & yes, using Groups\\
+	\ac{bum} limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
+	Exchange \acsp{cmac} & no & \ac{evpn} (draft) & application\\
+	Traffic Rate Limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
+	Fast Failover & no & \acs{frr} & yes, using Groups\\
+	\acs{oam} & 802.1ag & \acs{lsp} Ping / \acs{bfd} & application\\
+	\hline
+	Forwarding Decision & \acs{pbb} tags & \acs{mpls} labels & flow entry \\
+	\ac{bum} traffic handling & flood & flood & sent to controller\\
+	\end{tabular}
+	\caption{Feature requirements available in discussed technologies.}
+	\label{tb:reqs}
+\end{table}
 
-%% SPB %%
 
+\subsection{\acs{spb}} % (fold)
+\label{sub:spb}
 
 Simplicity of setup comes at a cost:
 \begin{itemize}
@@ -19,13 +39,17 @@ Simplicity of setup comes at a cost:
 	\item no fast failover
 \end{itemize}
 
-%% MPLS %%
+% subsection spb (end)
 
-
+\subsection{\acs{mpls}} % (fold)
+\label{sub:mpls}
 
 Because of its extensibility the \ac{mpls} technology and the added protocols and tools, it is commonly used in \acp{cen} as an alternative to legacy \acs{atm} and \acs{sdh} networks. With added features such as \ac{ecmp}, \ac{frr} and explicit routing it has proven to be a technology fit for carriers to transport critical application traffic over large networks
 
-% subsection contemporary_implementations (end)
+
+
+% subsection mpls (end)
+
 
 \subsection{OpenFlow} % (fold)
 \label{sub:openflow}
