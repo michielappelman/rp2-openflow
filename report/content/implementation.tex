@@ -26,15 +26,15 @@ what can provide what function for DVPNs?
 \subsubsection{\acs{spb}} % (fold)
 \label{ssub:spb}
 
-\ac{spb} is an evolution of the original \acs{ieee} 802.1Q \ac{vlan} standard. \ac{vlan} tags have been in use in the networking world for a long time and provide decent separation in campus networks. However, when \ac{vlan}-tagging was done at the customer network, the carrier couldn't separate the traffic from different customers anymore. This resulted in 802.1Qad or Q-in-Q which added an S-\ac{vlan} tag to separate the client \acp{vlan} from the \ac{sp} \acp{vlan} in the backbone. This was usable for the Metro Ethernet networks for awhile but when \acp{sp} started providing this services to more and more customers, their backbone switches could not keep up with the clients \ac{mac} addresses.
+\ac{spb} is an evolution of the original \acs{ieee} 802.1Q \ac{vlan} standard. \ac{vlan} tags have been in use in the networking world for a long time and provide decent separation in campus networks. However, when \ac{vlan}-tagging was done at the customer network, the carrier couldn't separate the traffic from different customers anymore. This resulted in 802.1Qad or Q-in-Q which added an S-\ac{vlan} tag to separate the client \acp{vlan} from the \ac{sp} \acp{vlan} in the backbone. This was usable for the Metro Ethernet networks for a while but when \acp{sp} started providing this services to more and more customers, their backbone switches could not keep up with the clients \ac{mac} addresses.
 
-To provide the required \acs{mac} scalability problem \ac{pbb} (802.1Qay or \ac{mac}-in-\ac{mac}) was introduced. It encapsulates the whole Ethernet frame on the edge of the carrier network and forwards the frame based on the Backbone-\ac{mac}, Backbone-\ac{vlan} and the I-SID. The I-SID is a Service Instance Identifier, which with 24 bits is able to supply the carrier with 16 million separate networks. The downside of \ac{pbb} remained one that is common to all Layer 2 forwarding protocols: the possibility of loops. Preventing them requires \ac{stp} which will disable links to get a loop-free network. Disadvantages of \ac{stp} include the relatively long convergence time and inefficient use of resources due to the disabled links. This final problem was solved by using \acs{isis} as a routing protocol to distributed the topology and creating \acp{spt} originating from each edge device. This is called \ac{spb} or 802.1aq.
+To provide the required scalability with regard to \acp{mac} in the backbone, \ac{pbb} (802.1Qay or \ac{mac}-in-\ac{mac}) was introduced. It encapsulates the whole Ethernet frame on the edge of the carrier network and forwards the frame based on the Backbone-\ac{mac} of the egress \ac{pe}. It also separated client \acp{vpn} using a Service Instance Identifier (I-SID), which with 24 bits is able to supply the carrier with 16 million separate networks. The downside of \ac{pbb} remained one that is common to all Layer 2 forwarding protocols: the possibility of loops. Preventing them requires \ac{stp} which will disable links to get a loop-free network. Disadvantages of \ac{stp} include the relatively long convergence time and inefficient use of resources due to the disabled links. This has been solved by using \acs{isis} as a routing protocol to discover the network topology. After which each \ac{pe} creates a \acp{spt} originating from each edge device to every other \ac{pe}. This is called \ac{spb} or 802.1aq.
 
 \ac{spb} benefits from the maturity of the Ethernet protocol by reusing protocols for \ac{oam} and \ac{pm}. This allows for fast error detection and extensive troubleshooting tools by using the \ac{ieee} 802.1ag and \ac{itut} Y.1731 standards respectively. The \ac{isis} implementation has also been adapted to rapidly detect errors however, no fast recovery function has been defined, besides complete \ac{isis} reconvergence. This would result in a traffic impact of several hundreds of milliseconds in large networks \cite{spb-nanog}. 
 
-However, due to its Ethernet \acs{stp} forwarding-based nature it lacks \ac{te} features. The paths that the \ac{vpn} traffic takes are not explicitly configureable and provide limited scalability due to limited amounts of available paths (or trees in this case). This also negatively affects its \ac{ecmp} functionalities, which are limited by the available paths as well. However, using extensible \ac{ect} algorithms, future, additional algorithms with multiple paths maybe introduced \cite{rfc6329}.
+However, due to its Ethernet \acs{stp} forwarding-based nature it lacks \ac{te} features. The paths that the \ac{vpn} traffic takes are not explicitly configureable and provide limited scalability due to limited amounts of available paths (or trees in this case). As such, operators can not define constraints or explicit paths to take over the network to distribute traffic in an efficient manner. The lack of available paths also negatively affects its \ac{ecmp} functionalities. However, future, additional algorithms with multiple paths maybe introduced using extensible \ac{ect} algorithms \cite{rfc6329}.
 
-Provided that \ac{isis} has been configured on all provider devices, Figure~\ref{fig:spb-stack} illustrates the interfaces needed to provision a \ac{dvpn} in \ac{spb}. First, the I-SID has to be defined on all \acp{pe}, which in turn will setup \acp{spt} towards the other participating \acp{pe}. The member \ac{ce} ports then need to be added to the I-SID after which the \acp{vpn} is established. The rate limiting of the \ac{ce} ports is a vendor-specific feature, however and may vary per hardware platform.
+Provided that \ac{isis} has been configured on all provider devices, Figure~\ref{fig:spb-stack} illustrates the interfaces needed to provision a \ac{dvpn} in \ac{spb}. First, the I-SID has to be defined on all \acp{pe}, which in turn will setup \acp{spt} towards the other participating \acp{pe}. The member \ac{ce} ports then need to be added to the I-SID after which the \ac{vpn} is established. The rate limiting of the \ac{ce} ports is a vendor-specific feature however, and may vary per hardware platform.
 
 \begin{figure}[!h]
 	\centering
@@ -88,13 +88,17 @@ The procedure above implies that the backbone network has been setup with the fo
 \subsection{OpenFlow} % (fold)
 \label{sub:openflow}
 
-Section~\ref{sec:introduction} gave a short introduction into what \ac{sdn} and OpenFlow entail and what it promises in terms of cost savings and agility. \acl{sdn} is the general principle of designing flexible networks using open interfaces towards the hardware. The complete architecture is being generalized by the networking industry within the OpenDaylight project \cite{opendaylight}. Looking at OpenFlow itself from a more technical point of view, it boils down to a protocol used to program the forwarding plane in networking devices from a centralized server called the `controller'. 
+Section~\ref{sec:introduction} gave a short introduction into what \ac{sdn} and OpenFlow entail and what it promises in terms of cost savings and agility. \acl{sdn} is the general principle of designing flexible networks using open interfaces towards the hardware. OpenFlow is a subcomponent of this new principle which provides a protocol between the forwarding plane of the networking devices and a centralized controller. Essentially, taking over the role of the distributed control planes of the network devices. OpenFlow provides the controller with an \ac{api} that can be used to install flow entries directly in the forwarding plane of the devices (also called the `southbound interface'). Flow entries consist of three fields:
 
-The momentum that \ac{sdn} is getting might be explained by a general need for change in the networking industry. Operators primarily want to get more control over their networks, something which using the current stack of protocols is relatively complicated to get. The original \acs{osi} reference model \cite{zimmermann} touches on the ``Management Aspects'' of each layer in the model, a way for management entities in the highest layer to control the behavior of lower layers. Unfortunately in the swift evolution of \ac{tcp}/\ac{ip}, these management interfaces are often limited or absent all together. 
+\begin{description}
+	\item[Match] This field contains a list of frame/packet characteristics that will need to be present to match to this entry, e.g.\ \ac{da}, \ac{ip} source address or \ac{mpls} tags.
+	\item[Actions] When a frame is matched using the match field, it is processed according to an action list. Actions may include forwarding out of a port, rewriting headers and/or popping labels.
+	\item[Counters] Frames matching to this entry are counted for monitoring purposes.
+\end{description}
 
-This means that through protocols such as \ac{rsvp}-TE, operators are trying to get control over the lower levels of the networking stack. 
+Flow entries have been understandably compared to \acs{acl} entries, however it is also apparent that there are many more possibilities with regards to matching and performing actions. The frame fields that can be matched upon has changed over the lifetime of the OpenFlow specification. For example, version 1.0 could only match or act upon tagged traffic using a single outer-\acs{vlan} tag. Version 1.1 added matches actions for Q-in-Q tags and \ac{mpls} labels, and version 1.3 could also match \ac{pbb} tags. 
 
-The OpenFlow controller provides operators with an alternative to these interfaces, namely a programmable forwarding plane. 
+Also not included in version 1.0 were mechanisms to allow for fast failover and \ac{ecmp}. These were added in version 1.1 by introducing logical groups of ports to which a flow entry can forward the frame. However, to support fast failover a \textsl{liveness monitoring} technique will need to be implemented supported by the switch. This could simply be the physical link state or more intricate tools, e.g.\ \ac{bfd}. Metering and rate limiting of traffic per flow was also not specified until version 1.3. See Table~\ref{tb:of-versions} for a comparison of key features in different versions of OpenFlow spec. 
 
 \begin{table}[h]
 	\centering
@@ -112,7 +116,23 @@ The OpenFlow controller provides operators with an alternative to these interfac
 	\label{tb:of-versions}	
 \end{table}
 
-The OpenFlow specification has been through a few revisions since it was first proposed. In the first version tagging of traffic was only support using a single \acs{vlan} tag. Version 1.1 added matches for \ac{mpls} and Q-in-Q tags, and version 1.3 could also match \ac{pbb} tags. Also not included in version 1.0 were mechanisms to allow for fast failover and \ac{ecmp}. These were added in version 1.1 by introducing logical groups of ports to which a flow entry can forward the frame. However, to support fast failover a \textsl{liveness monitoring} technique will need to be implemented supported by the switch. This could simply be the physical link state or more intricate tools, e.g.\ \ac{bfd}. See also Table~\ref{tb:of-versions}. 
+Installation of flow entries is done by the controller, governed by the applications running on it. Applications can be written to provide functions like topology discovery, routing, etc. Moreover, without these installed applications, the network will be unable to forward any traffic. The interface between the applications and the controller is also being referred to as the `northbound interface'. This interface, in contrast to the southbound OpenFlow interface, has not been specified and varies between different controller implementations, limiting the portability of the network applications.
+
+To implement \acp{dvpn}, a couple of applications need to be written that contemporary technologies implement using available protocols:
+
+\begin{description}
+	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network.
+	\item[Path Provisioning] When the topology is known, another application can use this information to set up routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. To provide \ac{mac} scalability over the backbone network, the traffic will need to be tagged not using C-\ac{vlan} tags but tags like \ac{pbb} or \ac{mpls} labels. In contrast with the contemporary technologies the \ac{p} routers also need to be updated using the forwarding information. After all, there are no distribution protocols running between the devices.
+	\item[Traffic Engineering] The path setup procedure can use data from the \ac{dvpn} and the discovered network resources to provide the most optimal path between the two \acp{pe}. Constraints for the paths taken by each \ac{dvpn} can be configured by the operator and influence the route selection directly over the whole platform.
+	\item[\acs{oam}] The controller and applications provide a complete overview of the network but troubleshooting and monitoring still has to be done at the network level as well. Different approaches can be taken to do so, one of which could be sending out periodic keep-alive messages in the same path from the controller down to the ingress \ac{pe} that the egress \ac{pe} should forward back up to the controller. Another example is implementing an already defined \ac{oam} protocol in OpenFlow, as has been done in \cite{of-oam} which implemented Ethernet 802.1ag \ac{oam}.
+	\item[\acs{cmac} Distribution] 
+\end{description}
+
+Fast failover of routes and \ac{ecmp} can be done using the aforementioned port `groups', which are available since version 1.1. 
+
+This means that through protocols such as \ac{rsvp}-TE, operators are trying to get control over the lower levels of the networking stack. 
+
+The OpenFlow controller provides operators with an alternative to these interfaces, namely a programmable forwarding plane.
 
 \begin{figure}[!h]
 	\centering
@@ -122,6 +142,8 @@ The OpenFlow specification has been through a few revisions since it was first p
 \end{figure}
 
 % subsection openflow (end)
+
+\HRule
 
 The features and limitations of the three discussed technologies are given in Table~\ref{tb:reqs}. They are compared to the list of requirements as discussed in Section~\ref{sec:dvpns}. Section~\ref{sec:results} will continue with an evaluation of the three architectures.
 
@@ -145,7 +167,7 @@ The features and limitations of the three discussed technologies are given in Ta
 	Forwarding Decision & \acs{pbb} tags & \acs{mpls} labels & flow entry \\
 	\ac{bum} traffic handling & flood & flood & sent to controller\\
 	\end{tabular}
-	\caption{Required features and corresponding available technologies.}
+	\caption{Feature requirements available in discussed technologies.}
 	\label{tb:reqs}
 \end{table}
 
