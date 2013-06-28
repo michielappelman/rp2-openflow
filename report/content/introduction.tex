@@ -13,19 +13,19 @@ When these obstacles are eventually overcome the setup that will result from thi
 
 To manage resources efficiently in a carrier network operators have been using \acp{vpn} between customers. By differentiating traffic between \acp{vpn} they can control their traffic flow at a granular level. However, the set of interactions between different protocols and management interfaces to them are complex. The provisioning of \acp{vpn} requires expertise and a significant amount of changes to those protocols. Until recently operators were not concerned by this rigidness as their networks were in fact primarily static. However, the demand for application specific networks is growing and operators are looking for a more flexible approach in the form of \acp{dvpn}. \acp{dvpn} are private networks over which end-users can communicate, deployed by their common \ac{sp}. They differ from normal \acp{vpn} in the sense that they are relatively short-lived. Using \acp{dvpn}, \acp{sp} can react more swiftly to customer requests to configure, adjust or tear down their \acp{vpn}. However, due to the aforementioned complexity \acp{dvpn} services have not been implemented on a large scale.
 
-A potential candidate to solve the complexity of implementing \acp{dvpn} is OpenFlow \cite{openflow} and \ac{sdn}. \ac{sdn} is a relatively new architecture to allow for the programmability of networks. The architecture is not standardized but a generalized structure has been given in the OpenDaylight project \cite{opendaylight} which also includes OpenFlow as can been seen in Figure~\ref{fig:opendaylight}. OpenFlow is a lower level and increasingly supported \ac{api} protocol towards networking devices. Implementing the \ac{sdn} architecture promises
+A potential candidate to solve the complexity of implementing \acp{dvpn} is OpenFlow \cite{openflow} and \ac{sdn}. \ac{sdn} is a relatively new architecture to allow for the programmability of networks. The architecture is not standardized but a generalized structure has been given in the OpenDaylight project \cite{opendaylight}. OpenFlow is a lower level and increasingly supported \ac{api} protocol towards networking devices. Implementing the \ac{sdn} architecture promises
 \begin{inparaenum}[\itshape a\upshape)]
 	\item CAPEX savings due to hardware being more generic and flexible,
 	\item OPEX savings because of the integration of \acp{nms} and the control interface of the devices, thereby increasing automation, and
 	\item increased network agility by using the open interfaces to program network devices directly \cite{packet-circuit}.
 	\end{inparaenum} 
 
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=10cm]{./includes/opendaylight.jpg}
-	\caption{The proposed OpenDaylight architecture.}
-	\label{fig:opendaylight}
-\end{figure}
+%\begin{figure}[!h]
+%	\centering
+%	\includegraphics[width=10cm]{./includes/opendaylight.jpg}
+%	\caption{The proposed OpenDaylight architecture.}
+%	\label{fig:opendaylight}
+%\end{figure}
 	
 The momentum that \ac{sdn} is getting might be explained by a general need for change in the networking industry. Operators primarily want to get more control over their networks, something which using the current stack of protocols is relatively complicated to get. The original \acs{osi} reference model \cite{zimmermann} touches on the ``Management Aspects'' of each layer in the model, a way for management entities in the highest layer to control the behavior of lower layers. Unfortunately in the swift evolution of \ac{tcp}/\ac{ip}, these management interfaces are often limited or absent all together. 
 
