@@ -130,3 +130,10 @@ RP2 Log
 ------------
  - finished the report up until the implementation of OpenFlow
 
+28 june 2013
+------------
+ - missed an appointment with Rudolf but he hadn't checked the whole report yet anyway
+ - besides, got a lot of work done
+ - content for implementation done, start of the results, made different graphics
+ - incorporated the comments that Rudolf did have into the document
+
