@@ -137,3 +137,9 @@ RP2 Log
  - content for implementation done, start of the results, made different graphics
  - incorporated the comments that Rudolf did have into the document
 
+29 june 2013
+------------
+ - added some facts wrt MPLS FRR
+ - some details on OF fast failover
+ - explained local significance
+ - starting on MPLS/OF comparison
