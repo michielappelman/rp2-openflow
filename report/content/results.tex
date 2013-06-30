@@ -55,7 +55,7 @@ To get an overview of the key differences between the two architectures we will 
 \subsubsection{Service} % (fold)
 \label{ssub:service}
 
-From a customer point-of-view it should be of no concern how the \ac{dvpn} service is implemented on the provider network. Moreover, the \acp{pe} and the rest of provider network should be completely transparent. As such, the two technologies do not show any difference in their implementation. Both technologies are able to 
+From a customer point-of-view it should be of no concern how the \ac{dvpn} service is implemented in the provider network. Moreover, the \acp{pe} and the rest of provider network should be completely transparent. As such, the two technologies do not show any difference in their implementation. Both technologies are able to 
 \begin{inparaenum}[\itshape 1\upshape)]
 	\item provide a Layer 2 broadcast domain,
 	\item connect \acp{ce} without any required \ac{vpn} configuration on them, and
@@ -67,20 +67,31 @@ From a customer point-of-view it should be of no concern how the \ac{dvpn} servi
 \subsubsection{Transport} % (fold)
 \label{ssub:transport}
 
+Both implementations use \ac{mpls} labels to transport frames through the network. By using labels to identify and route traffic over paths instead of a hop-by-hop based routing protocol that uses an egress \ac{pe} identifier, both technologies allow for granular \ac{te} features.   The usage of paths also means that the \acp{p} will forward the traffic without relying on or being aware of any \acp{cmac}, providing scalability. OpenFlow supports \ac{mpls} labels since version 1.1. Version 1.0 can only separate traffic using C-\ac{vlan} tags, which means that 
+\begin{inparaenum}[\itshape a\upshape)]
+	\item the customer \acp{mac} will need to be present in the backbone, 
+	\item the customer can not use \acp{vlan} over the provider network, and
+	\item forwarding will be based on the egress \ac{pe}, not the path, eliminating \ac{te}.
+\end{inparaenum}
+This latter limitation can of course be overcome using more specific match entries for every traffic flow that needs to be forwarded in certain way, however this would negate the benefit of using \ac{mpls} labels to minimize the amount of flows needed in the backbone. These specific flows are called `microflows' and while giving more precise control over traffic, they will fill up the flow tables of \acp{p} fairly quickly in a provider network with thousands of customers. The only way for OpenFlow to scale up to a carrier network level is by using version 1.1 or later.
 
+Comparing \ac{mpls} to the \ac{vc}-based \ac{atm} protocol which required configuration of \acp{vc} throughout the network, we find that \ac{mpls} has the benefit of automatically distributing labels which allows for scalable and easily configurable carrier networks. The \acp{lsp} in \ac{mpls} are very comparable to the \acp{vc} of \ac{atm} \cite{mpls-tunnels}. Managing and configuring \acp{vc} was a problem in the \ac{atm} days though, mainly because of the lack of integration between the \ac{atm} switches and \ac{ip} routers. So \ac{ldp} was a huge advantage in the eyes of the carriers in the early days of \ac{mpls}. However, with the advent of explicit routes using \ac{rsvp} for \acl{te}, operators are now trying to do away with the automatic paths setup by \ac{ldp}. With these strict forwarding controls they are but a small step removed from once again manually setting up \acp{vc}. 
 
-MPLS:
-\begin{itemize}
-	\item large stack of labels (MPLS, VPLS, FRR)
-	\item MAC learning in control in draft E-VPN
-\end{itemize}
+As mentioned before, OpenFlow will also need to provide path-based forwarding to provide scalability in the network and this has to be implemented with strict control over the labels in each \ac{pe} and \ac{p}. However, the advantage that operators have today is that the complete control plane of the network will be in the OpenFlow controller and its applications. The \ac{atm} setup required separate management for the \ac{atm} switches and the \ac{ip} routing subsystems such as the \ac{igp} and \ac{bgp} with limited integration between the two.
 
-OF:
+Discovering the network topology of a distributed network requires connectivity between the devices on Layer 2 or 3 (depending on the \ac{igp}) before any information can be exchanged. 
+
+\acl{te} 
+
+ECMP
+
+FRR
 \begin{itemize}
 	\item Lacks standard for liveness monitoring in forwarding plane - and over complete paths.
-	\item MAC Scalability only from 1.0 onwards.
-	\item 1.0 supported almost everywhere, 1.1 and 1.2 are not. 1.3 slowly coming.
 \end{itemize}
+
+MAC learning in control in draft E-VPN
+
 
 % subsubsection transport (end)
 
@@ -98,7 +109,16 @@ OF:
 \begin{itemize}
 	\item initial setup nonexistent, no VPNs = no flows (except LLDP/OAM)
 	\item DVPN setup: every PE with member port + Ps in path
+	\item 1.0 supported almost everywhere, 1.1 and 1.2 are not. 1.3 slowly coming. 
+	\item TE more intricate algorithms on faster hardware (knapsack problem)
 \end{itemize}
+
+1.3 Controllers:
+Ryu by NTT \cite{ryu}
+NOX extensions by CPqD research center from Brasil \cite{cpqd}
+M\"{u}L from kulcloud (South-Korea) is coming \cite{mul}
+
+OpenDaylight controller still lacks 1.3 support
 
 \HRule
 

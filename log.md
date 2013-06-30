@@ -143,3 +143,7 @@ RP2 Log
  - some details on OF fast failover
  - explained local significance
  - starting on MPLS/OF comparison
+
+30 june 2013
+------------
+ - comparison is taking a bit longer than I thought because of details that I need to look up for a factual story.
