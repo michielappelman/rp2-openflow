@@ -42,7 +42,7 @@ To summarize, from a service level perspective a \ac{dvpn} needs to provide a ne
 \subsection{Transport} % (fold)
 \label{sub:transport}
 
-Transporting a Layer 2 frame between two \acp{ce} starts at the \ac{pe}. The ingress \ac{pe} learns the \ac{sa} of the frame behind the port connected to the \ac{ce}, then it needs to forward the frame to the \ac{pe} where the \ac{da} is present. It will need to do so while separating the traffic from other \acp{dvpn}, it has to make the traffic unique and identifiable from the rest of the \acp{vpn} transported over the network. This is done at \ac{pe}1 in Figure~\ref{fig:vpn-traffic}, by giving the frame some sort of `color' or `tag' specific to the customer \ac{dvpn}. Additionally \ac{pe}1 presumes the that \ac{p} devices are not aware of the \ac{dvpn} and do not know the \ac{cmac} addresses. This is because the network will have to scale to thousands of \acp{dvpn} and possibly millions of \acp{cmac} divided over those \acp{dvpn}. To provide this so called \acs{mac} Scalability, only \acp{pe} should learn the \acp{cmac} and the backbone will forward frames based on \ac{pe} endpoints.
+Transporting a Layer 2 frame between two \acp{ce} starts at the \ac{pe}. The ingress \ac{pe} learns the \ac{sa} of the frame behind the port connected to the \ac{ce}, then it needs to forward the frame to the \ac{pe} where the \ac{da} is present. It will need to do so while separating the traffic from other \acp{dvpn}, it has to make the traffic unique and identifiable from the rest of the \acp{vpn} transported over the network. This is done at \ac{pe}1 in Figure~\ref{fig:vpn-traffic}, by giving the frame some sort of `color' or `tag' specific to the customer \ac{dvpn}. Additionally \ac{pe}1 presumes the that \ac{p} devices are not aware of the \ac{dvpn} and do not know the \ac{cmac} addresses. This is because the network will have to scale to thousands of \acp{dvpn} and possibly millions of \acp{cmac} divided over those \acp{dvpn}. To provide this so called \acs{mac} Scalability, only \acp{pe} should learn the \acp{cmac} and the backbone will forward frames based on \ac{pe} endpoints. Forwarding through the provider network happens based on a prefixed header indicating the endpoint \ac{pe} or the specific path towards that \ac{pe}.
 
 \begin{figure}[!h]
 	\centering
@@ -101,7 +101,7 @@ To sum up the requirements discussed in this section, the network needs to provi
 \subsection{Provisioning} % (fold)
 \label{sub:provisioning}
 
-Before implementing a \ac{dvpn} in the network, the network first has to become converged. Meaning that the topology of the complete network is known and that paths can be created over this topology. 
+%Before implementing a \ac{dvpn} in the network, the network first has to become converged. Meaning that the topology of the complete network is known and that paths can be created over this topology. 
 
 A \ac{dvpn} instance consists of multiple member ports, which are identified by their \ac{pe} device and the port on that \ac{pe}. The instance also contains values for its minimum and maximum available bandwidth which can be used to determine the paths that the \ac{dvpn} will get assigned. When member ports reside on different \acp{pe}, a bidirectional path will need to be created through the network. The route of the path will depend on 
 \begin{inparaenum}[\itshape a\upshape)]
@@ -127,6 +127,7 @@ After the complete paths between \acp{pe} with \ac{dvpn} members have been setup
 To provision \acp{dvpn} in the network, the \ac{nms} in short should be able to:
 
 \begin{enumerate}
+	\item setup the base network required for \ac{dvpn} routing,
 	\item take input as certain ports to be placed in a \ac{dvpn},
 	\item determine routes that can be used for the paths,
 	\item monitor links and reroute paths on failure or peak capacity,

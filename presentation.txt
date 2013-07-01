@@ -1,0 +1,121 @@
+Introduction:
+
+Observations:
+Due to the scale of carrier networks, operators are forced to use NMSs to configure their networks. These NMSs are customized to their needs and services, which means that when new services are added or old ones adapted, they will need to rewrite a large part of the NMS. Also when a new protocol needs to be configured throughout the network, additional expertise is needed to document the interactions between the existing protocols.
+
+Use of VPNs for resource management in Carrier Networks, separate traffic from certain locations or customers to route in an efficient manner. To implement these services a lot of additional protocols and techniques have been defined and are being defined as we speak. The intricate dependencies of these protocols make for an complex stack of protocols which the NMS needs to support from top to bottom.
+
+This complexity yielded networks that are both very specific for the services that they provide but also very inflexible because of this specificity. This didn't bother operators much as the network was stable and fairly under control, but lately we have seen the growing demand for application specific VPNs, such as video and voice, but also payment networks. Next to being specific these VPNs are also dynamic, clients may want to use their connection to have a video conference one day, and for a bulk file transfer the other day. These virtual networks are called DVPNs and differ from the non-dynamic siblings in that the can be configured, adjusted and deleted from the carrier network all in a very shirt time span: say, a couple of minutes.
+
+Problem: 
+To implement DVPNs we first have to solve the previous problems:
+- Management is complex 
+- Lack of control
+
+Potential Solution:
+You know what the next slide is going to be. How can we solve this problem? 
+
+OpenFlow and SDN
+- SDN = architecture to program the network
+- OpenFlow = API towards forwarding plane
+
+Momentum for SDN is explained by the general need for change in the networking industry. Operators do struggle with complex management and control over their network. In fact original OSI model defined a control mechanism in the upper layer, but this function has been lost.
+
+However, although SDN is always a potential solution for everything, researchers overlook the state of the art that has brought us so far already. On the other hand, nay-sayers in the industry have criticized its lack of support by available hardware. This research will focus purely on the architectural implementation, doing away with the zealous hype but also looking past the obvious "it's unsupported" argument.
+
+Research Questions:
+And so we're going to look at the follow questions:
+
+Can DVPNs be implemented using contemporary technologies? And if so, how? What are the limitations/drawbacks?
+
+What would be the benefit of using OF to implement DVPNs? Can it actually implement DVPNs? How? Limitations/Drawbacks? And will it add the promised flexibility and control?
+
+DVPNs:
+
+Service:
+
+What will this service look like?
+- Provider provisioned VPN (PPVPN) over a backbone network,
+- Layer 2 Ethernet broadcast domain, including forwarding of broadcast and multicast traffic
+- completely transparent to the Customer.
+- Also no routing information to be exchanged, so customers can choose their own version of IP and their own addresses.
+
+Specifically, when two CEs are added to the same DVPN, they will see each other as direct neighbors on Layer 2 and are able to communicate directly. Doesn't sound that challenging.
+
+Transport:
+
+Transparently transporting frames from one CE to another requires encapsulation of the Ethernet frame of 
+
+Most of you will be familiar with the setup in this image but let me quickly go over the steps that need to be taken to forward L2 DVPN frames between CEs:
+- frame comes in from the CE1
+- PE1 colors/tags the frame according to the DVPN it belongs
+- PE1 looks up CE2 MAC in DVPN MAC table -> empty..
+- PE1 decides to flood frame to PEs with DVPN member ports 
+- PE1 adds a label to the frame needed for the Ps to forward the frame to PE2
+- PE2 receives frame, removes header and DVPN color 
+- PE2 looksup CE2 MAC in DVPN MAC table, forwards frame to CE2
+- PE2 sees CE1 MAC received from PE1, installs PE1 as destination for CE1 MAC
+
+Additional features:
+- Topology Discovery, a basis, goes without saying
+- MAC / VPN Scalability
+- TE
+- ECMP
+- FRR
+- OAM
+- Rate Limiting of DVPN traffic
+- Rate limiting of BUM traffic
+
+Provisioning:
+
+- Setup base network to route DVPNs
+- Take input for ports to be put in a DVPN
+- Determine the routes to be used for the paths, install them
+- Monitor links and adapt paths when failures occur or links reach their capacity
+- Configure rate limits on ports
+
+Comparison:
+
+Report includes a complete description of how the \ac{dvpn} service can be implemented using SPB, MPLS and OpenFlow. SPB didn't make the cut, it provides scalability and ease of configuration but lacks control over the paths through the network. In this presentation we will therefore focus on the key differences between MPLS and OpenFlow.
+
+
+
+Conclusion:
+
+Can DVPNs be implemented using contemporary technologies? 
+- YES
+And if so, how?
+- Using a stack of MPLS, VPLS, LDP, RSVP, BFD, and future BGP with E-VPN
+What are the limitations/drawbacks?
+- Huge protocol stack to maintain, initial setup is complex
+- E-VPN in draft
+- no consistent programmable interface
+Pros:
+- known technology 
+- highly scalable using labels (Scott Schenker even said "MPLS was right")
+
+Can OF be used to implement DVPNs? 
+- YES
+How?
+- MPLS labels in version 1.1, custom applications
+Limitations/Drawbacks?
+- No forwarding plane monitoring, limiting FRR
+- no northbound API defined
+- removing intelligence from network will require installing it in the controller
+Pro's:
+- MAC learning in control plane
+- rate limiting per flow (theoretically), 
+And will it add the promised flexibility and control?
+- Control: yes, controller
+- Flexibility: in deploying DVPNs, yes. 
+  In adding new features: yes (look at the MAC learning feature)
+
+Take away:
+
+MPLS, while still being able to handle the traffic of the VPNs as a transport technology, lacks a consistent interface to the NMS for the operator to manage the network. This makes it hard to keep a manage and thus to implement DVPNs.
+
+The SDN architecture provides a flexible, extensible and manageable way of implementing DVPNs. It allows operators to solve network problems using applications to program the forwarding plane of the network devices. Lack of 
+
+However, the OpenFlow specification by definition misses a key functionality to implement it in a carrier network. The lack of path monitoring in the forwarding plane prevents the network to react to failures quickly. Also, by taking the intelligence out of the networking devices, the intelligence has to be moved to the controller and application.
+
+ 
