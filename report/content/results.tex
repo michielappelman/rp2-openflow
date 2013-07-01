@@ -79,16 +79,13 @@ Comparing \ac{mpls} to the \ac{vc}-based \ac{atm} protocol which required config
 
 As mentioned before, OpenFlow will also need to provide path-based forwarding to provide scalability in the network and this has to be implemented with strict control over the labels in each \ac{pe} and \ac{p}. However, the advantage that operators have today is that the complete control plane of the network will be in the OpenFlow controller and its applications. The \ac{atm} setup required separate management for the \ac{atm} switches and the \ac{ip} routing subsystems such as the \ac{igp} and \ac{bgp} with limited integration between the two.
 
-Discovering the network topology of a distributed network requires connectivity between the devices on Layer 2 or 3 (depending on the \ac{igp}) before any information can be exchanged. 
+A prerequisite for providing any kind of service over a network is the knowledge of the network topology. Again the distinction between decentralized and centralized is easily made. Arguments can be made about the faster convergence of large networks using a centralized controller, however these claims are largely dependent on the implementation. Transporting frames any of the two technologies will not change depending on the implementation chosen. We will however take a look at how they differ in provisioning procedures in the Section~\ref{ssub:provisioning}.
 
-\acl{te} 
+OpenFlow has been able to provide \ac{ecmp} since version 1.1 using Groups with the \textbf{select} type. It basically means that a flow can point to this group and it will choose one of the output ports, based on a hashing algorithm. And although the terminology is different from Link Aggregation Groups, the procedure is indeed the same. Moreover, due to the lack of a definition for the hashing algorithm, both implementations depend on the hashing algorithm implemented by the vendor to provide efficient load sharing.
 
-ECMP
+In a contemporary setup devices support fast failover by setting up \ac{bfd} sessions between each other to monitor liveness of the path. This is done within the forwarding plane of the device and with very small timeouts so failures will be apparent within milliseconds. Currently OpenFlow devices lack the ability to install some sort of packet generator in the forwarding plane to perform the same functionality. \ac{sdn} researchers have proposed to use a monitoring function closer to the data plane in \cite{scalable-fault} but until that has been implemented monitoring of paths will need to use the controller, causing higher recovery times. Monitoring of individual physical links is possible and using the \textbf{fast failover} Group type though. This allows the network device to quickly reroute without needing to consult the controller.
 
-FRR
-\begin{itemize}
-	\item Lacks standard for liveness monitoring in forwarding plane - and over complete paths.
-\end{itemize}
+Rate Limiting
 
 MAC learning in control in draft E-VPN
 
@@ -97,6 +94,11 @@ MAC learning in control in draft E-VPN
 
 \subsubsection{Provisioning} % (fold)
 \label{ssub:provisioning}
+
+Discovering the network topology of a distributed network requires connectivity between the devices on Layer 2 or 3 (depending on the \ac{igp}) before any information can be exchanged. This means setting up a network to provide \acp{dvpn} will require some up-front configuration from the \ac{nms} as well. Using OpenFlow on the other hand, the only requirement is setting up a connection to the controller from all networking devices. 
+
+\acl{te} can benefit from centralization as well. In fact, operators already need to store information on application traffic flows and requirements in the \ac{nms} when using \ac{mpls} to route traffic in a certain way. When using \ac{rsvp} with explicit routes, the \ac{nms} requires a complete view from the network to correctly define paths. Only when using loose constraints, the \ac{te} functionality is partly solved decentralized using \ac{cspf}. However, the \ac{nms} still needs to configure the constraints for each flow. An \ac{sdn} setup provides the operator with a complete view from the network as seen by the controller which can be used together with input from \ac{dvpn} constraints to optimize the paths. The advantage lies in the fact that the the \ac{te} application on the controller can get the current topology directly from the discovery application. Whereas the \ac{mpls} setup would require the \ac{nms} to retrieve the topology from the network, or the topology should be predefined. Either way, this might lead to inconsistencies, depending on the implementation.
+
 
 MPLS:
 \begin{itemize}
