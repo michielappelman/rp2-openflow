@@ -25,7 +25,7 @@ OpenFlow and SDN
 
 Momentum for SDN is explained by the general need for change in the networking industry. Operators do struggle with complex management and control over their network. In fact original OSI model defined a control mechanism in the upper layer, but this function has been lost.
 
-However, although SDN is always a potential solution for everything, researchers overlook the state of the art that has brought us so far already. On the other hand, nay-sayers in the industry have criticized its lack of support by available hardware. This research will focus purely on the architectural implementation, doing away with the zealous hype but also looking past the obvious "it's unsupported" argument.
+However, although SDN is always a potential solution for everything, researchers overlook the state of the art that has brought us so far already. On the other hand, nay-sayers in the industry have criticized its lack of support by available hardware. This research will focus purely on the architectural implementation, without becoming part of the SDN inquisition but also looking past the obvious "it's unsupported" argument.
 
 Research Questions:
 And so we're going to look at the follow questions:
