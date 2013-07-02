@@ -17,7 +17,7 @@ To implement DVPNs we first have to solve the previous problems:
 - Lack of control
 
 Potential Solution:
-You know what the next slide is going to be. How can we solve this problem? 
+
 
 OpenFlow and SDN
 - SDN = architecture to program the network
@@ -81,6 +81,11 @@ Provisioning:
 Comparison:
 
 Report includes a complete description of how the \ac{dvpn} service can be implemented using SPB, MPLS and OpenFlow. SPB didn't make the cut, it provides scalability and ease of configuration but lacks control over the paths through the network. In this presentation we will therefore focus on the key differences between MPLS and OpenFlow.
+
+MPLS Implementation:
+
+
+OpenFlow Implementation:
 
 
 

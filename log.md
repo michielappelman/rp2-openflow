@@ -156,3 +156,4 @@ RP2 Log
 2 july 2013
 -----------
  - first version of presentation
+ - (almost) final version of presentation
