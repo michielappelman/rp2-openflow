@@ -147,3 +147,12 @@ RP2 Log
 30 june 2013
 ------------
  - comparison is taking a bit longer than I thought because of details that I need to look up for a factual story.
+
+1 july 2013
+-----------
+ - created blueprint for presentation text
+ - extra info on transport
+
+2 july 2013
+-----------
+ - first version of presentation

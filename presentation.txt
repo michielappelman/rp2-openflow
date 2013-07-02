@@ -1,11 +1,15 @@
 Introduction:
 
 Observations:
-Due to the scale of carrier networks, operators are forced to use NMSs to configure their networks. These NMSs are customized to their needs and services, which means that when new services are added or old ones adapted, they will need to rewrite a large part of the NMS. Also when a new protocol needs to be configured throughout the network, additional expertise is needed to document the interactions between the existing protocols.
+Due to the scale of carrier networks, operators are forced to use NMSs to configure their networks. These NMSs are customized to their needs and services and with each added service and protocol are becoming more and more complex. Adding new features or services is cumulative, that is instead of evolving or adapting current services, new ones are implemented. This only adds to the complexity and requires an increasing amount of networking expertise to deal with the intricate dependencies.
 
-Use of VPNs for resource management in Carrier Networks, separate traffic from certain locations or customers to route in an efficient manner. To implement these services a lot of additional protocols and techniques have been defined and are being defined as we speak. The intricate dependencies of these protocols make for an complex stack of protocols which the NMS needs to support from top to bottom.
+One of the services provided by carriers is VPNs. They allow operators to separate traffic from certain locations or customers and to route that traffic in an efficient manner, taking into account the network resources. This requires control over the network from an upper layer protocol with a complete view of the network. Additionally, to implement these services a lot of additional protocols and techniques have been defined and are being defined as we speak, adding to an already complex networking stack.
 
-This complexity yielded networks that are both very specific for the services that they provide but also very inflexible because of this specificity. This didn't bother operators much as the network was stable and fairly under control, but lately we have seen the growing demand for application specific VPNs, such as video and voice, but also payment networks. Next to being specific these VPNs are also dynamic, clients may want to use their connection to have a video conference one day, and for a bulk file transfer the other day. These virtual networks are called DVPNs and differ from the non-dynamic siblings in that the can be configured, adjusted and deleted from the carrier network all in a very shirt time span: say, a couple of minutes.
+This complexity yielded networks that are stable for the services that they provide but are also very inflexible because of their specificity. 
+
+This didn't bother operators much as the network was stable and fairly under control, but lately we have seen the growing demand for application specific VPNs, such as video, voice and secure payment connection. Next to being specific to the application, these VPNs are also dynamic, clients may want to use their connection to have a video conference one day, and for a bulk file transfer the other day.
+
+These virtual networks are called DVPNs and differ from the non-dynamic siblings in that the can be configured, adjusted and deleted from the carrier network all in a very short time span: say, a couple of minutes.
 
 Problem: 
 To implement DVPNs we first have to solve the previous problems:
@@ -40,11 +44,11 @@ What will this service look like?
 - completely transparent to the Customer.
 - Also no routing information to be exchanged, so customers can choose their own version of IP and their own addresses.
 
-Specifically, when two CEs are added to the same DVPN, they will see each other as direct neighbors on Layer 2 and are able to communicate directly. Doesn't sound that challenging.
+Specifically, when two CEs are added to the same DVPN, they will see each other as direct neighbors on Layer 2 and are able to communicate directly. Doesn't sound that challenging, right?
 
 Transport:
 
-Transparently transporting frames from one CE to another requires encapsulation of the Ethernet frame of 
+Transparently transporting Ethernet frames from one CE to another requires retention of the Ethernet SA/DA and preferably Customer VLAN tag.
 
 Most of you will be familiar with the setup in this image but let me quickly go over the steps that need to be taken to forward L2 DVPN frames between CEs:
 - frame comes in from the CE1
@@ -57,14 +61,14 @@ Most of you will be familiar with the setup in this image but let me quickly go 
 - PE2 sees CE1 MAC received from PE1, installs PE1 as destination for CE1 MAC
 
 Additional features:
-- Topology Discovery, a basis, goes without saying
-- MAC / VPN Scalability
-- TE
-- ECMP
-- FRR
-- OAM
-- Rate Limiting of DVPN traffic
-- Rate limiting of BUM traffic
+Topology Discovery, a basis, goes without saying
+MAC / VPN Scalability
+TE
+ECMP
+FRR
+OAM
+Rate Limiting of DVPN traffic
+Rate limiting of BUM traffic
 
 Provisioning:
 
@@ -80,15 +84,15 @@ Report includes a complete description of how the \ac{dvpn} service can be imple
 
 
 
-Conclusion:
+Answers:
 
 Can DVPNs be implemented using contemporary technologies? 
 - YES
 And if so, how?
 - Using a stack of MPLS, VPLS, LDP, RSVP, BFD, and future BGP with E-VPN
 What are the limitations/drawbacks?
-- Huge protocol stack to maintain, initial setup is complex
-- E-VPN in draft
+- Huge protocol for initial setup -> complex
+- E-VPN in draft so MAC learning and Unknown Unicast filtering is limited
 - no consistent programmable interface
 Pros:
 - known technology 
@@ -110,12 +114,12 @@ And will it add the promised flexibility and control?
 - Flexibility: in deploying DVPNs, yes. 
   In adding new features: yes (look at the MAC learning feature)
 
-Take away:
+Conclusion:
 
-MPLS, while still being able to handle the traffic of the VPNs as a transport technology, lacks a consistent interface to the NMS for the operator to manage the network. This makes it hard to keep a manage and thus to implement DVPNs.
+MPLS, while still being able to handle the traffic of the VPNs as a transport technology, lacks a consistent interface to the NMS for the operator to manage the network. This makes it hard to manage and thus to implement DVPNs. The E-VPN protocol also has not been standardized yet.
 
-The SDN architecture provides a flexible, extensible and manageable way of implementing DVPNs. It allows operators to solve network problems using applications to program the forwarding plane of the network devices. Lack of 
+The SDN architecture provides a flexible, extensible and manageable way of implementing DVPNs. It allows operators to solve network problems using applications to program the forwarding plane of the network devices. But, by taking the intelligence out of the networking devices, the intelligence has to be reimplemented in the controller and application.
 
-However, the OpenFlow specification by definition misses a key functionality to implement it in a carrier network. The lack of path monitoring in the forwarding plane prevents the network to react to failures quickly. Also, by taking the intelligence out of the networking devices, the intelligence has to be moved to the controller and application.
+However, the OpenFlow specification by definition misses a key functionality to implement it in a carrier network. The lack of path monitoring in the forwarding plane prevents the network to react to failures quickly. 
 
  
