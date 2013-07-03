@@ -7,45 +7,27 @@ The features and limitations of the three discussed technologies in Section~\ref
 \begin{table}[h]
 	\centering
 	\begin{tabular}{r|lll}
-	 & \acs{spb} & \acs{mpls} & OpenFlow / \acs{sdn}\\
+	 & \acs{mpls} & OpenFlow / \acs{sdn}\\
 	\hline
-	Tagging of VPN Traffic & \acs{pbb} & \acs{vpls} (\acs{mpls}) & \acs{pbb} / \acs{mpls}\\
-	MAC Scalability & yes & yes & yes\\
-	Topology Discovery & \acs{isis} & \acs{ospf} & application\\
-	Path Provisioning & \acs{spt} & \acs{rsvp} / \acs{ldp} & application\\
-	Traffic Engineering & limited & \acs{rsvp} & application\\
-	\ac{ecmp} & limited & yes & yes, using Groups\\
-	\ac{bum} limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Metering\\
-	Exchange \acsp{cmac} & no & \ac{evpn} (draft) & application\\
-	Ingress Rate Limiting & dependent on \acs{hw} & dependent on \acs{hw} & yes, using Queues or Metering\\
-	Fast Failover & no & \acs{frr} & yes, using Groups\\
-	\acs{oam} & 802.1ag / Y.1731 & \acs{lsp} Ping / \acs{bfd} & application\\
+	Tagging of VPN Traffic & \acs{vpls} (\acs{mpls}) & \acs{pbb} / \acs{mpls}\\
+	MAC Scalability & yes & yes\\
+	Topology Discovery & \acs{ospf} & application\\
+	Path Provisioning & \acs{rsvp} / \acs{ldp} & application\\
+	Traffic Engineering & \acs{rsvp} & application\\
+	\ac{ecmp} & yes & yes, using Groups\\
+	\ac{bum} limiting & dependent on \acs{hw} & yes, using Metering\\
+	Exchange \acsp{cmac} & \ac{evpn} (draft) & application\\
+	Ingress Rate Limiting & dependent on \acs{hw} & yes, using Queues or Metering\\
+	Fast Failover & \acs{frr} & yes, using Groups\\
+	\acs{oam} & \acs{lsp} Ping / \acs{bfd} & application\\
 	\hline
-	Forwarding Decision & \acs{pbb} tags & \acs{mpls} labels & flow entry \\
-	\ac{bum} traffic handling & flood & flood & sent to controller\\
+	Forwarding Decision & \acs{mpls} labels & flow entry \\
+	\ac{bum} traffic handling & flood & sent to controller\\
 	\end{tabular}
 	\caption{Feature requirements available in discussed technologies.}
 	\label{tb:reqs}
 \end{table}
 
-
-\subsection{\acs{spb}} % (fold)
-\label{sub:r-spb}
-
-The \ac{spb} architecture allows for a scalable carrier network supporting thousands, even millions of \acp{dvpn} using the \ac{isid} in the \ac{pbb} frame. From our theoretical implementation in Section~\ref{ssub:spb}, it became evident that setting up a \acp{dvpn} requires little configuration. The \ac{isid} only needs to be configured on the \ac{pe} connecting the \ac{ce} port and the \ac{isis} routing protocol distributes this binding to the other corresponding \acp{pe}. Another benefit is the use of Ethernet \ac{oam} standards that are mature and extensive to allow for precise monitoring and troubleshooting.
-
-However, the simplicity of the architecture comes at a cost. The protocols has:
-\begin{itemize}
-	\item limited explicit or constraints-based routing, meaning few \ac{te} features,
-	\item limited \ac{ecmp} functionality due to the infancy of the standard to support it, and
-	\item because, failure recovery depends on \ac{isis} reconvergence, no fast failover.
-\end{itemize}
-
-These limitations are being worked on by the community, e.g.\ IEEE 802.1Qbp which provides extensive \ac{ecmp} functions. And since the technology has only been officially standardized since March 2012, it will also need to mature before it is suitable for carrier implementations.  
-
-Because of the shortcomings of \ac{spb} with regards to the use-case set forth in Section~\ref{sec:dvpns}, we will omit this technology in our comparison. Instead we will focus on comparing the \ac{mpls} setup from Section~\ref{ssub:mpls} with the \acs{sdn}/OpenFlow architecture as designed in Section~\ref{sub:openflow}.
-
-% subsection r-spb (end)
 
 \subsection{Comparison} % (fold)
 \label{sub:comparison}
