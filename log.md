@@ -157,3 +157,15 @@ RP2 Log
 -----------
  - first version of presentation
  - (almost) final version of presentation
+
+3 july 2013
+-----------
+ - finetuned presentation
+ - integrated some comments from Rudolf in the paper
+ - gave presentation
+
+4 july 2013
+-----------
+ - sent PDF of presentation to Cees
+ - some extra additions in the paper
+

@@ -30,6 +30,7 @@
 \usepackage[printonlyused]{acronym}
 \usepackage[T1]{fontenc}
 \usepackage{calc}  
+\usepackage{tikz}
 \usepackage{enumitem}
 %%
 
@@ -41,6 +42,8 @@
 \newcommand{\HRule}{\hspace*{\fill}\rule{0.6\linewidth}{0.2mm}\hspace*{\fill}}
 \newcommand{\acrstyle}[1]{\uppercase{#1}}
 \newcommand{\expstyle}[1]{#1}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
 
 %highlighting in listings 
 \definecolor{light-gray}{gray}{0.60}
