@@ -2,7 +2,7 @@
 \section{Comparison} % (fold)
 \label{sec:results}
 
-The features and limitations of the three discussed technologies in Section~\ref{sec:implementation} are given in Table~\ref{tb:reqs}. In this section we will compare the contemporary technologies with the OpenFlow implementation when implementing the \ac{dvpn} service as discribed in Section~\ref{sec:dvpns}.
+Table~\ref{tb:reqs} displays the key differences between the two technologies that we have discussed in \ref{sec:implementation}. In this section we will take a close look at the differences between the \ac{mpls} and OpenFlow implementations with regards to the listed requirements.
 
 \begin{table}[h]
 	\centering
@@ -11,15 +11,15 @@ The features and limitations of the three discussed technologies in Section~\ref
 	\hline
 	Tagging of VPN Traffic & \acs{vpls} (\acs{mpls}) & \acs{pbb} / \acs{mpls}\\
 	MAC Scalability & yes & yes\\
-	Topology Discovery & \acs{ospf} & application\\
-	Path Provisioning & \acs{rsvp} / \acs{ldp} & application\\
-	Traffic Engineering & \acs{rsvp} & application\\
+	Topology Discovery & \acs{ospf} & centralized\\
+	Path Provisioning & \acs{rsvp} / \acs{ldp} & centralized\\
+	Traffic Engineering & \acs{rsvp} & centralized\\
 	\ac{ecmp} & yes & yes, using Groups\\
 	\ac{bum} limiting & dependent on \acs{hw} & yes, using Metering\\
-	Exchange \acsp{cmac} & \ac{evpn} (draft) & application\\
+	Exchange \acsp{cmac} & \ac{evpn} (draft) & centralized\\
 	Ingress Rate Limiting & dependent on \acs{hw} & yes, using Queues or Metering\\
 	Fast Failover & \acs{frr} & yes, using Groups\\
-	\acs{oam} & \acs{lsp} Ping / \acs{bfd} & application\\
+	\acs{oam} & \acs{lsp} Ping / \acs{bfd} & centralized\\
 	\hline
 	Forwarding Decision & \acs{mpls} labels & flow entry \\
 	\ac{bum} traffic handling & flood & sent to controller\\
@@ -28,14 +28,8 @@ The features and limitations of the three discussed technologies in Section~\ref
 	\label{tb:reqs}
 \end{table}
 
-
-\subsection{Comparison} % (fold)
-\label{sub:comparison}
-
-To get an overview of the key differences between the two architectures we will follow the structure of the \ac{dvpn} requirement list defined in Section~\ref{sec:dvpns}. 
-
-\subsubsection{Service} % (fold)
-\label{ssub:service}
+\subsection{Service} % (fold)
+\label{sub:service}
 
 From a customer point-of-view it should be of no concern how the \ac{dvpn} service is implemented in the provider network. Moreover, the \acp{pe} and the rest of provider network should be completely transparent. As such, the two technologies do not show any difference in their implementation. Both technologies are able to 
 \begin{inparaenum}[\itshape 1\upshape)]
@@ -44,96 +38,82 @@ From a customer point-of-view it should be of no concern how the \ac{dvpn} servi
 	\item be completely transparent to the \acp{ce}.
 \end{inparaenum}
 
-% subsubsection service (end)
+% subsection service (end)
 
-\subsubsection{Transport} % (fold)
-\label{ssub:transport}
+\subsection{Transport} % (fold)
+\label{sub:transport}
 
-Both implementations use \ac{mpls} labels to transport frames through the network. By using labels to identify and route traffic over paths instead of a hop-by-hop based routing protocol that uses an egress \ac{pe} identifier, both technologies allow for granular \ac{te} features.   The usage of paths also means that the \acp{p} will forward the traffic without relying on or being aware of any \acp{cmac}, providing scalability. OpenFlow supports \ac{mpls} labels since version 1.1. Version 1.0 can only separate traffic using C-\ac{vlan} tags, which means that 
-\begin{inparaenum}[\itshape a\upshape)]
-	\item the customer \acp{mac} will need to be present in the backbone, 
-	\item the customer can not use \acp{vlan} over the provider network, and
-	\item forwarding will be based on the egress \ac{pe}, not the path, eliminating \ac{te}.
-\end{inparaenum}
-This latter limitation can of course be overcome using more specific match entries for every traffic flow that needs to be forwarded in certain way, however this would negate the benefit of using \ac{mpls} labels to minimize the amount of flows needed in the backbone. These specific flows are called `microflows' and while giving more precise control over traffic, they will fill up the flow tables of \acp{p} fairly quickly in a provider network with thousands of customers. The only way for OpenFlow to scale up to a carrier network level is by using version 1.1 or later.
+Both implementations use \ac{mpls} labels to transport frames through the network. OpenFlow benefits from the \ac{mpls} technology by using these labels allowing for a generic and extensible way to define paths. One alternative to tag traffic would be \ac{pbb} tags but these are less extensible because of the clear purpose of each tag, whereas \ac{mpls} labels can be added arbitrarily.
 
-Comparing \ac{mpls} to the \ac{vc}-based \ac{atm} protocol which required configuration of \acp{vc} throughout the network, we find that \ac{mpls} has the benefit of automatically distributing labels which allows for scalable and easily configurable carrier networks. The \acp{lsp} in \ac{mpls} are very comparable to the \acp{vc} of \ac{atm} \cite{mpls-tunnels}. Managing and configuring \acp{vc} was a problem in the \ac{atm} days though, mainly because of the lack of integration between the \ac{atm} switches and \ac{ip} routers. So \ac{ldp} was a huge advantage in the eyes of the carriers in the early days of \ac{mpls}. However, with the advent of explicit routes using \ac{rsvp} for \acl{te}, operators are now trying to do away with the automatic paths setup by \ac{ldp}. With these strict forwarding controls they are but a small step removed from once again manually setting up \acp{vc}. 
+By using labels to identify and route traffic over paths instead of a hop-by-hop based routing protocol that uses an egress \ac{pe} identifier, both technologies allow for granular \ac{te} features. 
+%The usage of paths also means that the \acp{p} will forward the traffic without relying on or being aware of any \acp{cmac}, providing scalability. 
+%OpenFlow supports \ac{mpls} labels since version 1.1. Version 1.0 can only separate traffic using C-\ac{vlan} tags, which means that 
+%\begin{inparaenum}[\itshape a\upshape)]
+%	\item the customer \acp{mac} will need to be present in the backbone, 
+%	\item the customer can not use \acp{vlan} over the provider network, and
+%	\item forwarding will be based on the egress \ac{pe}, not the path, eliminating \ac{te}.
+%\end{inparaenum}
+%
+%This latter limitation can of course be overcome using more specific match entries for every traffic flow that needs to be forwarded in certain way, however this would negate the benefit of using \ac{mpls} labels to minimize the amount of flows needed in the backbone. 
+Using OpenFlow operators may also define very specific traffic flows to provide \ac{te}, called `microflows'. While this will give them more precise control over their traffic, it will fill up the flow tables of \acp{p} fairly quickly in a network with thousands of customers. These flow tables are implemented using \ac{tcam} which is finite and is also expensive to produce \cite{tcam}. Using these labels to minimize the amount of flows in the core is thus advised.
+%The only way for OpenFlow to scale up to a carrier network level is by using version 1.1 or later.
 
-As mentioned before, OpenFlow will also need to provide path-based forwarding to provide scalability in the network and this has to be implemented with strict control over the labels in each \ac{pe} and \ac{p}. However, the advantage that operators have today is that the complete control plane of the network will be in the OpenFlow controller and its applications. The \ac{atm} setup required separate management for the \ac{atm} switches and the \ac{ip} routing subsystems such as the \ac{igp} and \ac{bgp} with limited integration between the two.
+%Comparing \ac{mpls} to the \ac{vc}-based \ac{atm} protocol which required configuration of \acp{vc} throughout the network, we find that \ac{mpls} has the benefit of automatically distributing labels which allows for scalable and easily configurable carrier networks. The \acp{lsp} in \ac{mpls} are very comparable to the \acp{vc} of \ac{atm} \cite{mpls-tunnels}. Managing and configuring \acp{vc} was a problem in the \ac{atm} days though, mainly because of the lack of integration between the \ac{atm} switches and \ac{ip} routers. So \ac{ldp} was a huge advantage in the eyes of the carriers in the early days of \ac{mpls}. However, with the advent of explicit routes using \ac{rsvp} for \acl{te}, operators are now trying to do away with the automatic paths setup by \ac{ldp}. With these strict forwarding controls they are but a small step removed from once again manually setting up \acp{vc}. 
 
-A prerequisite for providing any kind of service over a network is the knowledge of the network topology. Again the distinction between decentralized and centralized is easily made. Arguments can be made about the faster convergence of large networks using a centralized controller, however these claims are largely dependent on the implementation. Transporting frames any of the two technologies will not change depending on the implementation chosen. We will however take a look at how they differ in provisioning procedures in the Section~\ref{ssub:provisioning}.
+%To provide \ac{mac} scalability over the backbone network and provide explicit path routing, the traffic will need to be tagged using \ac{mpls} labels. 
+In contrast with the \ac{mpls} architecture, using OpenFlow the \ac{p} devices also need to be updated using the forwarding information. After all, there are no label distribution protocols running between the devices. The labels do not need to be locally significant to the networking devices. In fact, by using the same unique label per path, one can imagine that troubleshooting will be more transparent as well.
+
+
+%As mentioned before, OpenFlow will also need to provide path-based forwarding to provide scalability in the network and this has to be implemented with strict control over the labels in each \ac{pe} and \ac{p}. However, the advantage that operators have today is that the complete control plane of the network will be in the OpenFlow controller and its applications. The \ac{atm} setup required separate management for the \ac{atm} switches and the \ac{ip} routing subsystems such as the \ac{igp} and \ac{bgp} with limited integration between the two.
+
+A prerequisite for providing any kind of service over a network is the knowledge of the network topology. Again the distinction between decentralized and centralized is easily made. Arguments can be made about the faster convergence of large networks using a centralized controller, however these claims are largely dependent on the implementation. Transporting frames using either one of the two technologies will not change depending on the implementation chosen.
 
 OpenFlow has been able to provide \ac{ecmp} since version 1.1 using Groups with the \textbf{select} type. It basically means that a flow can point to this group and it will choose one of the output ports, based on a hashing algorithm. And although the terminology is different from Link Aggregation Groups, the procedure is indeed the same. Moreover, due to the lack of a definition for the hashing algorithm, both implementations depend on the hashing algorithm implemented by the vendor to provide efficient load sharing.
 
 In a contemporary setup devices support fast failover by setting up \ac{bfd} sessions between each other to monitor liveness of the path. This is done within the forwarding plane of the device and with very small timeouts so failures will be apparent within milliseconds. Currently OpenFlow devices lack the ability to install some sort of packet generator in the forwarding plane to perform the same functionality. \ac{sdn} researchers have proposed to use a monitoring function closer to the data plane in \cite{scalable-fault} but until that has been implemented monitoring of paths will need to use the controller, causing higher recovery times. Monitoring of individual physical links is possible using the \textbf{fast failover} Group type though. This allows the network device to quickly reroute without needing to consult the controller.
 
-Rate Limiting
+%Rate Limiting has been defined in the OpenFlow specification since version 1.0 but the has been extended to apply to a per flow basis since version 1.1. This adds more granular resource management to the OpenFlow stack, where the \ac{mpls} hardware only supports rate limiting on a per port or C-\ac{vlan} basis.
 
-MAC learning in control in draft E-VPN
+%The \ac{evpn} standard being defined for \ac{mpls} \ac{vpls} networks is still in the works while the demand is already there. Using the \ac{sdn} architecture, this functionality can be implemented by operators themselves using the applications on the controller. This flexibility is a benefit for the operators of these large Ethernet networks and also shows the ability to evolve more rapidly in the future. 
 
 
-% subsubsection transport (end)
+% subsection transport (end)
 
-\subsubsection{Provisioning} % (fold)
-\label{ssub:provisioning}
+\subsection{Provisioning} % (fold)
+\label{sub:provisioning}
 
 Discovering the network topology of a distributed network requires connectivity between the devices on Layer 2 or 3 (depending on the \ac{igp}) before any information can be exchanged. This means setting up a network to provide \acp{dvpn} will require some up-front configuration from the \ac{nms} as well. Using OpenFlow on the other hand, the only requirement is setting up a connection to the controller from all networking devices. 
 
-\acl{te} can benefit from centralization as well. In fact, operators already need to store information on application traffic flows and requirements in the \ac{nms} when using \ac{mpls} to route traffic in a certain way. When using \ac{rsvp} with explicit routes, the \ac{nms} requires a complete view from the network to correctly define paths. Only when using loose constraints, the \ac{te} functionality is partly solved decentralized using \ac{cspf}. However, the \ac{nms} still needs to configure the constraints for each flow. An \ac{sdn} setup provides the operator with a complete view from the network as seen by the controller which can be used together with input from \ac{dvpn} constraints to optimize the paths. The advantage lies in the fact that the the \ac{te} application on the controller can get the current topology directly from the discovery application. Whereas the \ac{mpls} setup would require the \ac{nms} to retrieve the topology from the network, or the topology should be predefined. Either way, this might lead to inconsistencies, depending on the implementation.
+\acl{te} can benefit from centralization as well. In fact, operators already need to store information on application traffic flows and requirements in the \ac{nms} when using \ac{mpls} to route traffic in a certain way. When using \ac{rsvp} with explicit routes, the \ac{nms} requires a complete view from the network to correctly define paths. Only when using loose constraints, the \ac{te} functionality is partly solved decentralized using \ac{cspf}. However, the \ac{nms} still needs to configure the constraints for each flow. An \ac{sdn} setup provides the operator with a complete view from the network as seen by the controller which can be used together with input from \ac{vpn} constraints to optimize the paths. The advantage lies in the fact that the the \ac{te} application on the controller can get the current topology directly from the discovery application. Whereas the \ac{mpls} setup would require the \ac{nms} to retrieve the topology from the network, or the topology should be predefined. Either way, this might lead to inconsistencies, depending on the implementation.
 
+Research has already shown that OpenFlow can be used to implement the \ac{mpls} stack \cite{mpls-open}. Over a two month period researchers also succeeded in provisioning \acp{vpn} and provide operators with a simulated environment with very granular \ac{te} \cite{mpls-vpn-openflow}.
 
-MPLS:
+% subsection provisioning (end)
+
+\subsection{\acp{dvpn}} % (fold)
+\label{sub:dvpn}
+
+Table~\ref{tb:reqs} at the beginning of this section already showed most of the technical differences between the two technologies. It also shows the plethora of acronyms in use by the \ac{mpls} architecture that all need to be managed. Additionally, the current available systems lack a consistent management interface and thus need to be managed through a form of command-line or NetConf interface. These interfaces can differ between vendors and sometimes even between models from the same vendor. Maintaining the code for all these different protocols and management interfaces while also providing a dynamic and agile \ac{nms} interface for the operator to use will prove to be quite difficult.
+
+The OpenFlow implementation can solve these problems by providing operators with abstractions of the network on which they can write applications to configure their network. However, this also means that the intelligence of the network devices has to be reimplemented completely in the controller of the \ac{sdn} architecture. These applications will then provide the core functionalities of the network, also providing the configuration to the devices, without the \ac{nms} needing to be aware of the specific topology or hardware. 
+
+By using the \ac{sdn} architecture and having a global view of the network, the controller can also adapt more efficiently to changes in network resources. The \ac{te} will recalculate paths as links go up or down and immediately push these paths to the network. Whereas with the \ac{mpls} network setup this would require polling the devices for changes, configuring the interfaces, calculating paths and finally installing them. 
+
+By centralizing the path calculation application, the network can also apply more complex algorithms to distribute the traffic. The \textsl{knapsack problem} for example, is concerned with finding the optimum combination of flows to go over a certain set of links. This problem is hard to solve and would be better of to be run on servers with the appropriate resources than on the small CPUs of the routers. 
+
+The initial needed configuration for devices to be added to the \ac{dvpn} network is higher when using the \ac{mpls} implementation. To be added, they need settings for \ac{ip} addresses, routing protocols, labels, etc. These processes all need information from the \ac{nms}, which needs to be filled with information by the operator. With OpenFlow the device can be added dynamically, only requiring a management interface and the applications on the controller can then configure it as they would deem necessary, without any information from the \ac{nms} or operator.
+
+The development of \ac{sdn} applications is still behind on the actual OpenFlow implementation. The architecture is missing a defined Northbound \ac{api} which would allow for portability of the applications. This limits the flexibility of the applications that are written today, because there is no guarantee that they will interoperate with future controllers/applications.
+
+The OpenFlow specification itself is also still lacking support by controllers. In this research we looked at version 1.3.1 of the specification which supported all the features described. However, at the time of writing there are only two controllers supporting the 1.3 version:
 \begin{itemize}
-	\item initial setup complicated
-	\item DVPN setup: only each PE with member port
-	\item 
+	\item Ryu by NTT \cite{ryu}, and
+	\item NOX extensions by CPqD research center from Brasil \cite{cpqd}.
 \end{itemize}
-
-OF:
-\begin{itemize}
-	\item initial setup nonexistent, no VPNs = no flows (except LLDP/OAM)
-	\item DVPN setup: every PE with member port + Ps in path
-	\item 1.0 supported almost everywhere, 1.1 and 1.2 are not. 1.3 slowly coming. 
-	\item TE more intricate algorithms on faster hardware (knapsack problem)
-\end{itemize}
-
-1.3 Controllers:
-Ryu by NTT \cite{ryu}
-NOX extensions by CPqD research center from Brasil \cite{cpqd}
-M\"{u}L from kulcloud (South-Korea) is coming \cite{mul}
-
-OpenDaylight controller still lacks 1.3 support
-
-\HRule
-
-The strength of these applications however, is the fact that operators can integrate their \ac{nms} and control plane even more. This allows for a more granular control over their traffic.
-
-MPLS automation software written for DVPNs, but not due to lack of programmable consistent interface to HW, not portable to other vendor, sometimes even model!
-
-complexity high due to intricate dependencies of different protocols
-
-\HRule
-
-OF applications need to solve from ground up, topology, etc... nortbound interface undefined, limited portability of apps between controllers. 
+Even the OpenDaylight controller still lacks support for version 1.3.
 
 
-\ac{mpls} \acp{vpn} in OpenFlow: \cite{mpls-vpn-openflow}
-
-\ac{mpls} control plane in OpenFlow: \cite{mpls-open}
-
-Also: access layer intelligence.
-
-
-% subsubsection provisioning (end)
-
-
-
-
-
-% subsection comparison (end)
-
-
-
+% subsection dvpn (end)
 
 
 % section results (end)

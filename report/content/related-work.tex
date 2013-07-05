@@ -29,26 +29,16 @@ However, due to its Ethernet \acs{stp} forwarding-based nature it lacks \ac{te} 
 
 Provided that \ac{isis} has been configured on all provider devices, Figure~\ref{fig:spb-stack} illustrates the interfaces needed to provision a \ac{dvpn} in \ac{spb}. It excels in its simplicity by providing `single-point provisioning'. This means that the \ac{nms} only needs to add the member \ac{ce} port to a certain \ac{dvpn} \ac{isid}, after which the \ac{pe} floods this binding through the \ac{isis} network and other \acp{pe} sharing this \ac{isid} will install the path towards the ingress \ac{pe}. The rate limiting of the \ac{ce} ports is a vendor-specific feature however, and may vary per hardware platform.
 
-% FIXME: Integrate this conclusion:
-
-\subsection{\acs{spb}} % (fold)
-\label{sub:r-spb}
-
-The \ac{spb} architecture allows for a scalable carrier network supporting thousands, even millions of \acp{dvpn} using the \ac{isid} in the \ac{pbb} frame. From our theoretical implementation in Section~\ref{ssub:spb}, it became evident that setting up a \acp{dvpn} requires little configuration. The \ac{isid} only needs to be configured on the \ac{pe} connecting the \ac{ce} port and the \ac{isis} routing protocol distributes this binding to the other corresponding \acp{pe}. Another benefit is the use of Ethernet \ac{oam} standards that are mature and extensive to allow for precise monitoring and troubleshooting.
-
-However, the simplicity of the architecture comes at a cost. The protocols has:
+The simplicity of the architecture comes at a cost. The protocols has:
 \begin{itemize}
 	\item limited explicit or constraints-based routing, meaning few \ac{te} features,
 	\item limited \ac{ecmp} functionality due to the infancy of the standard to support it, and
-	\item because, failure recovery depends on \ac{isis} reconvergence, no fast failover.
+	\item because failure recovery depends on \ac{isis} reconvergence, no fast failover.
 \end{itemize}
 
 These limitations are being worked on by the community, e.g.\ IEEE 802.1Qbp which provides extensive \ac{ecmp} functions. And since the technology has only been officially standardized since March 2012, it will also need to mature before it is suitable for carrier implementations.  
 
-Because of the shortcomings of \ac{spb} with regards to the use-case set forth in Section~\ref{sec:dvpns}, we will omit this technology in our comparison. Instead we will focus on comparing the \ac{mpls} setup from Section~\ref{ssub:mpls} with the \acs{sdn}/OpenFlow architecture as designed in Section~\ref{sub:openflow}.
-
-% subsection r-spb (end)
-
+%Because of the shortcomings of \ac{spb} with regards to the use-case set forth in Section~\ref{sec:dvpns}, we will omit this technology in our comparison. Instead we will focus on comparing the \ac{mpls} setup from Section~\ref{ssub:mpls} with the \acs{sdn}/OpenFlow architecture as designed in Section~\ref{sub:openflow}.
 
 % subsection spb (end)
 

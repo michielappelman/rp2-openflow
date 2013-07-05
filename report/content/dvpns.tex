@@ -119,9 +119,8 @@ To sum up the requirements discussed in this section, the network needs to provi
 
 %Before implementing a \ac{dvpn} in the network, the network first has to become converged. Meaning that the topology of the complete network is known and that paths can be created over this topology. 
 
-% TODO: remove things like "instance" etc.
 
-A \ac{vpn} instance consists of multiple member ports, which are identified by their \ac{pe} device and the port on that \ac{pe}. The instance also contains values for its minimum and maximum available bandwidth which can be used to determine the paths that the \ac{vpn} will get assigned. When member ports reside on different \acp{pe}, a bidirectional path will need to be created through the network. The route of the path will depend on 
+A \ac{vpn} service consists of multiple member ports, which are identified by their \ac{pe} device and the port on that \ac{pe}. The service is also defined by its minimum and maximum available bandwidth which can be used to determine the paths that the \ac{vpn} will get assigned. When member ports reside on different \acp{pe}, a path will need to be created through the network. The route of the path will depend on 
 \begin{inparaenum}[\itshape a\upshape)]
 	\item the liveness and administrative availability of the links, 
 	\item the administrative costs of the links, and 
@@ -129,7 +128,7 @@ A \ac{vpn} instance consists of multiple member ports, which are identified by t
 \end{inparaenum}
 The exact algorithm used to choose the paths lies outside of the scope of this document. Paths are defined by the physical ports that they traverse through the network, with the \acp{pe} as the first or last in the list.
 
-When the path between two \acp{pe} has been setup for the \ac{vpn}, it can be put in the \ac{vpn} description. More paths may be added over different routes and paths may be adjusted during the lifetime of the \ac{vpn}. This may for example be necessary when a certain link in the path fails, or when it nears its peak capacity and has to be rerouted. 
+More paths may be added over different routes and paths may be adjusted during the lifetime of the \ac{vpn}. This may for example be necessary when a certain link in the path fails, or when it nears its peak capacity and has to be rerouted. 
 %A simplified but complete information base diagram has been given in Figure~\ref{fig:infobase}. 
 Individual port utilization will be monitored and when a certain link shows high utilization, the corresponding paths and \acp{vpn} using those paths can be looked up using the information base. Also other monitoring and troubleshooting processes will profit from this information.
 
@@ -140,13 +139,12 @@ Individual port utilization will be monitored and when a certain link shows high
 %	\label{fig:infobase}
 %\end{figure}
 
-After the complete paths between \acp{pe} with \ac{vpn} members have been setup the traffic can start flowing. However, as has been mentioned before, the rate limiting feature will need to be applied to the ingress ports to prevent the \ac{vpn} from using up all the networks resources. 
+After the paths between the \acp{pe} with \ac{vpn} members have been setup the traffic can start flowing. However, as has been mentioned before, the rate limiting feature will need to be applied to the ingress ports to prevent the \ac{vpn} from using up all the networks resources. 
 
-To provision \acp{vpn} in the network, the \ac{nms} in short should be able to:
+To provision \acp{vpn} in the network, the operator should be able to:
 
 \begin{enumerate}
 	\item setup the base network required for \ac{vpn} routing,
-	\item take input as certain ports to be placed in a \ac{vpn},
 	\item determine routes that can be used for the paths,
 	\item monitor links and reroute paths on failure or peak capacity,
 	\item set the rate limits on ingress \ac{pe} ports.
@@ -161,27 +159,26 @@ To provision \acp{vpn} in the network, the \ac{nms} in short should be able to:
 \subsection{\acsp{dvpn}} % (fold)
 \label{sub:dvpn}
 
-% in sectie dvpn bespreek je dan de problemen die komen kijken bij de dynamiek...
 
-% TODO: Explain intricacies with dynamism
+The \ac{vpn} service that can be implemented using the aforementioned features is typical for current operator networks. The configurations are mostly static and changes in the network will require (manual) effort to provision. To evolve from these inflexible \ac{vpn} setups to \aclp{dvpn} the provisioning systems in use will need to support some additional features.
 
+First, the implementation of \acp{dvpn} needs to be automated. This means that instead of the manual configuration by an engineer, the \ac{nms} will take care of configuring the network with the correct \ac{ce} endpoint ports on all \acp{pe}, making sure that the paths are installed and verifying connectivity. This also includes calculation of the optimal paths and setting the correct rate limits, similar to the requirement given in Section~\ref{ssub:provisioning}.
 
+Second, the \ac{nms} should be able to change the configuration of \acp{dvpn} when requested. And when a \ac{dvpn} is no longer in use, it will need to be automatically purged from the network to free up resources for other services. This requires the \ac{nms} to keep an overview of the provisioned \acp{dvpn} and can optionally set an idle time out for the service.
 
-The aforementioned functionalities apply to \acp{vpn} as well as \acp{dvpn}. \acp{dvpn} however, also are flexible in nature. 
-Current Layer 2 \acp{vpn} are mostly configured statically and changes in their configurations will require manual labor from the engineers. 
-They can be configured, adapted and deconfigured within relatively short timespans. 
+Finally, the changes in the network resources and \ac{dvpn} requirements should be acted upon without manual intervention. When certain links are running low on available bandwidth or fail altogether, this will cause a recalculation of the provisioned paths. Also, when new hardware is added, it need to be configured to take part in the network, immediately making use of its added resources. Similarly, when the requirements of a \ac{dvpn} change, the \ac{nms} will verify that the current paths meet these requirements, or otherwise find new routes to provision for the \acp{dvpn}.
 
+To provide a \ac{dvpn} service, the operator requires -- next to the aforementioned \ac{vpn} features -- the following functionalities from the \ac{nms}:
 
-\begin{itemize}
-	\item Automated creation, modification, deletion
-	\item manage member ports
-	\item Adapt Paths to Network Resources and DVPN Requirements
-	\begin{itemize}
-		\item limited resources
-		\item added resources
-		\item changed requirements for \ac{dvpn}
-	\end{itemize}
-\end{itemize}
+\begin{enumerate}
+	\item Automated creation, modification and deletion of \acp{dvpn},
+	\item Adapt to changes in the form of:
+	\begin{enumerate}
+		\item deminishing resources,
+		\item added resources, and
+		\item changed requirements for \acp{dvpn}.
+	\end{enumerate} 
+\end{enumerate}
 
 % subsection dvpn (end)
 

@@ -1,7 +1,7 @@
 \section{Architecture} % (fold)
 \label{sec:implementation}
 
-% TODO: intro:
+% TXODO: intro:
 % de richting dit hoofdstuk nu op gaat zou ik een intro geven met wat en hoe je het gaat doen en dan mpls en openflow vergelijken met het implementeren van de requirements van het foorgaande hoofdstuk...
 % 
 % niet zeggen , as defined in section 2, maar in introductie suidelijk maken dat je gaat kijken naar hoe je dvpns kunt maken in mpls en openflow, 
@@ -10,14 +10,9 @@
 % 
 % dus, pbb weg, naar related work... alleen mpls openflow en de comparison in dit hoofdstuk
 
-Using the requirements set forth in Section~\ref{sec:dvpns} we can compile a list of features provided by contemporary technologies that meet the following criteria:
-\begin{inparaenum}[\itshape 1\upshape)]
-	\item providing an Ethernet \acp{ppvpn} between multiple sites as defined in Section~\ref{sub:service} , and
-	\item its protocol stack must be supported in hardware available at time of writing.
-	\label{lst:num}
-\end{inparaenum}
-This section will start of with an overview of how these current technologies can be used to implement \acp{dvpn} and will finally present a theoretic OpenFlow implementation.
-
+This section will first describe the technical details of \ac{mpls} with regards to the features required for implementing \acp{dvpn}. We will design an architecture to implement this service and point out the limitations. 
+Next, we will describe the \ac{sdn} architecture and the OpenFlow specification. Also looking at the features they provide to implement a \ac{dvpn} service.
+In Appendix~\ref{sub:spb} we have also taken a look at \ac{atm} and \ac{spb}, both technologies which can be used to implement some form of \acp{vpn} but are missing key requirements.
 
 \subsection{\acs{mpls}} % (fold)
 \label{sub:mpls}
@@ -62,9 +57,9 @@ The different protocols all depend on each other, as illustrated in Figure~\ref{
 
 To configure a \ac{dvpn} using \ac{mpls} first the participating \acp{pe} need to be configured with the new \ac{vpls} instance to which the member \ac{ce} ports will be added. Next, constraints are defined by the \ac{nms}, which can be in the form of an explicit route to make a static route or by defining loose constraints based on bandwidth limits which can be used the \ac{cspf} algorithm. Using these constraints, paths are installed at each \ac{pe} towards every other participating \ac{pe}. These paths are then added to the \ac{vpls} instance, allowing \ac{ldp} sessions to be setup between the \acp{pe}. Next, for \ac{frr}, backup \acp{lsp} need to defined similarly to the primary \ac{lsp} but over a different path, which can again be done using constraints to exclude the other links. Utilization of the links in the network has to be monitored as well and when a path has a link which is nearing capacity, new \acp{lsp} have to be provisioned and some \ac{vpls} paths move to those \acp{lsp}. And finally the ingress traffic on the \ac{ce} ports need to be rate limited. This procedure is not standardized and is dependent on support of the hardware.
 
-The procedure above implies that the backbone network has been setup with the following protocols and features already enabled: \ac{ip} addressing, \ac{ospf} routing, \ac{mpls} forwarding, \ac{rsvp} with \ac{frr} and \ac{bfd}. After initial setup of the backbone network the \ac{nms} is only concerned with the \acp{pe}, as can also be seen in Figure~\ref{fig:nms-stack}.
+The procedure above implies that the backbone network has been setup with the following protocols and features already enabled: \ac{ip} addressing, \ac{ospf} routing, \ac{mpls} forwarding, \ac{rsvp} with \ac{frr} and \ac{bfd}. After initial setup of the backbone network the \ac{nms} is only concerned with the \acp{pe}, as can also be seen in Figure~\ref{fig:nms-stack}. However, the \ac{nms} needs to be aware of the \acp{pe} it needs to consult, the intermediate \acp{p} if it wants to use \ac{te}, the network resources in the path and of course the actual member ports.
 
-% TODO: add some conclusion about overly engineered and complexity
+Implementing \acp{vpn} using \ac{mpls} has been shown to be possible using the protocols that have been engineered to provide all the required features. The technologies are built upon each other instead of being evolved upon. This causes their dependencies to grow more complex over time which in turn makes it difficult for the \ac{nms} to deal with all the different protocols. Add to that the lack of a common abstracted interface to the network devices, and it becomes apparent that developing and maintaining an efficient \ac{nms} is also getting more difficult.
 
 \begin{figure}[!h]
 	\centering
@@ -118,11 +113,11 @@ The frame fields that can be matched upon have changed over the lifetime of the 
 Note that rate limiting on a per port basis has been available in OpenFlow since version 1.0. Additionally, version 1.3 added support for per flow rate limiting using so called `meters' which can be assigned to specific flows. By doing so it becomes possible to also rate limit flows on certain aggregation ports rather than just at the ingress port of the \ac{ce}.
 
 The installation of flow entries is done by the controller, governed by the applications running on it. Applications can be written to provide functions like topology discovery, routing, etc. Moreover, without these installed applications, the network will be unable to forward any traffic. The interface between the applications and the controller is also being referred to as the `northbound interface'. This interface, in contrast to the southbound OpenFlow interface, has not been specified and varies between different controller implementations, limiting the portability of the network applications.
-% TODO: nu praat je over oplossingen terwijl je of beschrift
-Fast failover and \ac{ecmp} can be accomplished using the aforementioned port `groups', which are available since version 1.1. Groups can be defined as a destination in a flow entry and contains a list of ports. The type of group defines the action of the group: `\textbf{all}' sends the frame out the frame out of all ports in the group (broadcast/multicasting); `\textbf{select}' outputs it to one of the ports (providing \ac{ecmp}); `\textbf{indirect}' is a single port group which can be used by multiple flow entries (aggregation); and `\textbf{fast failover}' which choses the first \textsl{live} port out of which it will forward the frame. To support `fast failover' a \textsl{liveness monitoring} technique needs to be implemented supported by the switch. However, apart from monitoring the state of the physical link, there has been no technique defined to monitor the liveness of inter-device links, such as \ac{bfd}. The same holds true for full path liveness monitoring which currently needs to be done using the controller, yielding a higher failure recovery time.
 
-One thing to note is that in this paper when discussing the `controller' component we are referring to a logical controller entity, not specifically a single physical server. The controller is the combination of hardware and software components that are preferably setup redundantly and share a complete view of the network, which they share with the applications running on it. The actual design and implementation of such a system is beyond the scope of this paper.
-% TODO: ipv dat zo te formuleren, gewoon de controller goed beschrijven
+Unlike contemporary technologies that require inter-device communication before any paths can be set up, the forwarding tables of OpenFlow devices are empty. The only prerequisite is that the devices all have a management connection to the controller from which they can receive their forwarding information.
+
+The controller is the combination of hardware and software components that are preferably setup redundantly and share a complete view of the network, which they share with the applications running on it. To provide the network and its control with redundancy in case of failures, the `controller' component can refer to a logical controller entity, not specifically a single physical server. However, the actual design and implementation of such a system is beyond the scope of this paper.
+
 Implementing \acp{dvpn} using OpenFlow relies mostly on the applications running on the controller. When they are written and configured as desired, provisioning a \ac{dvpn} would only require the input of the data. After which the applications and controller install flow entries into all the network devices in the \ac{dvpn} path, as can be seen in Figure~\ref{fig:nms-stack-of}.
 
 \begin{figure}[h]
@@ -138,24 +133,20 @@ Implementing \acp{dvpn} using OpenFlow relies mostly on the applications running
 To implement \acp{dvpn}, a combination of applications need to be installed on the controller that contemporary technologies solve using distributed protocols:
 
 \begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries Topology Discovery}]
-	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network.
+	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network. By centralizing the topology discovery process, network operators can benefit from more efficient synchronization and faster convergence.
 	
 	\item[\ac{dvpn} Provisioning] The \ac{dvpn} input will provide the application with at least the \ac{ce} port and preferably the corresponding \ac{mac} and/or \ac{ip} address. It can then instruct the path provisioning component to setup a path between the \acp{pe} participating in the \ac{dvpn}. 
 	
-	\item[Path Provisioning] Using the discovered topology, paths are setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. This means that the flow entries are installed proactively in the \acp{p} and \acp{pe} when a \ac{dvpn} is setup. Instead of waiting for one of them to send a message to the controller asking what to do with an unknown incoming frame, this proactive approach allows for better scalability (less requests to the controller).
-	
-	To provide \ac{mac} scalability over the backbone network and provide explicit path routing, the traffic will need to be tagged using \ac{mpls} labels. In contrast with the \ac{mpls} architecture the \ac{p} devices also need to be updated using the forwarding information. After all, there are no label distribution protocols running between the devices. The labels do not need to be locally significant to the networking devices. In fact, by using the same unique label per path, one can imagine that troubleshooting will be more transparent as well.
-	% TODO: weer een oplossing bij een beschrijving
-	% TODO: niet nodig, maar misschien wel optimaal... dat is aanpak, hier beschrijf je funtionalteit toch?
-	\item[Traffic Engineering] The path setup procedure uses data from the \ac{dvpn} input and the discovered network resources to provide the most optimal path between two \acp{pe}. Constraints for the paths taken by each \ac{dvpn} can be configured by the operator and influence the route selection directly over the whole platform. Also, using input from the \ac{oam} monitoring applications paths may be preferred or deprecated based on their performance.
-	
-	% FIXME: eerst oam introduceren...
+	\item[Path Provisioning] Using the discovered topology, paths are setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. This means that the flow entries are installed proactively in the \acp{p} and \acp{pe} when a \ac{dvpn} is setup. Instead of waiting for one of them to send a message to the controller asking what to do with an unknown incoming frame, this proactive approach allows for better scalability (less requests to the controller) and faster initial forwarding (no buffering while consulting controller).
+
 	\item[\acs{oam}] The controller and applications provide a complete overview of the network but troubleshooting and monitoring still has to be done at the network level as well. Different approaches can be taken to do so, one of which could be sending out periodic keep-alive messages in the same path from the controller down to the ingress \ac{pe} that the egress \ac{pe} should forward back up to the controller. Another example is implementing an already defined \ac{oam} protocol in OpenFlow, as has been done in \cite{of-oam} which implemented Ethernet 802.1ag \ac{oam}.
+	
+		\item[Traffic Engineering] The path setup procedure uses data from the \ac{dvpn} input and the discovered network resources to provide the most optimal path between two \acp{pe}. Constraints for the paths taken by each \ac{dvpn} can be configured by the operator and influence the route selection directly over the whole platform. Also, using input from the \ac{oam} monitoring applications paths may be preferred or deprecated based on their performance.
 	
 	\item[\ac{cmac} Filtering] This application is concerned with keeping the provided or dynamically learned \ac{mac} addresses up-to-date. Additionally, a flow can be installed matching on the \ac{arp} EtherType that sends the \ac{arp} request towards the controller. If the application also keeps track of the \ac{ip} addresses of the \acp{ce} it can then act as an \ac{arp} proxy and reply to the requesting \ac{ce} with the correct \ac{ip} address.
 \end{description}
 
-The interaction between the different applications has been illustrated in Figure~\ref{fig:dvpn-apps}.
+Fast failover and \ac{ecmp} can be accomplished using the aforementioned port `groups', which are available since version 1.1. Groups can be defined as a destination in a flow entry and contains a list of ports. The type of group defines the action of the group: `\textbf{all}' sends the frame out the frame out of all ports in the group (broadcast/multicasting); `\textbf{select}' outputs it to one of the ports (providing \ac{ecmp}); `\textbf{indirect}' is a single port group which can be used by multiple flow entries (aggregation); and `\textbf{fast failover}' which choses the first \textsl{live} port out of which it will forward the frame. To support `fast failover' a \textsl{liveness monitoring} technique needs to be implemented supported by the switch. However, apart from monitoring the state of the physical link, there has been no technique defined to monitor the liveness of inter-device links, such as \ac{bfd}. The same holds true for full path liveness monitoring which currently needs to be done using the controller, yielding a higher failure recovery time.
 
 \begin{figure}[h]
 	\centering
@@ -164,7 +155,10 @@ The interaction between the different applications has been illustrated in Figur
 	\label{fig:dvpn-apps}
 \end{figure}
 
-Unlike contemporary technologies that require inter-device communication before any paths can be set up, the forwarding tables of OpenFlow devices are empty. The only prerequisite is that the devices all have a management connection to the controller from which they can receive their forwarding information.
+
+The interaction between the different \ac{sdn} applications has been illustrated in Figure~\ref{fig:dvpn-apps}. Due to the abstractions introduced by the intermediate applications the \ac{nms} doesn't need to be aware of the network below. The applications will map the port member info from the \ac{nms} to the correct devices, and configure the \ac{dvpn}. Because of the abstractions and minimal initial configuration, adding extra hardware can also be taken care of without consulting the \ac{nms}: the applications will add it to the network and reroute traffic over the new device.
+
+
 
 % subsubsection dvpn_applications (end)
 

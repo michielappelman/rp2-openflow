@@ -169,3 +169,8 @@ RP2 Log
  - sent PDF of presentation to Cees
  - some extra additions in the paper
 
+5 july 2013
+-----------
+ - integrated all comments from Rudolf
+ - added stuff to comparison (some might move to conclusion)
+
