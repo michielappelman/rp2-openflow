@@ -118,6 +118,13 @@ Unlike contemporary technologies that require inter-device communication before 
 
 The controller is the combination of hardware and software components that are preferably setup redundantly and share a complete view of the network, which they share with the applications running on it. To provide the network and its control with redundancy in case of failures, the `controller' component can refer to a logical controller entity, not specifically a single physical server. However, the actual design and implementation of such a system is beyond the scope of this paper.
 
+Current OpenFlow versions are not yet supported by all controllers. We are inspecting version 1.3.1 of the specification which supports the features described. However, at the time of writing there are only two controllers supporting the 1.3 version:
+\begin{itemize}
+	\item Ryu by NTT \cite{ryu}, and
+	\item NOX extensions by CPqD research center from Brazil \cite{cpqd}.
+\end{itemize}
+The controller developed under the OpenDaylight project lacks support for version 1.3.
+
 Implementing \acp{dvpn} using OpenFlow relies mostly on the applications running on the controller. When they are written and configured as desired, provisioning a \ac{dvpn} would only require the input of the data. After which the applications and controller install flow entries into all the network devices in the \ac{dvpn} path, as can be seen in Figure~\ref{fig:nms-stack-of}.
 
 \begin{figure}[h]

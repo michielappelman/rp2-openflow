@@ -18,7 +18,7 @@ Table~\ref{tb:reqs} displays the key differences between the two technologies th
 	\ac{bum} limiting & dependent on \acs{hw} & yes, using Metering\\
 	Exchange \acsp{cmac} & \ac{evpn} (draft) & centralized\\
 	Ingress Rate Limiting & dependent on \acs{hw} & yes, using Queues or Metering\\
-	Fast Failover & \acs{frr} & yes, using Groups\\
+	Fast Failover & \acs{frr} & yes, using Groups (but limited)\\
 	\acs{oam} & \acs{lsp} Ping / \acs{bfd} & centralized\\
 	\hline
 	Forwarding Decision & \acs{mpls} labels & flow entry \\
@@ -82,11 +82,13 @@ In a contemporary setup devices support fast failover by setting up \ac{bfd} ses
 \subsection{Provisioning} % (fold)
 \label{sub:provisioning}
 
-Discovering the network topology of a distributed network requires connectivity between the devices on Layer 2 or 3 (depending on the \ac{igp}) before any information can be exchanged. This means setting up a network to provide \acp{dvpn} will require some up-front configuration from the \ac{nms} as well. Using OpenFlow on the other hand, the only requirement is setting up a connection to the controller from all networking devices. 
+Discovering the network topology of a network typically requires connectivity between the devices on Layer 2 or 3 (depending on the \ac{igp}) before any information can be exchanged. This means setting up a network to provide \acp{dvpn} will require some up-front configuration from the \ac{nms} as well. Using OpenFlow on the other hand, the only requirement is setting up a connection to the controller from all networking devices. 
 
 \acl{te} can benefit from centralization as well. In fact, operators already need to store information on application traffic flows and requirements in the \ac{nms} when using \ac{mpls} to route traffic in a certain way. When using \ac{rsvp} with explicit routes, the \ac{nms} requires a complete view from the network to correctly define paths. Only when using loose constraints, the \ac{te} functionality is partly solved decentralized using \ac{cspf}. However, the \ac{nms} still needs to configure the constraints for each flow. An \ac{sdn} setup provides the operator with a complete view from the network as seen by the controller which can be used together with input from \ac{vpn} constraints to optimize the paths. The advantage lies in the fact that the the \ac{te} application on the controller can get the current topology directly from the discovery application. Whereas the \ac{mpls} setup would require the \ac{nms} to retrieve the topology from the network, or the topology should be predefined. Either way, this might lead to inconsistencies, depending on the implementation.
 
 Research has already shown that OpenFlow can be used to implement the \ac{mpls} stack \cite{mpls-open}. Over a two month period researchers also succeeded in provisioning \acp{vpn} and provide operators with a simulated environment with very granular \ac{te} \cite{mpls-vpn-openflow}.
+
+
 
 % subsection provisioning (end)
 
@@ -104,13 +106,6 @@ By centralizing the path calculation application, the network can also apply mor
 The initial needed configuration for devices to be added to the \ac{dvpn} network is higher when using the \ac{mpls} implementation. To be added, they need settings for \ac{ip} addresses, routing protocols, labels, etc. These processes all need information from the \ac{nms}, which needs to be filled with information by the operator. With OpenFlow the device can be added dynamically, only requiring a management interface and the applications on the controller can then configure it as they would deem necessary, without any information from the \ac{nms} or operator.
 
 The development of \ac{sdn} applications is still behind on the actual OpenFlow implementation. The architecture is missing a defined Northbound \ac{api} which would allow for portability of the applications. This limits the flexibility of the applications that are written today, because there is no guarantee that they will interoperate with future controllers/applications.
-
-The OpenFlow specification itself is also still lacking support by controllers. In this research we looked at version 1.3.1 of the specification which supported all the features described. However, at the time of writing there are only two controllers supporting the 1.3 version:
-\begin{itemize}
-	\item Ryu by NTT \cite{ryu}, and
-	\item NOX extensions by CPqD research center from Brasil \cite{cpqd}.
-\end{itemize}
-Even the OpenDaylight controller still lacks support for version 1.3.
 
 
 % subsection dvpn (end)

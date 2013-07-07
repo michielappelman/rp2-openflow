@@ -2,29 +2,78 @@
 \section{Conclusion} % (fold)
 \label{sec:conclusion}
 
-% TODO: Pro's and cons
+The networking industry sees their networks growing and changing. This research has defined the \ac{dvpn} service as a way to adapt to this growth by providing flexibility and manageability to these networks. This is accomplished by providing operators with interfaces towards their networking equipment allowing them to get more granular control.
 
-MPLS lacks in manageability .. because of the large increasing stack of network protocols and there is no defined interface to configure them
+While discussing the implementation of \ac{mpls} for \acp{dvpn} we found that the stack was overly engineered and due to its cumulative nature, getting more and more complex. The stack consists of multiple protocols that been designed and integrated on top of each other over the last years. The dependencies they have on each other have made changing or extending these protocols very difficult and thus the complexity of \acp{nms} have increased as well. This has also been caused by the lack of a common interface towards the devices, meaning that portability of these systems is low. These limitations will make implementing \acp{dvpn} in a real-life scenario a complex undertaking.
 
-While discussing the implementation of \ac{mpls} for \acp{dvpn} we found that the stack was overly engineered and due to its cumulative nature, getting more and more complex. 
+We also used the \ac{sdn} architecture to design an implementation of the \ac{dvpn} service. The design requires the development of several applications to be used by the controller to provide this service. However, by doing so the operator is provided with a more manageable interface towards its network. Or at least to an abstraction thereof, presented by the controller and its applications. 
 
-SDN architecture can solve complexity by providing network abstraction to applications
-BUT until Northbound interface is defined, flexibility still limited
+Using these abstractions and the global network view operators can also develop their own control programs to provide new features in the network. We have shown an example implementation to provide \ac{mac} address exchange between \acp{pe}, a functionality that is still in draft for the \ac{mpls} architecture (\ac{evpn} \cite{evpn}). However, the \ac{sdn} architecture still lacks a definition for the Northbound interface which limits the portability of the applications and thus their flexibility.
 
-OpenFlow missing Fast Recovery in forwarding plane, but research is ongoing
+The OpenFlow protocol has been defined and we have used it in our implementation to provide the interface from the controller to the network devices. The implementation uses \ac{mpls} labels to separate traffic flows and provision paths over the network. Additionally combined with the controller and the applications it can accommodate most other features of the \ac{dvpn} service. However, the simplicity of the protocol also has a down side in the form of preventing forwarding plane monitoring. This means that in to detect failures in the network path, the controller needs to be consulted yielding higher recovery times \cite{scalable-fault}.
 
+% TODO: Beter intro
 
+Following is a list of all advantages and disadvantages of the \ac{mpls} implementation (on the left and the right side, respectively):
+
+\begin{minipage}[t]{0.5\textwidth}
+\begin{itemize}[label=\checkmark]
+	\item Known technology which is mature, well supported and understood throughout the networking industry.
+\end{itemize}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+\begin{itemize}[label=$\times$]
+	\item Large protocol stack with intricate dependencies.
+	\item Lack of a consistent management interface towards the networking devices.
+	\item Deploying an \ac{nms} to configure this stack and also be portable to different networking devices will lead to a complex piece of software, equal in inflexibility to the \ac{mpls} stack itself.
+	\item The \ac{evpn} standard providing \ac{cmac} exchange and Unknown Unicast filtering is still in draft.
+\end{itemize}
+\end{minipage}
+
+And a similar list for the \ac{sdn} architecture using OpenFlow as the Southbound interface:
+
+\begin{minipage}[t]{0.5\textwidth}
+\begin{itemize}[label=\checkmark]
+	\item Ability to learn from the \ac{mpls} implementation, while being able to improve upon the architecture \cite{ss} by adding operator control.
+	\item Provide controller and applications with global network view, allowing for more granular control of network resources and paths.
+	\item Use network abstractions to develop applications providing new features, e.g.\ \ac{mac} Exchange on \acp{pe}.
+	\item Since version 1.1 OpenFlow allows rate limiting per Flow, giving more control over network resources at aggregation points.
+\end{itemize}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+\begin{itemize}[label=$\times$]
+	\item Centralization limits the independent decision-making of network devices, which harms failure recovery procedures, e.g.\ forwarding plane monitoring.
+	\item The Northbound interface connecting the applications to the controller has not be defined, limiting portability.
+	\item By removing the intelligence from the networking devices, functionalities providing that intelligence have to be developed using the centralized applications.
+\end{itemize}
+\end{minipage}
 
 % section conclusion (end)
 
 \subsection{Recommendations} % (fold)
 \label{sub:recommendations}
 
+% TODO: write
+
+Using OpenFlow and \ac{sdn} to implement \ac{dvpn} services or use it in any carrier network will require some further development on the interfaces to and from the controller. First, the OpenFlow southbound interface is still limited by a set of functionalities that lacks features that are required in the forwarding plane. However, the \ac{sdn} architecture allows for the definition of abstractions for the network. This has been shown by the OpenDaylight architecture using the Service Abstraction Layer, as can be seen in Figure~\ref{fig:opendaylight}. Using these abstractions, the available interfaces towards the networking devices may be extended by new standards or vendor specific interfaces which do provide these functions. It should be noted however that the OpenDaylight specification is in its infancy but is a step in the right direction.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=10cm]{./includes/opendaylight.jpg}
+	\caption{The proposed OpenDaylight architecture.}
+	\label{fig:opendaylight}
+\end{figure}
+
+Next, the northbound interface will need to be defined. Here the OpenDaylight proposes a standardized \ac{api} to be implemented on the controller platform. By doing so, the applications that are developed for certain controller versions can be ported to other platforms. This clear separation allows for the evolution of the individual components, adding to the flexibility of the network.
+
+Implementing \acp{dvpn} using OpenFlow also leads to other questions which need to be answered for specific implementations of controllers, hardware and applications. 
+
 % subsection recommendations (end)
 
 \subsection{Future Work} % (fold)
 \label{sub:future_work}
 
+% TODO: write
 
 Other use cases:
 \begin{itemize}
