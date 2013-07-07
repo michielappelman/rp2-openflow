@@ -12,13 +12,14 @@ Using these abstractions and the global network view operators can also develop 
 
 The OpenFlow protocol has been defined and we have used it in our implementation to provide the interface from the controller to the network devices. The implementation uses \ac{mpls} labels to separate traffic flows and provision paths over the network. Additionally combined with the controller and the applications it can accommodate most other features of the \ac{dvpn} service. However, the simplicity of the protocol also has a down side in the form of preventing forwarding plane monitoring. This means that in to detect failures in the network path, the controller needs to be consulted yielding higher recovery times \cite{scalable-fault}.
 
-% TODO: Beter intro
+To summarize the benefits and limitations of using both implementations we have compiled a list containing the advantages and disadvantages of the \ac{mpls} and OpenFlow implementation. Below is the list for the \ac{mpls} protocol stack  with the advantages on the left and disadvantages on the right side:
 
-Following is a list of all advantages and disadvantages of the \ac{mpls} implementation (on the left and the right side, respectively):
+\vspace{5 mm}
 
 \begin{minipage}[t]{0.5\textwidth}
 \begin{itemize}[label=\checkmark]
 	\item Known technology which is mature, well supported and understood throughout the networking industry.
+	\item Ready to be used for carrier ethernet networks, providing operators with functionalities such \ac{frr} and \ac{ecmp}.
 \end{itemize}
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
@@ -30,7 +31,11 @@ Following is a list of all advantages and disadvantages of the \ac{mpls} impleme
 \end{itemize}
 \end{minipage}
 
-And a similar list for the \ac{sdn} architecture using OpenFlow as the Southbound interface:
+%\vspace{5 mm}
+\clearpage
+The list for implementing the \ac{dvpn} service using an \ac{sdn} architecture with OpenFlow as the Southbound interface is shown below:
+
+\vspace{5 mm}
 
 \begin{minipage}[t]{0.5\textwidth}
 \begin{itemize}[label=\checkmark]
@@ -48,12 +53,12 @@ And a similar list for the \ac{sdn} architecture using OpenFlow as the Southboun
 \end{itemize}
 \end{minipage}
 
+\vspace{5 mm}
+
 % section conclusion (end)
 
 \subsection{Recommendations} % (fold)
 \label{sub:recommendations}
-
-% TODO: write
 
 Using OpenFlow and \ac{sdn} to implement \ac{dvpn} services or use it in any carrier network will require some further development on the interfaces to and from the controller. First, the OpenFlow southbound interface is still limited by a set of functionalities that lacks features that are required in the forwarding plane. However, the \ac{sdn} architecture allows for the definition of abstractions for the network. This has been shown by the OpenDaylight architecture using the Service Abstraction Layer, as can be seen in Figure~\ref{fig:opendaylight}. Using these abstractions, the available interfaces towards the networking devices may be extended by new standards or vendor specific interfaces which do provide these functions. It should be noted however that the OpenDaylight specification is in its infancy but is a step in the right direction.
 
@@ -66,20 +71,17 @@ Using OpenFlow and \ac{sdn} to implement \ac{dvpn} services or use it in any car
 
 Next, the northbound interface will need to be defined. Here the OpenDaylight proposes a standardized \ac{api} to be implemented on the controller platform. By doing so, the applications that are developed for certain controller versions can be ported to other platforms. This clear separation allows for the evolution of the individual components, adding to the flexibility of the network.
 
-Implementing \acp{dvpn} using OpenFlow also leads to other questions which need to be answered for specific implementations of controllers, hardware and applications. 
+Implementing \acp{dvpn} using OpenFlow also leads to other questions which need to be answered for specific implementations of controllers, hardware and applications. This research has not focussed on the scalability of specific network implementations, instead taking a more theoretical approach to implementing new carrier services. Scalability and efficiency of different applications and hardware implementation will need to be researched when using these technologies. 
 
 % subsection recommendations (end)
 
 \subsection{Future Work} % (fold)
 \label{sub:future_work}
 
-% TODO: write
+Apart from the research that has to be done on implementation-specific level, more general research can be done on how \ac{sdn} and OpenFlow can be used to implement multi-domain \acp{vpn}. A multi-domain \ac{vpn} service provides \acp{vpn} to customers of different \acp{sp}, requiring them to exchange information on these customers. This information exchange will need to happen with a certain trust level and using \acp{api} that provide \acp{sp} with their required security. Implementing such a service using the \ac{mpls} architecture will be less straightforward and desirable than the \ac{sdn} architecture, as the \ac{mpls} architecture will need to provide deep access to the sensitive forwarding plane of the network. However, the feasibility and implications of implementing such a service using \ac{sdn} may also require more research.
 
-Other use cases:
-\begin{itemize}
-	\item multi-domain
-	\item mobility
-	\item smart metering
-\end{itemize}
+Another feature that might be looked into further is the statistics of the OpenFlow flows in the network when trying to implement realtime metering. This feature can be used to get more timely statistics of traffic flowing over the network and acting upon those values. For instance, a certain \ac{vpn} may have a data limit imposed by the operator on the amount of traffic exchanged over the network in a certain time frame. By using realtime monitoring, the operator can act upon exceeding the threshold by stopping the traffic without have to wait for statistics gathering scripts. 
+
+Finally, there are still other carrier network obstacles that \ac{sdn} promises to solve. One of which is mobility of customer devices. Research into how OpenFlow might provide this functionality efficiently would also be of distinct value to the industry.
 
 % subsection future_work (end)

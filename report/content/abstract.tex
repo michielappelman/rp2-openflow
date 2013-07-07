@@ -1,9 +1,25 @@
 % (c) 2014 Michiel Appelman
 \vspace*{\fill}
-{\section*{Summary}\addcontentsline{toc}{section}{Summary}
+{\section*{Abstract}\addcontentsline{toc}{section}{Abstract}
 \label{sec:summary}
 
-%TODO: Hello world, abstract
+%motivatie
+%Todays network operators make extensive use of \aclp{nms} to manage and control their networks, which are growing in size and complexity. The amount of \acsp{vpn} which are used to provide client connectivity and to manage network resources, is growing as well. 
+The increasing complexity of networks and \acsp{nms} is starting to affect operators, who are seeing a growing demand for \aclp{dvpn}. \acsp{dvpn} are application-specific \acsp{vpn} which have a relatively short lifetime, requiring a certain degree of flexibility and agility from the network and support systems.
+
+To implement \acsp{dvpn} in the network, operators need to solve the complexity of \acsp{nms} and allow for granular control over network resources. A possible candidate to provide this solution is the \acs{sdn} architecture and the OpenFlow specification. However, it is unclear if this solution will actually provide any benefit over the use of state of the art technologies.
+%oplossing
+
+This research compares the differences between implementing a \acs{dvpn} service using the contemporary \acs{mpls} stack and implementing it using OpenFlow. 
+We found that the \acs{mpls} implementation can provide the \acs{vpn} service but due to its large protocol stack and lack of a defined management interface, will prove to be unsuitable when implementing \acsp{dvpn}. 
+
+On the other hand, the \acs{sdn} architecture can solve complexity and provide manageability by providing network abstractions to applications which can be developed by the operators themselves. However, until a northbound interface is defined, portability and flexibility is still limited. 
+
+Additionally, this research shows that OpenFlow is missing monitoring in its forwarding plane allowing for individual components to make independent choices to provide fast failover times. This limitation means that the networking devices will always need to support from the controller to detect faults in the path, yielding high recovery times.
+
+
+%implicaties
+
 
 % section summary (end)
 }
