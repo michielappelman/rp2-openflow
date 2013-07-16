@@ -1,7 +1,7 @@
 % (c) 2014 Michiel Appelman
 \section{Introduction} % (fold)
 \label{sec:introduction}
-Network operators today use \acp{nms} to get control over their devices and services that they deploy. These systems have been customized to their needs and in general perform their functionalities adequately. However, operators run into obstacles when trying to expand their business portfolio by adding new services. Which will potentially require
+Network operators today use \acp{nms} to get control over their devices and services that they deploy. These systems have been customized to their needs and in general perform their functionalities adequately. However, operators run into obstacles when trying to expand their business portfolio by adding new services. This will potentially require
 \begin{inparaenum}[\itshape a\upshape)]
 	\item new \ac{api} calls to be implemented towards their \ac{nms}, 
 	\item their \ac{nms} to be able to cope with potentially new protocols, and
@@ -13,9 +13,9 @@ This limits the flexibility of the operators network when deploying new or adjus
 
 %Until recently this limitation didn't distress operators as their networks were in fact primarily static. But with increasing demand for services requiring for example mobility and short-term virtual networks, these limitations start to become a tangible problem for operators. By solving the complexity of implementing new services or features for them, they will be able shorten their time to market, save on networking expertise and be more adaptive to changes in these services. %referenties
 
-To manage resources efficiently in a carrier network operators have been using \acp{vpn} between customers. By differentiating traffic between \acp{vpn} they can control their traffic flow at a granular level. However, the set of interactions between different protocols and management interfaces to them are intricate. The provisioning of \acp{vpn} requires expertise and a significant amount of changes to the protocol stack used to provide the service. 
+To manage resources efficiently in a carrier network operators have been using \acp{vpn} to connect customers. By differentiating traffic between \acp{vpn} they can control their traffic flow at a granular level. However, the set of interactions between different protocols and management interfaces to them are complex. Setting up a \ac{vpn} requires expertise and a significant amount of changes to the protocols in the stack which are required to provide the service. 
 
-Until recently operators were not concerned by the inflexibility in their services as their networks were in fact primarily static. However, the demand for application specific networks (e.g.\ video, voice or payment networks) is growing. Therefore operators are looking for a more flexible approach in the form of \acp{dvpn}. \acp{dvpn} are private networks over which end-users can communicate, deployed by their common \ac{sp}. They differ from normal \acp{vpn} in the sense that they are relatively short-lived. Using \acp{dvpn}, \acp{sp} can react more rapidly to customer requests to configure, adjust or tear down their \acp{vpn}. However, due to the aforementioned complexity \acp{dvpn} services have not been implemented on a large scale.
+Until recently operators were not concerned by the inflexibility in their services as their networks were in fact primarily static. However, the demand for application specific networks (e.g.\ video, voice or payment networks) is growing. Therefore operators are looking for a more flexible approach in the form of \acp{dvpn}. \acp{dvpn} are private networks over which end-users can communicate which are deployed by their common \ac{sp}. They differ from normal \acp{vpn} in the sense that they can be altered multiple time over their potentially short lifetime. Using \acp{dvpn}, \acp{sp} can react more rapidly to customer requests to configure, adjust or tear down their \acp{vpn}. However, due to management complexity \acp{dvpn} services have not been implemented on a large scale.
 
 A potential candidate to solve the complexity of implementing \acp{dvpn} is OpenFlow \cite{openflow} and \ac{sdn}. \ac{sdn} is an architecture that allows for the programmability of the control plane of networking devices. The architecture is not standardized but a generalized structure has been given in the OpenDaylight project \cite{opendaylight}. OpenFlow is a lower level and increasingly supported \ac{api} protocol towards networking devices. Implementing the \ac{sdn} architecture promises
 \begin{inparaenum}[\itshape a\upshape)]
@@ -31,17 +31,17 @@ A potential candidate to solve the complexity of implementing \acp{dvpn} is Open
 %	\label{fig:opendaylight}
 %\end{figure}
 	
-The momentum that \ac{sdn} is getting might be explained by a general need for change in the networking industry. Operators primarily want to get more control over their networks, something which using the current stack of protocols is relatively complicated to get. The original \acs{osi} reference model \cite{zimmermann} touches on the ``Management Aspects'' of each layer in the model, a way for management entities in the highest layer to control the behavior of lower layers. Unfortunately in the swift evolution of \ac{tcp}/\ac{ip}, these management interfaces are often limited or absent all together. 
+The momentum that \ac{sdn} is getting can be explained by a general need for change in the networking industry. Operators primarily want to get more control over their networks, something which using the current stack of protocols is relatively complicated to get. The original \acs{osi} reference model \cite{zimmermann} touches on the ``Management Aspects'' of each layer in the model, a way for management entities in the highest layer to control the behavior of lower layers. Unfortunately in the swift evolution of \ac{tcp}/\ac{ip}, these management interfaces are often limited or absent all together. 
 
 
 
 	\subsection{Research Question} % (fold)
 	\label{sub:research_question}
 	In the case of \acp{dvpn} it is unclear if and how a real-world OpenFlow and \ac{sdn} implementation will actually provide any simplicity, additional flexibility or cost savings when compared to contemporary technologies \cite{programmability-answer}. 
-	In this research we will therefor answer the question ``Can DVPNs be implemented using contemporary technologies?''. And additionally provide insight in how OpenFlow works and if ``DVPNs can be implemented using OpenFlow?''.
-	When the two implementation have been described, we can then look at what the key differences between the two are.
-	%And so the question arises: \textsl{``How much can operators benefit from using OpenFlow when implementing \aclp{dvpn} in comparison with contemporary technologies?''} 
-	%This requires research into whether \acp{dvpn} can be implemented with current technologies, as well as with OpenFlow. Finally we will make a comparison between the two architectures.
+	%In this research we will therefor answer the question ``Can DVPNs be implemented using contemporary technologies?''. And additionally provide insight in how OpenFlow works and if ``DVPNs can be implemented using OpenFlow?''.
+	%When the two implementation have been described, we can then look at what the key differences between the two are.
+	And so the question arises: \textsl{``How much can operators benefit from using OpenFlow when implementing \aclp{dvpn} in comparison with contemporary technologies?''} 
+	This requires research into whether \acp{dvpn} can be implemented with current technologies, as well as with OpenFlow. Finally we will make a comparison between the two architectures.
 
 	% subsection research_question (end)
 
@@ -55,7 +55,7 @@ The momentum that \ac{sdn} is getting might be explained by a general need for c
 
 	\subsection{Approach} % (fold)
 	\label{sub:approach}
-	In the Section~\ref{sec:dvpns} we will define the conceptual design of \acp{dvpn}. This will result in a list of required features for the technologies to provide such a service. Section~\ref{sec:implementation} will list the technologies available and will additionally determine their usability for implementing \acp{dvpn} when taking into account the requirements set forth in Section~\ref{sec:dvpns}. In Section~\ref{sec:results} we will distill the advantages and limitations of the different implementations and substantiate how the compare to each other. Finally, Section~\ref{sec:conclusion} summarizes the results and provides a discussion and future work on this subject.
+	In the Section~\ref{sec:dvpns} we will define the conceptual design of \acp{dvpn}. This will result in a list of required features for the technologies to provide such a service. Section~\ref{sec:implementation} will list the technologies available and will additionally determine their usability for implementing \acp{dvpn} when taking into account the requirements set forth in Section~\ref{sec:dvpns}. In Section~\ref{sec:results} we will distill the advantages and limitations of the different implementations and explain how they compare to each other. Finally, Section~\ref{sec:conclusion} summarizes the results and provides a discussion and future work on this subject.
 
 	% subsection approach (end)
 

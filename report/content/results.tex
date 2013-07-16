@@ -37,6 +37,7 @@ From a customer point-of-view it should be of no concern how the \ac{dvpn} servi
 	\item connect \acp{ce} without any required \ac{vpn} configuration on them, and
 	\item be completely transparent to the \acp{ce}.
 \end{inparaenum}
+The two implementations take the same input from the customer to provide these \acp{vpn}, limiting the differences the implementations have in their view.
 
 % subsection service (end)
 
@@ -86,16 +87,14 @@ Discovering the network topology of a network typically requires connectivity be
 
 \acl{te} can benefit from centralization as well. In fact, operators already need to store information on application traffic flows and requirements in the \ac{nms} when using \ac{mpls} to route traffic in a certain way. When using \ac{rsvp} with explicit routes, the \ac{nms} requires a complete view from the network to correctly define paths. Only when using loose constraints, the \ac{te} functionality is partly solved decentralized using \ac{cspf}. However, the \ac{nms} still needs to configure the constraints for each flow. An \ac{sdn} setup provides the operator with a complete view from the network as seen by the controller which can be used together with input from \ac{vpn} constraints to optimize the paths. The advantage lies in the fact that the the \ac{te} application on the controller can get the current topology directly from the discovery application. Whereas the \ac{mpls} setup would require the \ac{nms} to retrieve the topology from the network, or the topology should be predefined. Either way, this might lead to inconsistencies, depending on the implementation.
 
-Research has already shown that OpenFlow can be used to implement the \ac{mpls} stack \cite{mpls-open}. Over a two month period researchers also succeeded in provisioning \acp{vpn} and provide operators with a simulated environment with very granular \ac{te} \cite{mpls-vpn-openflow}.
-
-
+Research has already shown that OpenFlow can be used to implement the \ac{mpls} stack \cite{mpls-open}. Over a two month period researchers also succeeded in provisioning \acp{vpn} and provide operators with a simulated environment with granular \ac{te} \cite{mpls-vpn-openflow}.
 
 % subsection provisioning (end)
 
 \subsection{\acp{dvpn}} % (fold)
 \label{sub:dvpn}
 
-Table~\ref{tb:reqs} at the beginning of this section already showed most of the technical differences between the two technologies. It also shows the plethora of acronyms in use by the \ac{mpls} architecture that all need to be managed. Additionally, the current available systems lack a consistent management interface and thus need to be managed through a form of command-line or NetConf interface. These interfaces can differ between vendors and sometimes even between models from the same vendor. Maintaining the code for all these different protocols and management interfaces while also providing a dynamic and agile \ac{nms} interface for the operator to use will prove to be quite difficult.
+Table~\ref{tb:reqs} shows the plethora of acronyms in use by the \ac{mpls} architecture that all need to be managed. Additionally, the current available systems lack a consistent management interface and thus need to be managed through a form of command-line or NetConf interface. These interfaces can differ between vendors and sometimes even between models from the same vendor. Maintaining the code for all these different protocols and management interfaces while also providing a dynamic and agile \ac{nms} interface for the operator to use will prove to be quite difficult.
 
 The OpenFlow implementation can solve these problems by providing operators with abstractions of the network on which they can write applications to configure their network. However, this also means that the intelligence of the network devices has to be reimplemented completely in the controller of the \ac{sdn} architecture. These applications will then provide the core functionalities of the network, also providing the configuration to the devices, without the \ac{nms} needing to be aware of the specific topology or hardware. 
 
@@ -105,7 +104,7 @@ By centralizing the path calculation application, the network can also apply mor
 
 The initial needed configuration for devices to be added to the \ac{dvpn} network is higher when using the \ac{mpls} implementation. To be added, they need settings for \ac{ip} addresses, routing protocols, labels, etc. These processes all need information from the \ac{nms}, which needs to be filled with information by the operator. With OpenFlow the device can be added dynamically, only requiring a management interface and the applications on the controller can then configure it as they would deem necessary, without any information from the \ac{nms} or operator.
 
-The development of \ac{sdn} applications is still behind on the actual OpenFlow implementation. The architecture is missing a defined Northbound \ac{api} which would allow for portability of the applications. This limits the flexibility of the applications that are written today, because there is no guarantee that they will interoperate with future controllers/applications.
+The development of \ac{sdn} applications is still behind on the actual OpenFlow implementation. The architecture is missing a defined Northbound \ac{api} which would allow for portability of the applications. This limits the flexibility of the applications that are written today, because there is no guarantee that they will interoperate with future controllers/applications. Apart from the northbound interface there is also lack of standardization of the east/westbound interface. This interface lives between controllers controlling the network and facilitates the exchange of information between applications. This limits scalability and interoperability between different controllers and applications, and in turn the redundancy of the network.
 
 
 % subsection dvpn (end)

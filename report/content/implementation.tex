@@ -12,18 +12,18 @@
 
 This section will first describe the technical details of \ac{mpls} with regards to the features required for implementing \acp{dvpn}. We will design an architecture to implement this service and point out the limitations. 
 Next, we will describe the \ac{sdn} architecture and the OpenFlow specification. Also looking at the features they provide to implement a \ac{dvpn} service.
-In Appendix~\ref{sub:spb} we have also taken a look at \ac{atm} and \ac{spb}, both technologies which can be used to implement some form of \acp{vpn} but are missing key requirements.
+In Appendix~\ref{sub:spb} we have also taken a look at \ac{atm} and \ac{spb}, both are technologies that can be used to implement \acp{vpn} but are missing key requirements to support \acp{dvpn}.
 
 \subsection{\acs{mpls}} % (fold)
 \label{sub:mpls}
 
 \ac{mpls} is known for its scalability and extensibility. Over the past decade additions have been made to the original specification to overcome a plethora of issues within carrier networks. This initially started with trying to implement fast forwarding in legacy switches using labels (or tags) at the start of the frame \cite{tag-switching}. When this issue became surmountable using new hardware, \ac{mpls} had already proven to be capable of transporting a wide arrange of protocols on the carrier backbone network, all the while also providing scalability, \ac{te} and \ac{qos} features to the operators.
 
-\ac{mpls} itself is more a way of forwarding frames through the network, without facilitating any topology discovery, route determination, resource management, etc. These functions are left to a stack of other protocols. Without \ac{ip} reachability throughout the network these protocols cannot exchange traffic and so, as a prerequisite, \ac{mpls} relies on an \ac{igp} like \ac{ospf} to discovery the topology.
+\ac{mpls} itself is a technology for forwarding frames through the network, does not provide any additional functionalities such as topology discovery, route determination, resource management, etc. These functions are left to a stack of other protocols. Without \ac{ip} reachability throughout the network these protocols cannot exchange traffic and so, as a prerequisite, \ac{mpls} relies on an \ac{igp} like \ac{ospf} to discovery the topology.
 
 The distribution of labels has to be facilitated as well, which is done using \ac{ldp} and/or \ac{rsvp}. These protocols run between each device in the path between two \acp{pe} and exchange the labels that the will assign to a certain path, thereby setting up a \ac{lsp}. The labels assigned are always of `local significance,' meaning that the \ac{p}/\ac{pe} device that needs to forward the labels, will announce its own chosen labels. The \ac{ldp} protocol does this by distributing its labels from the egress \ac{pe} up towards the ingress \ac{pe} based on \ac{igp} costs. \ac{rsvp}, on the other hand, signals its paths from the ingress \ac{pe} towards the downstream \ac{pe} based on constraints, potential explicit hops or as a last resort using the \ac{igp} next hop. Label distribution is still determined from egress to ingress, but the actual path is determined at the head-end. To determine the best path to take, \ac{rsvp} uses the \ac{cspf} algorithm which can take into account link characteristics like bandwidth or \ac{frr} support. This allows \ac{rsvp} \acp{lsp} to take more well informed paths through the network and together with support for defining explicit paths, allows for granular \ac{te} features which \ac{ldp} lacks. Both \ac{ldp} and \ac{rsvp} also allow for the use of multiple paths over the network to share traffic load towards a \ac{pe}.
 
-The aforementioned \ac{frr} feature is unique to \ac{rsvp} and provides the network with fast failure recovery. It does so by preprovisioning a so-called backup \ac{lsp} next to the primary \ac{lsp}. When a failure is detected on the primary \ac{lsp}, traffic is immediately shifted towards the standby path, yielding a sub-50ms failover. Obviously, this value also depends on the time it takes for the failure to be detected. Therefore it is important to have some sort of detection mechanism in place. One that is commonly used and integrates with \ac{ospf} is \ac{bfd}. This protocol sets up sessions between devices and triggers an alarm when the session does not behave as expected. At which point \ac{frr} swaps the traffic to the preprovisioned backup path. To differentiate traffic coming from a normal, `protected' path and traffic taking a `detour' path, \ac{frr} adds another \ac{mpls} tag to the \ac{mpls} label stack.
+The \ac{frr} feature is unique to \ac{rsvp} and provides the network with fast failure recovery. It does so by preprovisioning a so-called backup \ac{lsp} next to the primary \ac{lsp}. When a failure is detected on the primary \ac{lsp}, traffic is immediately shifted towards the standby path, yielding a sub-50ms failover. Obviously, this value also depends on the time it takes for the failure to be detected. Therefore it is important to have some sort of detection mechanism in place. One that is commonly used and integrates with \ac{ospf} is \ac{bfd}. This protocol sets up sessions between devices and triggers an alarm when the session does not behave as expected. At which point \ac{frr} swaps the traffic to the preprovisioned backup path. To differentiate traffic coming from a normal, `protected' path and traffic taking a `detour' path, \ac{frr} adds another \ac{mpls} tag to the \ac{mpls} label stack.
 
 \acp{vpn} are also provided by additional protocols. Layer 3 \acp{vpn} make use of \ac{bgp} to distribute client prefixes to the edges of the carrier network. The core is only concerned with the forwarding of labels and has now knowledge of these \acs{ip} prefixes. Layer 2 \acp{vpn} make use of \ac{vpls}, a service which encapsulates the entire Ethernet frame and pushes a label to it to map it to a certain separated network. Again, the core is only concerned with the labels and only the edges need to know the clients \acs{mac} addresses. When setting up a \ac{vpls} instance (a \acp{vpn}), \ac{ldp} sessions are setup between all \acp{pe} part of the same \ac{vpls} instance. Consecutively, the \acp{pe} will exchange their chosen labels for that instance between each other.
 
@@ -59,7 +59,7 @@ To configure a \ac{dvpn} using \ac{mpls} first the participating \acp{pe} need t
 
 The procedure above implies that the backbone network has been setup with the following protocols and features already enabled: \ac{ip} addressing, \ac{ospf} routing, \ac{mpls} forwarding, \ac{rsvp} with \ac{frr} and \ac{bfd}. After initial setup of the backbone network the \ac{nms} is only concerned with the \acp{pe}, as can also be seen in Figure~\ref{fig:nms-stack}. However, the \ac{nms} needs to be aware of the \acp{pe} it needs to consult, the intermediate \acp{p} if it wants to use \ac{te}, the network resources in the path and of course the actual member ports.
 
-Implementing \acp{vpn} using \ac{mpls} has been shown to be possible using the protocols that have been engineered to provide all the required features. The technologies are built upon each other instead of being evolved upon. This causes their dependencies to grow more complex over time which in turn makes it difficult for the \ac{nms} to deal with all the different protocols. Add to that the lack of a common abstracted interface to the network devices, and it becomes apparent that developing and maintaining an efficient \ac{nms} is also getting more difficult.
+Implementing \acp{vpn} using \ac{mpls} has been shown to be possible using the protocols that have been engineered to provide all the required features. The technologies are built upon each other instead of being evolved upon. This causes their dependencies to grow more complex over time which in turn makes it difficult for the \ac{nms} to deal with all the different protocols. Additionally, developing and maintaining an efficient \ac{nms} is also more difficult due to the lack of a common abstracted interface to the network devices.
 
 \begin{figure}[!h]
 	\centering
@@ -94,21 +94,21 @@ Implementing \acp{vpn} using \ac{mpls} has been shown to be possible using the p
 
 The frame fields that can be matched upon have changed over the lifetime of the OpenFlow specification. For example, version 1.0 could only match and/or act upon tagged traffic using a single outer-\acs{vlan} tag. Version 1.1 added matches and actions for Q-in-Q tags and \ac{mpls} labels, and version 1.3 could also match \ac{pbb} tags. See Table~\ref{tb:of-versions} for a comparison of key features in different versions of OpenFlow spec. 
 
-\begin{table}[!h]
-	\centering
-	\begin{tabular}{r|cccc}
-	 			& 1.0 & 1.1 & 1.2 & 1.3 \\
-	\hline
-	VLAN Tags 	& \checkmark & \checkmark & \checkmark & \checkmark \\
-	Q-in-Q Tags &   & \checkmark & \checkmark & \checkmark \\
-	MPLS Tags 	&   & \checkmark & \checkmark & \checkmark \\
-	PBB Tags 	&   &   &   & \checkmark \\
-	Groups 		&   & \checkmark & \checkmark & \checkmark \\
-	Rate limiting & \checkmark & \checkmark & \checkmark & \checkmark  \\
-	\end{tabular}
-	\caption{Comparison of OpenFlow versions regarding key features for \acp{dvpn}.}
-	\label{tb:of-versions}	
-\end{table}
+%\begin{table}[!h]
+%	\centering
+%	\begin{tabular}{r|cccc}
+%	 			& 1.0 & 1.1 & 1.2 & 1.3 \\
+%	\hline
+%	VLAN Tags 	& \checkmark & \checkmark & \checkmark & \checkmark \\
+%	Q-in-Q Tags &   & \checkmark & \checkmark & \checkmark \\
+%	MPLS Tags 	&   & \checkmark & \checkmark & \checkmark \\
+%	PBB Tags 	&   &   &   & \checkmark \\
+%	Groups 		&   & \checkmark & \checkmark & \checkmark \\
+%	Rate limiting & \checkmark & \checkmark & \checkmark & \checkmark  \\
+%	\end{tabular}
+%	\caption{Comparison of OpenFlow versions regarding key features for \acp{dvpn}.}
+%	\label{tb:of-versions}	
+%\end{table}
 
 Note that rate limiting on a per port basis has been available in OpenFlow since version 1.0. Additionally, version 1.3 added support for per flow rate limiting using so called `meters' which can be assigned to specific flows. By doing so it becomes possible to also rate limit flows on certain aggregation ports rather than just at the ingress port of the \ac{ce}.
 
@@ -137,12 +137,12 @@ Implementing \acp{dvpn} using OpenFlow relies mostly on the applications running
 \subsubsection{\acs{dvpn} Provisioning} % (fold)
 \label{ssub:dvpn_application}
 
-To implement \acp{dvpn}, a combination of applications need to be installed on the controller that contemporary technologies solve using distributed protocols:
+To implement \acp{dvpn}, one or more applications providing the functions analogous to contemporary implementations need to be implemented in the OpenFlow setup:
 
 \begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries Topology Discovery}]
-	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery applications will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network. By centralizing the topology discovery process, network operators can benefit from more efficient synchronization and faster convergence.
+	\item[Topology Discovery] Network devices do not require \ac{ip} connectivity between each other to exchange route information. Instead, they rely on their connection to the controller to provide them with information. A topology discovery application will instruct network devices to send out unique discovery messages which are then received by other devices, which forward the message back up to the controller. By keeping information on which packet goes in and comes out where, the application can get an overview of the network. By centralizing the topology discovery process, network operators can benefit from more efficient synchronization and faster convergence.
 	
-	\item[\ac{dvpn} Provisioning] The \ac{dvpn} input will provide the application with at least the \ac{ce} port and preferably the corresponding \ac{mac} and/or \ac{ip} address. It can then instruct the path provisioning component to setup a path between the \acp{pe} participating in the \ac{dvpn}. 
+	\item[\ac{dvpn} Provisioning] The \ac{dvpn} input will provide the application with at least the \ac{ce} port and preferably the corresponding \ac{mac} and/or \ac{ip} address. It can then instruct the path provisioning component to set up paths between all the \acp{pe} participating in the \ac{dvpn}. 
 	
 	\item[Path Provisioning] Using the discovered topology, paths are setup over those routes between \acp{pe} with member \ac{ce} ports in a common \ac{dvpn}. This means that the flow entries are installed proactively in the \acp{p} and \acp{pe} when a \ac{dvpn} is setup. Instead of waiting for one of them to send a message to the controller asking what to do with an unknown incoming frame, this proactive approach allows for better scalability (less requests to the controller) and faster initial forwarding (no buffering while consulting controller).
 
@@ -153,12 +153,12 @@ To implement \acp{dvpn}, a combination of applications need to be installed on t
 	\item[\ac{cmac} Filtering] This application is concerned with keeping the provided or dynamically learned \ac{mac} addresses up-to-date. Additionally, a flow can be installed matching on the \ac{arp} EtherType that sends the \ac{arp} request towards the controller. If the application also keeps track of the \ac{ip} addresses of the \acp{ce} it can then act as an \ac{arp} proxy and reply to the requesting \ac{ce} with the correct \ac{ip} address.
 \end{description}
 
-Fast failover and \ac{ecmp} can be accomplished using the aforementioned port `groups', which are available since version 1.1. Groups can be defined as a destination in a flow entry and contains a list of ports. The type of group defines the action of the group: `\textbf{all}' sends the frame out the frame out of all ports in the group (broadcast/multicasting); `\textbf{select}' outputs it to one of the ports (providing \ac{ecmp}); `\textbf{indirect}' is a single port group which can be used by multiple flow entries (aggregation); and `\textbf{fast failover}' which choses the first \textsl{live} port out of which it will forward the frame. To support `fast failover' a \textsl{liveness monitoring} technique needs to be implemented supported by the switch. However, apart from monitoring the state of the physical link, there has been no technique defined to monitor the liveness of inter-device links, such as \ac{bfd}. The same holds true for full path liveness monitoring which currently needs to be done using the controller, yielding a higher failure recovery time.
+Fast failover and \ac{ecmp} can be accomplished using the port `groups', which are available since version 1.1. Groups can be defined as a destination in a flow entry and contains a list of ports. The type of group defines the action of the group: `\textbf{all}' sends the frame out the frame out of all ports in the group (broadcast/multicasting); `\textbf{select}' outputs it to one of the ports (providing \ac{ecmp}); `\textbf{indirect}' is a single port group which can be used by multiple flow entries (aggregation); and `\textbf{fast failover}' which choses the first \textsl{live} port out of which it will forward the frame. To support `fast failover' a \textsl{liveness monitoring} technique needs to be implemented supported by the switch. However, apart from monitoring the state of the physical link, there has been no technique defined to monitor the liveness of inter-device links, such as \ac{bfd}. The same holds true for full path liveness monitoring which currently needs to be done using the controller, yielding a higher failure recovery time.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=10cm]{./includes/dvpn-apps.pdf}
-	\caption{Interactions between applications to implement \acp{dvpn}.}
+	\caption{Interactions between application components to implement \acp{dvpn}.}
 	\label{fig:dvpn-apps}
 \end{figure}
 

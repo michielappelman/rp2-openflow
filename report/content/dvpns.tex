@@ -1,7 +1,7 @@
 \section{Definition of a \ac{dvpn}} % (fold)
 \label{sec:dvpns}
 
-To define the \ac{dvpn} service, we first take a look at the concepts of non-dynamic, or static \acp{vpn}. This section will start by defining what a standard \ac{vpn} service looks like, how it's carried over the provider network and the information needed to implement it. Next we will look at how these normal \ac{vpn} services can be evolved into \aclp{dvpn}.
+To define the \ac{dvpn} service, we first take a look at the concepts of non-dynamic, or static \acp{vpn}. This section will start by defining what a standard \ac{vpn} service looks like, how it's carried over the provider network and the information needed to implement it. Next we will look at how these traditional \ac{vpn} services can be evolved into \aclp{dvpn}.
 
 \subsection{\acsp{vpn}} % (fold)
 \label{sub:vpn}
@@ -159,16 +159,15 @@ To provision \acp{vpn} in the network, the operator should be able to:
 \subsection{\acsp{dvpn}} % (fold)
 \label{sub:dvpn}
 
+The configurations of \acp{vpn} in currently in use in operator networks are mostly static and changes in these networks require (manual) effort to provision them. To evolve from these inflexible \ac{vpn} setups to \aclp{dvpn} the provisioning systems in use will need to support some additional features.
 
-The \ac{vpn} service that can be implemented using the aforementioned features is typical for current operator networks. The configurations are mostly static and changes in the network will require (manual) effort to provision. To evolve from these inflexible \ac{vpn} setups to \aclp{dvpn} the provisioning systems in use will need to support some additional features.
+First, the implementation of \acp{dvpn} will be automated. This means that instead of the manual configuration by an engineer, the \ac{nms} will take care of configuring the network with the correct \ac{ce} endpoint ports on all \acp{pe}, making sure that the paths are installed and verifying connectivity. This also includes calculation of the optimal paths and setting the correct rate limits, similar to the requirement given in Section~\ref{ssub:provisioning}.
 
-First, the implementation of \acp{dvpn} needs to be automated. This means that instead of the manual configuration by an engineer, the \ac{nms} will take care of configuring the network with the correct \ac{ce} endpoint ports on all \acp{pe}, making sure that the paths are installed and verifying connectivity. This also includes calculation of the optimal paths and setting the correct rate limits, similar to the requirement given in Section~\ref{ssub:provisioning}.
+Second, the \ac{nms} is able to change the configuration of \acp{dvpn} when requested. Additionally when a \ac{dvpn} is no longer in use, it will need to be automatically purged from the network to free up resources for other services. This requires the \ac{nms} to keep an overview of the provisioned \acp{dvpn} and can optionally set an idle time out for the service.
 
-Second, the \ac{nms} should be able to change the configuration of \acp{dvpn} when requested. And when a \ac{dvpn} is no longer in use, it will need to be automatically purged from the network to free up resources for other services. This requires the \ac{nms} to keep an overview of the provisioned \acp{dvpn} and can optionally set an idle time out for the service.
+Finally, the changes in the network resources and \ac{dvpn} requirements should be acted upon without manual intervention. When certain links are running low on available bandwidth or fail altogether, this will cause a recalculation of the provisioned paths. Also, when new hardware is added, it will be configured to take part in the network, immediately making use of its added resources. Similarly, when the requirements of a \ac{dvpn} change, the \ac{nms} will verify that the current paths meet these requirements, or otherwise find new routes to provision for the \acp{dvpn}.
 
-Finally, the changes in the network resources and \ac{dvpn} requirements should be acted upon without manual intervention. When certain links are running low on available bandwidth or fail altogether, this will cause a recalculation of the provisioned paths. Also, when new hardware is added, it need to be configured to take part in the network, immediately making use of its added resources. Similarly, when the requirements of a \ac{dvpn} change, the \ac{nms} will verify that the current paths meet these requirements, or otherwise find new routes to provision for the \acp{dvpn}.
-
-To provide a \ac{dvpn} service, the operator requires -- next to the aforementioned \ac{vpn} features -- the following functionalities from the \ac{nms}:
+To provide a \ac{dvpn} service, the operator requires the following additional functionalities from the \ac{nms}:
 
 \begin{enumerate}
 	\item Automated creation, modification and deletion of \acp{dvpn},
