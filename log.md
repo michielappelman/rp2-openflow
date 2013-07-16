@@ -174,3 +174,17 @@ RP2 Log
  - integrated all comments from Rudolf
  - added stuff to comparison (some might move to conclusion)
 
+7 july 2013
+-----------
+ - finished Relese Candidate
+ - sent to Rudolf
+
+12 july 2013
+------------
+ - got feedback from Rudolf
+
+16 july 2013
+------------
+ - integrated comments from Rudolf
+ - sent Final Version
+
